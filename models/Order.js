@@ -1,6 +1,6 @@
 //@flow
 import OrderLine from "./OrderLine";
-import IllegalAmountError from "../errors/IllegalAmountError";
+import IllegalAmountError from "./errors/IllegalAmountError";
 
 export default class Order {
   _orderId: number;

@@ -1,6 +1,6 @@
 //@flow
-import Order from "../models/entities/Order";
-import OrderLine from "../models/entities/OrderLine";
+import Order from "../models/Order";
+import OrderLine from "../models/OrderLine";
 import IllegalAmountError from "../models/errors/IllegalAmountError";
 
 let order;

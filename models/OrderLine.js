@@ -1,5 +1,5 @@
 //@flow
-import IllegalAmountError from "../errors/IllegalAmountError";
+import IllegalAmountError from "./errors/IllegalAmountError";
 
 export default class OrderLine {
   _productId: number;

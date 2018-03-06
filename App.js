@@ -10,7 +10,7 @@ import { StackNavigator, TabNavigator, TabBarTop } from "react-navigation";
 import LoginScreen from "./containers/LoginScreen";
 import ChooseEventScreen from "./containers/ChooseEventScreen";
 import CategoryScreen from "./containers/CategoryScreen";
-import { MockCategories } from "./mockdata/MockData";
+import { MockCategories } from "./dataaccess/mockdata/MockData";
 
 type Props = {};
 type State = {
