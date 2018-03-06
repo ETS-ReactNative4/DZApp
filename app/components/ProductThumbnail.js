@@ -20,7 +20,6 @@ export default class ProductThumbnail extends Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.product.imageUri);
     return (
       <TouchableOpacity style={styles.button}>
         <View style={styles.imageView}>

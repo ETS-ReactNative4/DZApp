@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import { ScrollView, Text, TextInput, View, Button } from "react-native";
-import { Authenticate } from "../authentication/authentication";
+import authenticate from "../lib/authentication/authenticate";
 
 type Props = {};
 
@@ -50,7 +50,7 @@ export default class LoginScreen extends Component<Props, State> {
     let username = this.state.username;
     let password = this.state.password;
 
-    if (Authenticate(username, password)) {
+    if (authenticate(username, password)) {
       this.props.navigation.navigate("ChooseEvent");
     } else {
       this.setState({

@@ -1,16 +1,19 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
+//@flow
 import React, { Component } from "react";
+
 import { Platform, StyleSheet, Text, View } from "react-native";
+
 import { StackNavigator, TabNavigator, TabBarTop } from "react-navigation";
+
 import LoginScreen from "./containers/LoginScreen";
 import ChooseEventScreen from "./containers/ChooseEventScreen";
 import CategoryScreen from "./containers/CategoryScreen";
-import { MockCategories } from "./dataaccess/mockdata/MockData";
+import CategoryDAO from "./lib/data/CategoryDAO";
+
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, combineReducers, compose } from "redux";
+import thunkMiddleware from "redux-thunk";
+import createLogger from "redux-logger";
 
 type Props = {};
 type State = {
@@ -20,7 +23,7 @@ type State = {
 export default class App extends Component<Props, State> {
   componentWillMount() {
     const screens = {};
-    MockCategories.forEach(category => {
+    CategoryDAO.fetchAll().forEach(category => {
       screens[category.name] = {
         screen: props => <CategoryScreen {...props} category={category} />
       };

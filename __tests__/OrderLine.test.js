@@ -1,6 +1,6 @@
 //@flow
-import OrderLine from "../models/entities/OrderLine";
-import IllegalAmountError from "../models/errors/IllegalAmountError";
+import OrderLine from "../app/models/entities/OrderLine";
+import IllegalAmountError from "../app/models/errors/IllegalAmountError";
 
 describe("OrderLine", () => {
   let orderLine;

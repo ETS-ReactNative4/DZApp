@@ -1,7 +1,7 @@
 //@flow
-import Order from "../models/Order";
-import OrderLine from "../models/OrderLine";
-import IllegalAmountError from "../models/errors/IllegalAmountError";
+import Order from "../app/models/Order";
+import OrderLine from "../app/models/OrderLine";
+import IllegalAmountError from "../app/models/errors/IllegalAmountError";
 
 let order;
 

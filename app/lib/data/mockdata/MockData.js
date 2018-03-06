@@ -1,6 +1,6 @@
 //@flow
-import Product from "../../models/Product";
-import Category from "../../models/Category";
+import Product from "../../../models/Product";
+import Category from "../../../models/Category";
 
 let MockCategories = [
   new Category(1, "Frisdranken"),

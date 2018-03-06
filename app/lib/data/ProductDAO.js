@@ -1,7 +1,7 @@
 //@flow
 
 import { MockProducts } from "./mockdata/MockData";
-import Product from "../models/Product";
+import Product from "../../models/Product";
 
 export default class ProductDAO {
   static fetchAll(): Product[] {
