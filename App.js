@@ -4,55 +4,65 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import React, { Component } from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import { StackNavigator, TabNavigator, TabBarTop } from "react-navigation";
+import LoginScreen from "./containers/LoginScreen";
+import ChooseEventScreen from "./containers/ChooseEventScreen";
+import CategoryScreen from "./containers/CategoryScreen";
+import { MockCategories } from "./mockdata/MockData";
 
 type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
+type State = {
+  rootstack: StackNavigator
+};
+
+export default class App extends Component<Props, State> {
+  componentWillMount() {
+    const screens = {};
+    MockCategories.forEach(category => {
+      screens[category.name] = {
+        screen: props => <CategoryScreen {...props} category={category} />
+      };
+    });
+
+    const OrderTabs = TabNavigator(screens, {
+      tabBarPosition: "bottom",
+      animationEnabled: true,
+      tabBarComponent: TabBarTop,
+      tabBarOptions: {
+        scrollEnabled: true
+      }
+    });
+
+    const RootStack = StackNavigator(
+      {
+        Login: {
+          screen: LoginScreen
+        },
+        ChooseEvent: {
+          screen: ChooseEventScreen
+        },
+        OrderScreen: {
+          screen: OrderTabs
+        }
+      },
+      {
+        initialRouteName: "OrderScreen"
+      }
     );
+    this.setState({ rootstack: RootStack });
+  }
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      rootstack: null
+    };
+  }
+
+  render() {
+    if (this.state.rootstack) return <this.state.rootstack />;
+    else return <Text>Nuthing</Text>;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
