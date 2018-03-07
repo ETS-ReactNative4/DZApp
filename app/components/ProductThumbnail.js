@@ -5,29 +5,31 @@ import Product from "../models/Product";
 import Order from "../models/Order";
 
 type Props = {
-  product: Product
-};
-type State = {
-  quantity: number
+  product: Product,
+  quantity: number,
+  onPress: () => void,
+  onLongPress: () => void
 };
 
 export default class ProductThumbnail extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      quantity: 0
-    };
+    this.state = {};
   }
 
   render() {
     return (
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={this.props.onPress}
+        onLongPress={this.props.onLongPress}
+      >
         <View style={styles.imageView}>
           <Image
             style={styles.image}
             source={{ uri: this.props.product.imageUri }}
           />
-          <Text style={styles.quantityLabel}>{this.state.quantity}</Text>
+          <Text style={styles.quantityLabel}>{this.props.quantity}</Text>
         </View>
         <View style={styles.caption}>
           <Text style={styles.nameLabel}>{this.props.product.name}</Text>

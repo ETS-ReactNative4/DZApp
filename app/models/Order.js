@@ -57,6 +57,10 @@ export default class Order {
       }
     }
   }
+  getQuantity(productId: number): number {
+    if (!this.orderLines.get(productId)) this._addNewOrderline(productId);
+    return this.orderLines.get(productId).quantity;
+  }
   _addNewOrderline(productId: number) {
     this.orderLines.set(productId, new OrderLine(productId));
   }
