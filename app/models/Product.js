@@ -4,20 +4,23 @@ export default class Product {
   _name: string;
   _price: number;
   _imageUri: string;
-  _categoryId: number;
+  _inStock: number;
+  _criticalStock: number;
 
   constructor(
     id: number,
     name: string,
     price: number,
     imageUri: string,
-    categoryId: number
+    inStock: number,
+    criticalStock: number
   ) {
     this._id = id;
     this._name = name;
     this._price = price;
     this._imageUri = imageUri;
-    this._categoryId = categoryId;
+    this._inStock = inStock;
+    this._criticalStock = criticalStock;
   }
 
   get id(): number {
@@ -32,7 +35,13 @@ export default class Product {
   get imageUri(): string {
     return this._imageUri;
   }
-  get categoryId(): number {
-    return this._categoryId;
+  get inStock(): number {
+    return this._inStock;
+  }
+  get criticalStock(): number {
+    return this._criticalStock;
+  }
+  set inStock(inStock: number): void {
+    this._inStock = inStock;
   }
 }

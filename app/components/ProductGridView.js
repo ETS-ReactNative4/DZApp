@@ -1,4 +1,13 @@
 import React, { Component } from "react";
+import {
+  Alert,
+  Modal,
+  View,
+  Text,
+  TouchableHighlight,
+  StyleSheet
+} from "react-native";
+
 import GridView from "react-native-super-grid";
 import Product from "../models/Product";
 import Order from "../models/Order";
@@ -15,42 +24,74 @@ type Props = {
   products: Product[],
   order: Order
 };
-type State = {};
+type State = {
+  modalVisible: boolean
+};
 
 class ProductGridView extends Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      modalVisible: false
+    };
   }
 
-  _addItemToOrder = (productId, quantity) => {
-    this.props.addItemToOrder(productId, quantity);
+  _addItemToOrder = productId => {
+    this.props.addItemToOrder(productId, 1);
   };
 
-  _removeItemFromOrder = productId => {
-    this.props.removeItemFromOrder(productId);
+  _addItemsToOrder = (product: Product) => {
+    this.setState({ modalVisible: true });
   };
 
   render() {
-    console.log(this.props);
     return (
-      <GridView
-        itemDimension={130}
-        items={this.props.products}
-        renderItem={product => {
-          return (
-            <ProductThumbnail
-              product={product}
-              quantity={this.props.orders.order.getQuantity(product.id)}
-              onPress={() => this._addItemToOrder(product.id, 1)}
-              onLongPress={() => this._removeItemFromOrder(product.id, 1)}
-            />
-          );
-        }}
-      />
+      <View>
+        <GridView
+          itemDimension={130}
+          items={this.props.products}
+          renderItem={product => {
+            return (
+              <ProductThumbnail
+                product={product}
+                quantity={this.props.orders.order.getQuantity(product.id)}
+                onPress={() => this._addItemToOrder(product.id)}
+                onLongPress={() => this._addItemsToOrder(product)}
+              />
+            );
+          }}
+        />
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {}}
+        >
+          <View style={styles.container}>
+            <Text>Voer aantal eenheden in</Text>
+            <TouchableHighlight
+              onPress={() => {
+                this.setState({
+                  modalVisible: !this.state.modalVisible
+                });
+              }}
+            >
+              <Text>Ok</Text>
+            </TouchableHighlight>
+          </View>
+        </Modal>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  }
+});
 
 const mapStateToProps = state => {
   return {

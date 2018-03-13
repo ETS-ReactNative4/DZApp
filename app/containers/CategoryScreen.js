@@ -1,11 +1,16 @@
 //@flow
 
 import React, { Component } from "react";
-import { Text } from "react-native";
+import { Button } from "react-native";
+
+//components
 import Category from "../models/Category";
 import ProductGridView from "../components/ProductGridView";
+
+//models
 import Product from "../models/Product";
 
+//redux
 import { connect } from "react-redux";
 
 type Props = {
@@ -24,6 +29,19 @@ class CategoryScreen extends Component<Props> {
     );
     return <ProductGridView products={products} />;
   }
+
+  componentWillMount() {
+    this.props.navigation.setParams({ increaseCount: this._increaseCount });
+  }
+
+  state = {
+    count: 0
+  };
+
+  _increaseCount = () => {
+    this.setState({ count: this.state.count + 1 });
+    console.warn(this.state.count);
+  };
 }
 
 const mapStateToProps = state => {

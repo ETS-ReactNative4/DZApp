@@ -1,4 +1,10 @@
-export const NEW_ORDER = "NEW_ORDER";
-export const ADD_ITEM_TO_ORDER = "ADD_ITEM_TO_ORDER";
-export const REMOVE_ITEM_FROM_ORDER = "REMOVE_ITEM_FROM_ORDER";
-export const CONFIRM_ORDER = "CONFIRM_ORDER";
+//navigation
+export const LOGIN_AT_START = "LOGIN_AT_START";
+
+//cashier
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_ERROR = "LOGIN_ERROR";
+
+//customers
+export const LOAD_CUSTOMERS = "LOAD_CUSTOMERS";
+export const SET_CUSTOMER = "SET_CUSTOMER";

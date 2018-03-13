@@ -1,34 +1,57 @@
+//@flow
 import {
-  NEW_ORDER,
-  ADD_ITEM_TO_ORDER,
-  REMOVE_ITEM_FROM_ORDER,
-  CONFIRM_ORDER
+  LOAD_CUSTOMERS,
+  SET_CUSTOMER,
+  SET_CASHIER,
+  LOGIN_SUCCESS,
+  LOGIN_ERROR
 } from "./types";
-import Order from "../models/Order";
-import OrderLine from "../models/OrderLine";
+import Roles from "../models/Roles";
+import CustomerDAO from "../lib/data/mockremote/CustomerDAO";
+import Store from "../Store";
+// import { NavigationActions } from "react-navigation";
+// import dispatch from "redux-thunk";
 
-export const newOrder = () => {
+export const loadCustomers = () => {
+  let customers = CustomerDAO.fetchAll();
   return {
-    type: NEW_ORDER,
-    data: {}
+    type: LOAD_CUSTOMERS,
+    data: customers
   };
 };
 
-export const addItemToOrder = (productId, quantity) => {
+export const setCustomer = (customerId: number): {} => {
   return {
-    type: ADD_ITEM_TO_ORDER,
-    data: {
-      productId: productId,
-      quantity: quantity
-    }
+    type: SET_CUSTOMER,
+    data: customerId
   };
 };
 
-export const removeItemFromOrder = productId => {
-  return {
-    type: REMOVE_ITEM_FROM_ORDER,
-    data: {
-      productId: productId
+export const login = (userCredentials: {}) => {
+  let customers = Store.getState().customerReducer.customers;
+  let cashiers = customers.filter(c => c.role === Roles.CASHIER);
+  let cashierId = -1;
+
+  for (let i = 0; i < cashiers.length; i++) {
+    let userName = cashiers[i].userName;
+    let regexp = new RegExp(userName, "i");
+    if (
+      userCredentials.userName.match(regexp) &&
+      userCredentials.password === cashiers[i].hashedPass
+    ) {
+      cashierId = cashiers[i].id;
+      break;
     }
-  };
+  }
+
+  if (cashierId !== -1) {
+    return {
+      type: LOGIN_SUCCESS,
+      data: cashierId
+    };
+  } else {
+    return {
+      type: LOGIN_ERROR
+    };
+  }
 };

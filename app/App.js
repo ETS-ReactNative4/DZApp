@@ -4,28 +4,24 @@ import React, { Component } from "react";
 import { Text } from "react-native";
 
 //redux
-import { createStore } from "redux";
-import { Provider } from "react-redux";
-import { reducer } from "./reducers/index";
+import { Provider, connect } from "react-redux";
+import { loadCustomers } from "./actions/creators";
+import Store from "./Store";
 
 //containers
-import Routes from "./containers/Routes";
+import RootNavigator from "./components/RootNavigator";
 
-let store = createStore(reducer);
+//load data on application start
+Store.dispatch(loadCustomers());
 
 type Props = {};
 type State = {};
 
-export default class App extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
-  }
-
+export default class App extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <Routes />
+      <Provider store={Store}>
+        <RootNavigator />
       </Provider>
     );
   }

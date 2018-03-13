@@ -60167,15 +60167,17 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _reactNative = _require(_dependencyMap[2], "react-native");
 
-  var _redux = _require(_dependencyMap[3], "redux");
+  var _reactRedux = _require(_dependencyMap[3], "react-redux");
 
-  var _reactRedux = _require(_dependencyMap[4], "react-redux");
+  var _creators = _require(_dependencyMap[4], "./actions/creators");
 
-  var _index3 = _require(_dependencyMap[5], "./reducers/index");
+  var _Store = _require(_dependencyMap[5], "./Store");
 
-  var _Routes = _require(_dependencyMap[6], "./containers/Routes");
+  var _Store2 = _interopRequireDefault(_Store);
 
-  var _Routes2 = _interopRequireDefault(_Routes);
+  var _RootNavigator = _require(_dependencyMap[6], "./components/RootNavigator");
+
+  var _RootNavigator2 = _interopRequireDefault(_RootNavigator);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -60204,18 +60206,15 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     };
   }
 
-  var store = (0, _redux.createStore)(_index3.reducer);
+  _Store2.default.dispatch((0, _creators.loadCustomers)());
 
   var App = _wrapComponent("App")(function (_Component) {
     _inherits(App, _Component);
 
-    function App(props) {
+    function App() {
       _classCallCheck(this, App);
 
-      var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
-
-      _this.state = {};
-      return _this;
+      return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
     }
 
     _createClass(App, [{
@@ -60224,16 +60223,16 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         return _react3.default.createElement(
           _reactRedux.Provider,
           {
-            store: store,
+            store: _Store2.default,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 27
+              lineNumber: 23
             }
           },
-          _react3.default.createElement(_Routes2.default, {
+          _react3.default.createElement(_RootNavigator2.default, {
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 28
+              lineNumber: 24
             }
           })
         );
@@ -60244,594 +60243,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = App;
-},490,[111,179,12,491,502,519,530],"app\\App.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  'use strict';
-
-  exports.__esModule = true;
-  exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
-
-  var _createStore = _require(_dependencyMap[0], './createStore');
-
-  var _createStore2 = _interopRequireDefault(_createStore);
-
-  var _combineReducers = _require(_dependencyMap[1], './combineReducers');
-
-  var _combineReducers2 = _interopRequireDefault(_combineReducers);
-
-  var _bindActionCreators = _require(_dependencyMap[2], './bindActionCreators');
-
-  var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
-
-  var _applyMiddleware = _require(_dependencyMap[3], './applyMiddleware');
-
-  var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
-
-  var _compose = _require(_dependencyMap[4], './compose');
-
-  var _compose2 = _interopRequireDefault(_compose);
-
-  var _warning = _require(_dependencyMap[5], './utils/warning');
-
-  var _warning2 = _interopRequireDefault(_warning);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      'default': obj
-    };
-  }
-
-  function isCrushed() {}
-
-  if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-    (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-  }
-
-  exports.createStore = _createStore2['default'];
-  exports.combineReducers = _combineReducers2['default'];
-  exports.bindActionCreators = _bindActionCreators2['default'];
-  exports.applyMiddleware = _applyMiddleware2['default'];
-  exports.compose = _compose2['default'];
-},491,[492,497,499,500,501,498],"node_modules\\redux\\lib\\index.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  'use strict';
-
-  exports.__esModule = true;
-  exports.ActionTypes = undefined;
-  exports['default'] = createStore;
-
-  var _isPlainObject = _require(_dependencyMap[0], 'lodash/isPlainObject');
-
-  var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-
-  var _symbolObservable = _require(_dependencyMap[1], 'symbol-observable');
-
-  var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      'default': obj
-    };
-  }
-
-  var ActionTypes = exports.ActionTypes = {
-    INIT: '@@redux/INIT'
-  };
-
-  function createStore(reducer, preloadedState, enhancer) {
-    var _ref2;
-
-    if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
-      enhancer = preloadedState;
-      preloadedState = undefined;
-    }
-
-    if (typeof enhancer !== 'undefined') {
-      if (typeof enhancer !== 'function') {
-        throw new Error('Expected the enhancer to be a function.');
-      }
-
-      return enhancer(createStore)(reducer, preloadedState);
-    }
-
-    if (typeof reducer !== 'function') {
-      throw new Error('Expected the reducer to be a function.');
-    }
-
-    var currentReducer = reducer;
-    var currentState = preloadedState;
-    var currentListeners = [];
-    var nextListeners = currentListeners;
-    var isDispatching = false;
-
-    function ensureCanMutateNextListeners() {
-      if (nextListeners === currentListeners) {
-        nextListeners = currentListeners.slice();
-      }
-    }
-
-    function getState() {
-      return currentState;
-    }
-
-    function subscribe(listener) {
-      if (typeof listener !== 'function') {
-        throw new Error('Expected listener to be a function.');
-      }
-
-      var isSubscribed = true;
-      ensureCanMutateNextListeners();
-      nextListeners.push(listener);
-      return function unsubscribe() {
-        if (!isSubscribed) {
-          return;
-        }
-
-        isSubscribed = false;
-        ensureCanMutateNextListeners();
-        var index = nextListeners.indexOf(listener);
-        nextListeners.splice(index, 1);
-      };
-    }
-
-    function dispatch(action) {
-      if (!(0, _isPlainObject2['default'])(action)) {
-        throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
-      }
-
-      if (typeof action.type === 'undefined') {
-        throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
-      }
-
-      if (isDispatching) {
-        throw new Error('Reducers may not dispatch actions.');
-      }
-
-      try {
-        isDispatching = true;
-        currentState = currentReducer(currentState, action);
-      } finally {
-        isDispatching = false;
-      }
-
-      var listeners = currentListeners = nextListeners;
-
-      for (var i = 0; i < listeners.length; i++) {
-        var listener = listeners[i];
-        listener();
-      }
-
-      return action;
-    }
-
-    function replaceReducer(nextReducer) {
-      if (typeof nextReducer !== 'function') {
-        throw new Error('Expected the nextReducer to be a function.');
-      }
-
-      currentReducer = nextReducer;
-      dispatch({
-        type: ActionTypes.INIT
-      });
-    }
-
-    function observable() {
-      var _ref;
-
-      var outerSubscribe = subscribe;
-      return _ref = {
-        subscribe: function subscribe(observer) {
-          if (typeof observer !== 'object') {
-            throw new TypeError('Expected the observer to be an object.');
-          }
-
-          function observeState() {
-            if (observer.next) {
-              observer.next(getState());
-            }
-          }
-
-          observeState();
-          var unsubscribe = outerSubscribe(observeState);
-          return {
-            unsubscribe: unsubscribe
-          };
-        }
-      }, _ref[_symbolObservable2['default']] = function () {
-        return this;
-      }, _ref;
-    }
-
-    dispatch({
-      type: ActionTypes.INIT
-    });
-    return _ref2 = {
-      dispatch: dispatch,
-      subscribe: subscribe,
-      getState: getState,
-      replaceReducer: replaceReducer
-    }, _ref2[_symbolObservable2['default']] = observable, _ref2;
-  }
-},492,[493,495],"node_modules\\redux\\lib\\createStore.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  var baseGetTag = _require(_dependencyMap[0], './_baseGetTag'),
-      getPrototype = _require(_dependencyMap[1], './_getPrototype'),
-      isObjectLike = _require(_dependencyMap[2], './isObjectLike');
-
-  var objectTag = '[object Object]';
-  var funcProto = Function.prototype,
-      objectProto = Object.prototype;
-  var funcToString = funcProto.toString;
-  var hasOwnProperty = objectProto.hasOwnProperty;
-  var objectCtorString = funcToString.call(Object);
-
-  function isPlainObject(value) {
-    if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
-      return false;
-    }
-
-    var proto = getPrototype(value);
-
-    if (proto === null) {
-      return true;
-    }
-
-    var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-    return typeof Ctor == 'function' && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
-  }
-
-  module.exports = isPlainObject;
-},493,[206,494,257],"node_modules\\lodash\\isPlainObject.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  var overArg = _require(_dependencyMap[0], './_overArg');
-
-  var getPrototype = overArg(Object.getPrototypeOf, Object);
-  module.exports = getPrototype;
-},494,[269],"node_modules\\lodash\\_getPrototype.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _ponyfill = _require(_dependencyMap[0], './ponyfill.js');
-
-  var _ponyfill2 = _interopRequireDefault(_ponyfill);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      'default': obj
-    };
-  }
-
-  var root;
-
-  if (typeof self !== 'undefined') {
-    root = self;
-  } else if (typeof window !== 'undefined') {
-    root = window;
-  } else if (typeof global !== 'undefined') {
-    root = global;
-  } else if (typeof module !== 'undefined') {
-    root = module;
-  } else {
-    root = Function('return this')();
-  }
-
-  var result = (0, _ponyfill2['default'])(root);
-  exports['default'] = result;
-},495,[496],"node_modules\\symbol-observable\\lib\\index.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports['default'] = symbolObservablePonyfill;
-
-	function symbolObservablePonyfill(root) {
-		var result;
-		var _Symbol = root.Symbol;
-
-		if (typeof _Symbol === 'function') {
-			if (_Symbol.observable) {
-				result = _Symbol.observable;
-			} else {
-				result = _Symbol('observable');
-				_Symbol.observable = result;
-			}
-		} else {
-			result = '@@observable';
-		}
-
-		return result;
-	}
-
-	;
-},496,[],"node_modules\\symbol-observable\\lib\\ponyfill.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  'use strict';
-
-  exports.__esModule = true;
-  exports['default'] = combineReducers;
-
-  var _createStore = _require(_dependencyMap[0], './createStore');
-
-  var _isPlainObject = _require(_dependencyMap[1], 'lodash/isPlainObject');
-
-  var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-
-  var _warning = _require(_dependencyMap[2], './utils/warning');
-
-  var _warning2 = _interopRequireDefault(_warning);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      'default': obj
-    };
-  }
-
-  function getUndefinedStateErrorMessage(key, action) {
-    var actionType = action && action.type;
-    var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
-    return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state. ' + 'If you want this reducer to hold no value, you can return null instead of undefined.';
-  }
-
-  function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
-    var reducerKeys = Object.keys(reducers);
-    var argumentName = action && action.type === _createStore.ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
-
-    if (reducerKeys.length === 0) {
-      return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
-    }
-
-    if (!(0, _isPlainObject2['default'])(inputState)) {
-      return 'The ' + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
-    }
-
-    var unexpectedKeys = Object.keys(inputState).filter(function (key) {
-      return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
-    });
-    unexpectedKeys.forEach(function (key) {
-      unexpectedKeyCache[key] = true;
-    });
-
-    if (unexpectedKeys.length > 0) {
-      return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ') + 'Expected to find one of the known reducer keys instead: ' + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
-    }
-  }
-
-  function assertReducerShape(reducers) {
-    Object.keys(reducers).forEach(function (key) {
-      var reducer = reducers[key];
-      var initialState = reducer(undefined, {
-        type: _createStore.ActionTypes.INIT
-      });
-
-      if (typeof initialState === 'undefined') {
-        throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined. If you don\'t want to set a value for this reducer, ' + 'you can use null instead of undefined.');
-      }
-
-      var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
-
-      if (typeof reducer(undefined, {
-        type: type
-      }) === 'undefined') {
-        throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined, but can be null.');
-      }
-    });
-  }
-
-  function combineReducers(reducers) {
-    var reducerKeys = Object.keys(reducers);
-    var finalReducers = {};
-
-    for (var i = 0; i < reducerKeys.length; i++) {
-      var key = reducerKeys[i];
-
-      if (process.env.NODE_ENV !== 'production') {
-        if (typeof reducers[key] === 'undefined') {
-          (0, _warning2['default'])('No reducer provided for key "' + key + '"');
-        }
-      }
-
-      if (typeof reducers[key] === 'function') {
-        finalReducers[key] = reducers[key];
-      }
-    }
-
-    var finalReducerKeys = Object.keys(finalReducers);
-    var unexpectedKeyCache = void 0;
-
-    if (process.env.NODE_ENV !== 'production') {
-      unexpectedKeyCache = {};
-    }
-
-    var shapeAssertionError = void 0;
-
-    try {
-      assertReducerShape(finalReducers);
-    } catch (e) {
-      shapeAssertionError = e;
-    }
-
-    return function combination() {
-      var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var action = arguments[1];
-
-      if (shapeAssertionError) {
-        throw shapeAssertionError;
-      }
-
-      if (process.env.NODE_ENV !== 'production') {
-        var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
-
-        if (warningMessage) {
-          (0, _warning2['default'])(warningMessage);
-        }
-      }
-
-      var hasChanged = false;
-      var nextState = {};
-
-      for (var _i = 0; _i < finalReducerKeys.length; _i++) {
-        var _key = finalReducerKeys[_i];
-        var reducer = finalReducers[_key];
-        var previousStateForKey = state[_key];
-        var nextStateForKey = reducer(previousStateForKey, action);
-
-        if (typeof nextStateForKey === 'undefined') {
-          var errorMessage = getUndefinedStateErrorMessage(_key, action);
-          throw new Error(errorMessage);
-        }
-
-        nextState[_key] = nextStateForKey;
-        hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
-      }
-
-      return hasChanged ? nextState : state;
-    };
-  }
-},497,[492,493,498],"node_modules\\redux\\lib\\combineReducers.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  'use strict';
-
-  exports.__esModule = true;
-  exports['default'] = warning;
-
-  function warning(message) {
-    if (typeof console !== 'undefined' && typeof console.error === 'function') {
-      console.error(message);
-    }
-
-    try {
-      throw new Error(message);
-    } catch (e) {}
-  }
-},498,[],"node_modules\\redux\\lib\\utils\\warning.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  'use strict';
-
-  exports.__esModule = true;
-  exports['default'] = bindActionCreators;
-
-  function bindActionCreator(actionCreator, dispatch) {
-    return function () {
-      return dispatch(actionCreator.apply(undefined, arguments));
-    };
-  }
-
-  function bindActionCreators(actionCreators, dispatch) {
-    if (typeof actionCreators === 'function') {
-      return bindActionCreator(actionCreators, dispatch);
-    }
-
-    if (typeof actionCreators !== 'object' || actionCreators === null) {
-      throw new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof actionCreators) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
-    }
-
-    var keys = Object.keys(actionCreators);
-    var boundActionCreators = {};
-
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      var actionCreator = actionCreators[key];
-
-      if (typeof actionCreator === 'function') {
-        boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
-      }
-    }
-
-    return boundActionCreators;
-  }
-},499,[],"node_modules\\redux\\lib\\bindActionCreators.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  'use strict';
-
-  exports.__esModule = true;
-
-  var _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  exports['default'] = applyMiddleware;
-
-  var _compose = _require(_dependencyMap[0], './compose');
-
-  var _compose2 = _interopRequireDefault(_compose);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      'default': obj
-    };
-  }
-
-  function applyMiddleware() {
-    for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
-      middlewares[_key] = arguments[_key];
-    }
-
-    return function (createStore) {
-      return function (reducer, preloadedState, enhancer) {
-        var store = createStore(reducer, preloadedState, enhancer);
-        var _dispatch = store.dispatch;
-        var chain = [];
-        var middlewareAPI = {
-          getState: store.getState,
-          dispatch: function dispatch(action) {
-            return _dispatch(action);
-          }
-        };
-        chain = middlewares.map(function (middleware) {
-          return middleware(middlewareAPI);
-        });
-        _dispatch = _compose2['default'].apply(undefined, chain)(store.dispatch);
-        return _extends({}, store, {
-          dispatch: _dispatch
-        });
-      };
-    };
-  }
-},500,[501],"node_modules\\redux\\lib\\applyMiddleware.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  "use strict";
-
-  exports.__esModule = true;
-  exports["default"] = compose;
-
-  function compose() {
-    for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
-      funcs[_key] = arguments[_key];
-    }
-
-    if (funcs.length === 0) {
-      return function (arg) {
-        return arg;
-      };
-    }
-
-    if (funcs.length === 1) {
-      return funcs[0];
-    }
-
-    return funcs.reduce(function (a, b) {
-      return function () {
-        return a(b.apply(undefined, arguments));
-      };
-    });
-  }
-},501,[],"node_modules\\redux\\lib\\compose.js");
+},490,[111,179,12,491,519,528,620],"app\\App.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -60860,7 +60272,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   exports.createProvider = _Provider.createProvider;
   exports.connectAdvanced = _connectAdvanced2.default;
   exports.connect = _connect2.default;
-},502,[503,506,510],"node_modules\\react-redux\\lib\\index.js");
+},491,[492,495,499],"node_modules\\react-redux\\lib\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -60975,7 +60387,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   exports.default = createProvider();
-},503,[111,130,504,505],"node_modules\\react-redux\\lib\\components\\Provider.js");
+},492,[111,130,493,494],"node_modules\\react-redux\\lib\\components\\Provider.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61004,7 +60416,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     dispatch: _propTypes2.default.func.isRequired,
     getState: _propTypes2.default.func.isRequired
   });
-},504,[130],"node_modules\\react-redux\\lib\\utils\\PropTypes.js");
+},493,[130],"node_modules\\react-redux\\lib\\utils\\PropTypes.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61020,7 +60432,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       throw new Error(message);
     } catch (e) {}
   }
-},505,[],"node_modules\\react-redux\\lib\\utils\\warning.js");
+},494,[],"node_modules\\react-redux\\lib\\utils\\warning.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61328,7 +60740,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return (0, _hoistNonReactStatics2.default)(Connect, WrappedComponent);
     };
   }
-},506,[507,508,111,509,504],"node_modules\\react-redux\\lib\\components\\connectAdvanced.js");
+},495,[496,497,111,498,493],"node_modules\\react-redux\\lib\\components\\connectAdvanced.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
     (function (global, factory) {
         typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : global.hoistNonReactStatics = factory();
@@ -61395,7 +60807,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             return targetComponent;
         };
     });
-},507,[],"node_modules\\hoist-non-react-statics\\index.js");
+},496,[],"node_modules\\hoist-non-react-statics\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61426,7 +60838,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   };
 
   module.exports = invariant;
-},508,[],"node_modules\\invariant\\browser.js");
+},497,[],"node_modules\\invariant\\browser.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   "use strict";
 
@@ -61519,7 +60931,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }();
 
   exports.default = Subscription;
-},509,[],"node_modules\\react-redux\\lib\\utils\\Subscription.js");
+},498,[],"node_modules\\react-redux\\lib\\utils\\Subscription.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61647,7 +61059,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   exports.default = createConnect();
-},510,[506,511,512,515,516,517],"node_modules\\react-redux\\lib\\connect\\connect.js");
+},499,[495,500,501,515,516,517],"node_modules\\react-redux\\lib\\connect\\connect.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61682,7 +61094,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return true;
   }
-},511,[],"node_modules\\react-redux\\lib\\utils\\shallowEqual.js");
+},500,[],"node_modules\\react-redux\\lib\\utils\\shallowEqual.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61714,7 +61126,594 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   exports.default = [whenMapDispatchToPropsIsFunction, whenMapDispatchToPropsIsMissing, whenMapDispatchToPropsIsObject];
-},512,[491,513],"node_modules\\react-redux\\lib\\connect\\mapDispatchToProps.js");
+},501,[502,513],"node_modules\\react-redux\\lib\\connect\\mapDispatchToProps.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  exports.__esModule = true;
+  exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
+
+  var _createStore = _require(_dependencyMap[0], './createStore');
+
+  var _createStore2 = _interopRequireDefault(_createStore);
+
+  var _combineReducers = _require(_dependencyMap[1], './combineReducers');
+
+  var _combineReducers2 = _interopRequireDefault(_combineReducers);
+
+  var _bindActionCreators = _require(_dependencyMap[2], './bindActionCreators');
+
+  var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+
+  var _applyMiddleware = _require(_dependencyMap[3], './applyMiddleware');
+
+  var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
+
+  var _compose = _require(_dependencyMap[4], './compose');
+
+  var _compose2 = _interopRequireDefault(_compose);
+
+  var _warning = _require(_dependencyMap[5], './utils/warning');
+
+  var _warning2 = _interopRequireDefault(_warning);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      'default': obj
+    };
+  }
+
+  function isCrushed() {}
+
+  if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+    (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+  }
+
+  exports.createStore = _createStore2['default'];
+  exports.combineReducers = _combineReducers2['default'];
+  exports.bindActionCreators = _bindActionCreators2['default'];
+  exports.applyMiddleware = _applyMiddleware2['default'];
+  exports.compose = _compose2['default'];
+},502,[503,508,510,511,512,509],"node_modules\\redux\\lib\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  exports.__esModule = true;
+  exports.ActionTypes = undefined;
+  exports['default'] = createStore;
+
+  var _isPlainObject = _require(_dependencyMap[0], 'lodash/isPlainObject');
+
+  var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+
+  var _symbolObservable = _require(_dependencyMap[1], 'symbol-observable');
+
+  var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      'default': obj
+    };
+  }
+
+  var ActionTypes = exports.ActionTypes = {
+    INIT: '@@redux/INIT'
+  };
+
+  function createStore(reducer, preloadedState, enhancer) {
+    var _ref2;
+
+    if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
+      enhancer = preloadedState;
+      preloadedState = undefined;
+    }
+
+    if (typeof enhancer !== 'undefined') {
+      if (typeof enhancer !== 'function') {
+        throw new Error('Expected the enhancer to be a function.');
+      }
+
+      return enhancer(createStore)(reducer, preloadedState);
+    }
+
+    if (typeof reducer !== 'function') {
+      throw new Error('Expected the reducer to be a function.');
+    }
+
+    var currentReducer = reducer;
+    var currentState = preloadedState;
+    var currentListeners = [];
+    var nextListeners = currentListeners;
+    var isDispatching = false;
+
+    function ensureCanMutateNextListeners() {
+      if (nextListeners === currentListeners) {
+        nextListeners = currentListeners.slice();
+      }
+    }
+
+    function getState() {
+      return currentState;
+    }
+
+    function subscribe(listener) {
+      if (typeof listener !== 'function') {
+        throw new Error('Expected listener to be a function.');
+      }
+
+      var isSubscribed = true;
+      ensureCanMutateNextListeners();
+      nextListeners.push(listener);
+      return function unsubscribe() {
+        if (!isSubscribed) {
+          return;
+        }
+
+        isSubscribed = false;
+        ensureCanMutateNextListeners();
+        var index = nextListeners.indexOf(listener);
+        nextListeners.splice(index, 1);
+      };
+    }
+
+    function dispatch(action) {
+      if (!(0, _isPlainObject2['default'])(action)) {
+        throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
+      }
+
+      if (typeof action.type === 'undefined') {
+        throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
+      }
+
+      if (isDispatching) {
+        throw new Error('Reducers may not dispatch actions.');
+      }
+
+      try {
+        isDispatching = true;
+        currentState = currentReducer(currentState, action);
+      } finally {
+        isDispatching = false;
+      }
+
+      var listeners = currentListeners = nextListeners;
+
+      for (var i = 0; i < listeners.length; i++) {
+        var listener = listeners[i];
+        listener();
+      }
+
+      return action;
+    }
+
+    function replaceReducer(nextReducer) {
+      if (typeof nextReducer !== 'function') {
+        throw new Error('Expected the nextReducer to be a function.');
+      }
+
+      currentReducer = nextReducer;
+      dispatch({
+        type: ActionTypes.INIT
+      });
+    }
+
+    function observable() {
+      var _ref;
+
+      var outerSubscribe = subscribe;
+      return _ref = {
+        subscribe: function subscribe(observer) {
+          if (typeof observer !== 'object') {
+            throw new TypeError('Expected the observer to be an object.');
+          }
+
+          function observeState() {
+            if (observer.next) {
+              observer.next(getState());
+            }
+          }
+
+          observeState();
+          var unsubscribe = outerSubscribe(observeState);
+          return {
+            unsubscribe: unsubscribe
+          };
+        }
+      }, _ref[_symbolObservable2['default']] = function () {
+        return this;
+      }, _ref;
+    }
+
+    dispatch({
+      type: ActionTypes.INIT
+    });
+    return _ref2 = {
+      dispatch: dispatch,
+      subscribe: subscribe,
+      getState: getState,
+      replaceReducer: replaceReducer
+    }, _ref2[_symbolObservable2['default']] = observable, _ref2;
+  }
+},503,[504,506],"node_modules\\redux\\lib\\createStore.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var baseGetTag = _require(_dependencyMap[0], './_baseGetTag'),
+      getPrototype = _require(_dependencyMap[1], './_getPrototype'),
+      isObjectLike = _require(_dependencyMap[2], './isObjectLike');
+
+  var objectTag = '[object Object]';
+  var funcProto = Function.prototype,
+      objectProto = Object.prototype;
+  var funcToString = funcProto.toString;
+  var hasOwnProperty = objectProto.hasOwnProperty;
+  var objectCtorString = funcToString.call(Object);
+
+  function isPlainObject(value) {
+    if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
+      return false;
+    }
+
+    var proto = getPrototype(value);
+
+    if (proto === null) {
+      return true;
+    }
+
+    var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+    return typeof Ctor == 'function' && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
+  }
+
+  module.exports = isPlainObject;
+},504,[206,505,257],"node_modules\\lodash\\isPlainObject.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var overArg = _require(_dependencyMap[0], './_overArg');
+
+  var getPrototype = overArg(Object.getPrototypeOf, Object);
+  module.exports = getPrototype;
+},505,[269],"node_modules\\lodash\\_getPrototype.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _ponyfill = _require(_dependencyMap[0], './ponyfill.js');
+
+  var _ponyfill2 = _interopRequireDefault(_ponyfill);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      'default': obj
+    };
+  }
+
+  var root;
+
+  if (typeof self !== 'undefined') {
+    root = self;
+  } else if (typeof window !== 'undefined') {
+    root = window;
+  } else if (typeof global !== 'undefined') {
+    root = global;
+  } else if (typeof module !== 'undefined') {
+    root = module;
+  } else {
+    root = Function('return this')();
+  }
+
+  var result = (0, _ponyfill2['default'])(root);
+  exports['default'] = result;
+},506,[507],"node_modules\\symbol-observable\\lib\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports['default'] = symbolObservablePonyfill;
+
+	function symbolObservablePonyfill(root) {
+		var result;
+		var _Symbol = root.Symbol;
+
+		if (typeof _Symbol === 'function') {
+			if (_Symbol.observable) {
+				result = _Symbol.observable;
+			} else {
+				result = _Symbol('observable');
+				_Symbol.observable = result;
+			}
+		} else {
+			result = '@@observable';
+		}
+
+		return result;
+	}
+
+	;
+},507,[],"node_modules\\symbol-observable\\lib\\ponyfill.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  exports.__esModule = true;
+  exports['default'] = combineReducers;
+
+  var _createStore = _require(_dependencyMap[0], './createStore');
+
+  var _isPlainObject = _require(_dependencyMap[1], 'lodash/isPlainObject');
+
+  var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+
+  var _warning = _require(_dependencyMap[2], './utils/warning');
+
+  var _warning2 = _interopRequireDefault(_warning);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      'default': obj
+    };
+  }
+
+  function getUndefinedStateErrorMessage(key, action) {
+    var actionType = action && action.type;
+    var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
+    return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state. ' + 'If you want this reducer to hold no value, you can return null instead of undefined.';
+  }
+
+  function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+    var reducerKeys = Object.keys(reducers);
+    var argumentName = action && action.type === _createStore.ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
+
+    if (reducerKeys.length === 0) {
+      return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
+    }
+
+    if (!(0, _isPlainObject2['default'])(inputState)) {
+      return 'The ' + argumentName + ' has unexpected type of "' + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + '". Expected argument to be an object with the following ' + ('keys: "' + reducerKeys.join('", "') + '"');
+    }
+
+    var unexpectedKeys = Object.keys(inputState).filter(function (key) {
+      return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
+    });
+    unexpectedKeys.forEach(function (key) {
+      unexpectedKeyCache[key] = true;
+    });
+
+    if (unexpectedKeys.length > 0) {
+      return 'Unexpected ' + (unexpectedKeys.length > 1 ? 'keys' : 'key') + ' ' + ('"' + unexpectedKeys.join('", "') + '" found in ' + argumentName + '. ') + 'Expected to find one of the known reducer keys instead: ' + ('"' + reducerKeys.join('", "') + '". Unexpected keys will be ignored.');
+    }
+  }
+
+  function assertReducerShape(reducers) {
+    Object.keys(reducers).forEach(function (key) {
+      var reducer = reducers[key];
+      var initialState = reducer(undefined, {
+        type: _createStore.ActionTypes.INIT
+      });
+
+      if (typeof initialState === 'undefined') {
+        throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined. If you don\'t want to set a value for this reducer, ' + 'you can use null instead of undefined.');
+      }
+
+      var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
+
+      if (typeof reducer(undefined, {
+        type: type
+      }) === 'undefined') {
+        throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined, but can be null.');
+      }
+    });
+  }
+
+  function combineReducers(reducers) {
+    var reducerKeys = Object.keys(reducers);
+    var finalReducers = {};
+
+    for (var i = 0; i < reducerKeys.length; i++) {
+      var key = reducerKeys[i];
+
+      if (process.env.NODE_ENV !== 'production') {
+        if (typeof reducers[key] === 'undefined') {
+          (0, _warning2['default'])('No reducer provided for key "' + key + '"');
+        }
+      }
+
+      if (typeof reducers[key] === 'function') {
+        finalReducers[key] = reducers[key];
+      }
+    }
+
+    var finalReducerKeys = Object.keys(finalReducers);
+    var unexpectedKeyCache = void 0;
+
+    if (process.env.NODE_ENV !== 'production') {
+      unexpectedKeyCache = {};
+    }
+
+    var shapeAssertionError = void 0;
+
+    try {
+      assertReducerShape(finalReducers);
+    } catch (e) {
+      shapeAssertionError = e;
+    }
+
+    return function combination() {
+      var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var action = arguments[1];
+
+      if (shapeAssertionError) {
+        throw shapeAssertionError;
+      }
+
+      if (process.env.NODE_ENV !== 'production') {
+        var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
+
+        if (warningMessage) {
+          (0, _warning2['default'])(warningMessage);
+        }
+      }
+
+      var hasChanged = false;
+      var nextState = {};
+
+      for (var _i = 0; _i < finalReducerKeys.length; _i++) {
+        var _key = finalReducerKeys[_i];
+        var reducer = finalReducers[_key];
+        var previousStateForKey = state[_key];
+        var nextStateForKey = reducer(previousStateForKey, action);
+
+        if (typeof nextStateForKey === 'undefined') {
+          var errorMessage = getUndefinedStateErrorMessage(_key, action);
+          throw new Error(errorMessage);
+        }
+
+        nextState[_key] = nextStateForKey;
+        hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+      }
+
+      return hasChanged ? nextState : state;
+    };
+  }
+},508,[503,504,509],"node_modules\\redux\\lib\\combineReducers.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  exports.__esModule = true;
+  exports['default'] = warning;
+
+  function warning(message) {
+    if (typeof console !== 'undefined' && typeof console.error === 'function') {
+      console.error(message);
+    }
+
+    try {
+      throw new Error(message);
+    } catch (e) {}
+  }
+},509,[],"node_modules\\redux\\lib\\utils\\warning.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  exports.__esModule = true;
+  exports['default'] = bindActionCreators;
+
+  function bindActionCreator(actionCreator, dispatch) {
+    return function () {
+      return dispatch(actionCreator.apply(undefined, arguments));
+    };
+  }
+
+  function bindActionCreators(actionCreators, dispatch) {
+    if (typeof actionCreators === 'function') {
+      return bindActionCreator(actionCreators, dispatch);
+    }
+
+    if (typeof actionCreators !== 'object' || actionCreators === null) {
+      throw new Error('bindActionCreators expected an object or a function, instead received ' + (actionCreators === null ? 'null' : typeof actionCreators) + '. ' + 'Did you write "import ActionCreators from" instead of "import * as ActionCreators from"?');
+    }
+
+    var keys = Object.keys(actionCreators);
+    var boundActionCreators = {};
+
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      var actionCreator = actionCreators[key];
+
+      if (typeof actionCreator === 'function') {
+        boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+      }
+    }
+
+    return boundActionCreators;
+  }
+},510,[],"node_modules\\redux\\lib\\bindActionCreators.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  exports.__esModule = true;
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  exports['default'] = applyMiddleware;
+
+  var _compose = _require(_dependencyMap[0], './compose');
+
+  var _compose2 = _interopRequireDefault(_compose);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      'default': obj
+    };
+  }
+
+  function applyMiddleware() {
+    for (var _len = arguments.length, middlewares = Array(_len), _key = 0; _key < _len; _key++) {
+      middlewares[_key] = arguments[_key];
+    }
+
+    return function (createStore) {
+      return function (reducer, preloadedState, enhancer) {
+        var store = createStore(reducer, preloadedState, enhancer);
+        var _dispatch = store.dispatch;
+        var chain = [];
+        var middlewareAPI = {
+          getState: store.getState,
+          dispatch: function dispatch(action) {
+            return _dispatch(action);
+          }
+        };
+        chain = middlewares.map(function (middleware) {
+          return middleware(middlewareAPI);
+        });
+        _dispatch = _compose2['default'].apply(undefined, chain)(store.dispatch);
+        return _extends({}, store, {
+          dispatch: _dispatch
+        });
+      };
+    };
+  }
+},511,[512],"node_modules\\redux\\lib\\applyMiddleware.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  "use strict";
+
+  exports.__esModule = true;
+  exports["default"] = compose;
+
+  function compose() {
+    for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
+      funcs[_key] = arguments[_key];
+    }
+
+    if (funcs.length === 0) {
+      return function (arg) {
+        return arg;
+      };
+    }
+
+    if (funcs.length === 1) {
+      return funcs[0];
+    }
+
+    return funcs.reduce(function (a, b) {
+      return function () {
+        return a(b.apply(undefined, arguments));
+      };
+    });
+  }
+},512,[],"node_modules\\redux\\lib\\compose.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -61804,7 +61803,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       (0, _warning2.default)(methodName + '() in ' + displayName + ' must return a plain object. Instead received ' + value + '.');
     }
   }
-},514,[493,505],"node_modules\\react-redux\\lib\\utils\\verifyPlainObject.js");
+},514,[504,494],"node_modules\\react-redux\\lib\\utils\\verifyPlainObject.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -62043,332 +62042,96 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     verify(mapDispatchToProps, 'mapDispatchToProps', displayName);
     verify(mergeProps, 'mergeProps', displayName);
   }
-},518,[505],"node_modules\\react-redux\\lib\\connect\\verifySubselectors.js");
+},518,[494],"node_modules\\react-redux\\lib\\connect\\verifySubselectors.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.reducer = undefined;
+  exports.login = exports.setCustomer = exports.loadCustomers = undefined;
 
-  var _orders = _require(_dependencyMap[0], "./orders");
+  var _types = _require(_dependencyMap[0], "./types");
 
-  var _orders2 = _interopRequireDefault(_orders);
+  var _Roles = _require(_dependencyMap[1], "../models/Roles");
 
-  var _categories = _require(_dependencyMap[1], "./categories");
+  var _Roles2 = _interopRequireDefault(_Roles);
 
-  var _categories2 = _interopRequireDefault(_categories);
+  var _CustomerDAO = _require(_dependencyMap[2], "../lib/data/mockremote/CustomerDAO");
 
-  var _products = _require(_dependencyMap[2], "./products");
+  var _CustomerDAO2 = _interopRequireDefault(_CustomerDAO);
 
-  var _products2 = _interopRequireDefault(_products);
+  var _Store = _require(_dependencyMap[3], "../Store");
+
+  var _Store2 = _interopRequireDefault(_Store);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-  var initialState = function initialState() {
+  var loadCustomers = exports.loadCustomers = function loadCustomers() {
+    var customers = _CustomerDAO2.default.fetchAll();
+
     return {
-      orders: (0, _orders.mkOrderState)(),
-      categories: (0, _categories.mkCategoryState)(),
-      products: (0, _products.mkProductState)()
+      type: _types.LOAD_CUSTOMERS,
+      data: customers
     };
   };
 
-  var reducer = exports.reducer = function reducer() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState();
-    var action = arguments[1];
-    var orders = (0, _orders2.default)(state.orders, action);
-    var categories = (0, _categories2.default)(state.categories, action);
-    var products = (0, _categories2.default)(state.products, action);
+  var setCustomer = exports.setCustomer = function setCustomer(customerId) {
     return {
-      orders: orders,
-      categories: categories,
-      products: products
-    };
-  };
-},519,[520,525,614],"app\\reducers\\index.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.mkOrderState = undefined;
-
-  var _types = _require(_dependencyMap[0], "../actions/types");
-
-  var _Order = _require(_dependencyMap[1], "../models/Order");
-
-  var _Order2 = _interopRequireDefault(_Order);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  var mkOrderState = exports.mkOrderState = function mkOrderState() {
-    var order = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new _Order2.default();
-    return {
-      order: order
+      type: _types.SET_CUSTOMER,
+      data: customerId
     };
   };
 
-  function addItemToOrder(order, productId, quantity) {
-    order.addUnits(productId, quantity);
-    return mkOrderState(order);
-  }
+  var login = exports.login = function login(userCredentials) {
+    var customers = _Store2.default.getState().customerReducer.customers;
 
-  function removeItemFromOrder(order, productId) {
-    order.removeUnit(productId);
-    return mkOrderState(order);
-  }
+    var cashiers = customers.filter(function (c) {
+      return c.role === _Roles2.default.CASHIER;
+    });
+    var cashierId = -1;
 
-  var reducer = function reducer() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : mkOrderState();
-    var action = arguments[1];
+    for (var i = 0; i < cashiers.length; i++) {
+      var userName = cashiers[i].userName;
+      var regexp = new RegExp(userName, "i");
 
-    switch (action.type) {
-      case _types.NEW_ORDER:
-        return mkOrderState();
+      if (userCredentials.userName.match(regexp) && userCredentials.password === cashiers[i].hashedPass) {
+        cashierId = cashiers[i].id;
+        break;
+      }
+    }
 
-      case _types.ADD_ITEM_TO_ORDER:
-        return addItemToOrder(state.order, action.data.productId, action.data.quantity);
-
-      case _types.REMOVE_ITEM_FROM_ORDER:
-        return removeItemFromOrder(state.order, action.data.productId);
-
-      default:
-        return state;
+    if (cashierId !== -1) {
+      return {
+        type: _types.LOGIN_SUCCESS,
+        data: cashierId
+      };
+    } else {
+      return {
+        type: _types.LOGIN_ERROR
+      };
     }
   };
-
-  exports.default = reducer;
-},520,[521,522],"app\\reducers\\orders.js");
+},519,[520,521,522,528],"app\\actions\\creators.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  var NEW_ORDER = exports.NEW_ORDER = "NEW_ORDER";
-  var ADD_ITEM_TO_ORDER = exports.ADD_ITEM_TO_ORDER = "ADD_ITEM_TO_ORDER";
-  var REMOVE_ITEM_FROM_ORDER = exports.REMOVE_ITEM_FROM_ORDER = "REMOVE_ITEM_FROM_ORDER";
-  var CONFIRM_ORDER = exports.CONFIRM_ORDER = "CONFIRM_ORDER";
-},521,[],"app\\actions\\types.js");
+  var LOGIN_AT_START = exports.LOGIN_AT_START = "LOGIN_AT_START";
+  var LOGIN_SUCCESS = exports.LOGIN_SUCCESS = "LOGIN_SUCCESS";
+  var LOGIN_ERROR = exports.LOGIN_ERROR = "LOGIN_ERROR";
+  var LOAD_CUSTOMERS = exports.LOAD_CUSTOMERS = "LOAD_CUSTOMERS";
+  var SET_CUSTOMER = exports.SET_CUSTOMER = "SET_CUSTOMER";
+},520,[],"app\\actions\\types.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-
-  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _OrderLine = _require(_dependencyMap[0], "./OrderLine");
-
-  var _OrderLine2 = _interopRequireDefault(_OrderLine);
-
-  var _IllegalAmountError = _require(_dependencyMap[1], "./errors/IllegalAmountError");
-
-  var _IllegalAmountError2 = _interopRequireDefault(_IllegalAmountError);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-  var Order = function () {
-    function Order() {
-      _classCallCheck(this, Order);
-
-      this._orderLines = new Map();
-    }
-
-    _createClass(Order, [{
-      key: "addUnit",
-      value: function addUnit(productId) {
-        if (!this._orderLines.get(productId)) this._addNewOrderline(productId);
-
-        this._orderLines.get(productId).addUnit();
-      }
-    }, {
-      key: "addUnits",
-      value: function addUnits(productId, quantity) {
-        if (!this._orderLines.get(productId)) this._addNewOrderline(productId);
-
-        this._orderLines.get(productId).addUnits(quantity);
-      }
-    }, {
-      key: "removeUnit",
-      value: function removeUnit(productId) {
-        if (this._orderLines.get(productId)) this._orderLines.get(productId).removeUnit();else throw new _IllegalAmountError2.default("No orderline for this productid present in order");
-      }
-    }, {
-      key: "setQuantity",
-      value: function setQuantity(productId, quantity) {
-        if (this.orderLines.get(productId)) this.orderLines.get(productId).quantity = quantity;else {
-          if (this.quantity < 0) throw new _IllegalAmountError2.default("No orderline for this productid present in order");else {
-            this._addNewOrderline(productId);
-
-            this.orderLines.get(productId).quantity = quantity;
-          }
-        }
-      }
-    }, {
-      key: "getQuantity",
-      value: function getQuantity(productId) {
-        if (!this.orderLines.get(productId)) this._addNewOrderline(productId);
-        return this.orderLines.get(productId).quantity;
-      }
-    }, {
-      key: "_addNewOrderline",
-      value: function _addNewOrderline(productId) {
-        this.orderLines.set(productId, new _OrderLine2.default(productId));
-      }
-    }, {
-      key: "orderId",
-      get: function get() {
-        return this._orderId;
-      },
-      set: function set(orderId) {
-        this._orderId = orderId;
-      }
-    }, {
-      key: "orderLines",
-      get: function get() {
-        return this._orderLines;
-      }
-    }, {
-      key: "memberId",
-      get: function get() {
-        return this._memberId;
-      },
-      set: function set(memberId) {
-        this._memberId = memberId;
-      }
-    }]);
-
-    return Order;
-  }();
-
-  exports.default = Order;
-},522,[523,524],"app\\models\\Order.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _IllegalAmountError = _require(_dependencyMap[0], "./errors/IllegalAmountError");
-
-  var _IllegalAmountError2 = _interopRequireDefault(_IllegalAmountError);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-  var OrderLine = function () {
-    function OrderLine(productId) {
-      _classCallCheck(this, OrderLine);
-
-      this._productId = productId;
-      this._quantity = 0;
-    }
-
-    _createClass(OrderLine, [{
-      key: "addUnit",
-      value: function addUnit() {
-        this._quantity++;
-      }
-    }, {
-      key: "addUnits",
-      value: function addUnits(quantity) {
-        if (quantity <= 0) {
-          throw new _IllegalAmountError2.default("Can't add a negative amount or zero");
-        }
-
-        this._quantity += quantity;
-      }
-    }, {
-      key: "removeUnit",
-      value: function removeUnit() {
-        if (this._quantity > 0) this._quantity--;else throw new _IllegalAmountError2.default("Can't remove units from orderline");
-      }
-    }, {
-      key: "productId",
-      get: function get() {
-        return this._productId;
-      }
-    }, {
-      key: "quantity",
-      get: function get() {
-        return this._quantity;
-      },
-      set: function set(quantity) {
-        if (quantity >= 0) this._quantity = quantity;else throw new _IllegalAmountError2.default("Can't set quantity to a negative value");
-      }
-    }]);
-
-    return OrderLine;
-  }();
-
-  exports.default = OrderLine;
-},523,[524],"app\\models\\OrderLine.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-  var IllegalAmountError = function (_Error) {
-    _inherits(IllegalAmountError, _Error);
-
-    function IllegalAmountError(message) {
-      _classCallCheck(this, IllegalAmountError);
-
-      var _this = _possibleConstructorReturn(this, (IllegalAmountError.__proto__ || Object.getPrototypeOf(IllegalAmountError)).call(this, message));
-
-      _this.message = message;
-      _this.name = "IllegalAmountError";
-      return _this;
-    }
-
-    return IllegalAmountError;
-  }(Error);
-
-  exports.default = IllegalAmountError;
-},524,[],"app\\models\\errors\\IllegalAmountError.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.mkCategoryState = undefined;
-
-  var _Category = _require(_dependencyMap[0], "../models/Category");
-
-  var _Category2 = _interopRequireDefault(_Category);
-
-  var _CategoryDAO = _require(_dependencyMap[1], "../lib/data/CategoryDAO");
-
-  var _CategoryDAO2 = _interopRequireDefault(_CategoryDAO);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  var mkCategoryState = exports.mkCategoryState = function mkCategoryState() {
-    var categories = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : fetchAllCategories();
-    return categories;
+  var Roles = {
+    CASHIER: "cashier",
+    MEMBER: "member",
+    EXTERNAL: "external"
   };
-
-  function fetchAllCategories() {
-    return _CategoryDAO2.default.fetchAll();
-  }
-
-  var reducer = function reducer() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : mkCategoryState();
-    var action = arguments[1];
-
-    switch (action.type) {
-      default:
-        return state;
-    }
-  };
-
-  exports.default = reducer;
-},525,[526,527],"app\\reducers\\categories.js");
+  exports.default = Roles;
+},521,[],"app\\models\\Roles.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -62376,93 +62139,70 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  var _data = _require(_dependencyMap[0], "../mockdata/data");
 
-  var Category = function () {
-    function Category(id, name) {
-      _classCallCheck(this, Category);
+  var _Customer = _require(_dependencyMap[1], "../../../models/Customer");
 
-      this._id = id;
-      this._name = name;
-    }
-
-    _createClass(Category, [{
-      key: "id",
-      get: function get() {
-        return this._id;
-      }
-    }, {
-      key: "name",
-      get: function get() {
-        return this._name;
-      }
-    }], [{
-      key: "fromObject",
-      value: function fromObject(obj) {
-        return new Category(obj.id, obj.name);
-      }
-    }]);
-
-    return Category;
-  }();
-
-  exports.default = Category;
-},526,[],"app\\models\\Category.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _MockData = _require(_dependencyMap[0], "./mockdata/MockData");
-
-  var _Category = _require(_dependencyMap[1], "../../models/Category");
-
-  var _Category2 = _interopRequireDefault(_Category);
+  var _Customer2 = _interopRequireDefault(_Customer);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  var CategoryDAO = function () {
-    function CategoryDAO() {
-      _classCallCheck(this, CategoryDAO);
+  var CustomerDAO = function () {
+    function CustomerDAO() {
+      _classCallCheck(this, CustomerDAO);
     }
 
-    _createClass(CategoryDAO, null, [{
+    _createClass(CustomerDAO, null, [{
       key: "fetchAll",
       value: function fetchAll() {
-        return _MockData.MockCategories;
+        return _data.MockCustomers;
       }
     }]);
 
-    return CategoryDAO;
+    return CustomerDAO;
   }();
 
-  exports.default = CategoryDAO;
-},527,[528,526],"app\\lib\\data\\CategoryDAO.js");
+  exports.default = CustomerDAO;
+},522,[523,525],"app\\lib\\data\\mockremote\\CustomerDAO.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.MockProducts = exports.MockCategories = undefined;
+  exports.MockEventSubscriptions = exports.MockCustomers = exports.MockEvents = exports.MockProducts = undefined;
 
   var _Product = _require(_dependencyMap[0], "../../../models/Product");
 
   var _Product2 = _interopRequireDefault(_Product);
 
-  var _Category = _require(_dependencyMap[1], "../../../models/Category");
+  var _Customer = _require(_dependencyMap[1], "../../../models/Customer");
 
-  var _Category2 = _interopRequireDefault(_Category);
+  var _Customer2 = _interopRequireDefault(_Customer);
+
+  var _Event = _require(_dependencyMap[2], "../../../models/Event");
+
+  var _Event2 = _interopRequireDefault(_Event);
+
+  var _EventSubscription = _require(_dependencyMap[3], "../../../models/EventSubscription");
+
+  var _EventSubscription2 = _interopRequireDefault(_EventSubscription);
+
+  var _Roles = _require(_dependencyMap[4], "../../../models/Roles");
+
+  var _Roles2 = _interopRequireDefault(_Roles);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-  var MockCategories = [new _Category2.default(1, "Frisdranken"), new _Category2.default(2, "Warme Dranken"), new _Category2.default(3, "Bieren"), new _Category2.default(4, "Wijnen"), new _Category2.default(5, "Snacks")];
-  var MockProducts = [new _Product2.default(1, "Coca cola", 1.5, "https://www.prikentik.be/media/catalog/product/cache/small_image/400x400/beff4985b56e3afdbeabfc89641a4582/c/o/coca-cola-orginal-fles-20cl_1.png", 1), new _Product2.default(2, "Fanta", 1.5, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/12/74/asset-1391274.jpg", 1), new _Product2.default(3, "Koffie", 1.25, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/87/11/asset-338711.jpg", 2), new _Product2.default(4, "Thee", 1.25, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/60/91/asset-806091.jpg", 2), new _Product2.default(5, "Jupiler", 1.75, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/91/12/asset-1359112.jpg", 3), new _Product2.default(6, "Duvel", 2.0, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/65/68/asset-336568.jpg", 3)];
-  exports.MockCategories = MockCategories;
+  var MockProducts = [new _Product2.default(1, "Coca cola", 1.5, "https://www.prikentik.be/media/catalog/product/cache/small_image/400x400/beff4985b56e3afdbeabfc89641a4582/c/o/coca-cola-orginal-fles-20cl_1.png", 120, 48), new _Product2.default(2, "Fanta", 1.5, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/12/74/asset-1391274.jpg", 120, 48), new _Product2.default(3, "Koffie", 1.25, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/87/11/asset-338711.jpg", 72, 36), new _Product2.default(4, "Thee", 1.25, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/60/91/asset-806091.jpg", 72, 36), new _Product2.default(5, "Jupiler", 1.75, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/91/12/asset-1359112.jpg", 120, 24), new _Product2.default(6, "Duvel", 2.0, "https://colruyt.collectandgo.be/cogo/step/JPG/JPG/200x200/std.lang.all/65/68/asset-336568.jpg", 120, 24)];
+  var MockEvents = [new _Event2.default(1, "Hamlet Repetitie 1", new Date("March 30, 2018"), new Date("March 30, 2018"), null), new _Event2.default(2, "Hamlet Repetitie 2", new Date("April 7, 2018"), new Date("April 7, 2018"), null), new _Event2.default(3, "Mosselfestijn", new Date("April 14, 2018"), new Date("April 14, 2018"), 5.0)];
+  var MockCustomers = [new _Customer2.default(1, "Clooney", "George", _Roles2.default.CASHIER, 10.0, "georgieboy", "Letmein123", "salty"), new _Customer2.default(2, "Depp", "Johnny", _Roles2.default.MEMBER, 20.0, "johnnieboy", "Letmein12", "salty"), new _Customer2.default(3, "Blanchett", "Kate", _Roles2.default.EXTERNAL, 25.0, "katiegirl", "Letmein123", "salty")];
+  var MockEventSubscriptions = [new _EventSubscription2.default(1, 3, 5.0), new _EventSubscription2.default(2, 3, 5.0), new _EventSubscription2.default(3, 3, 5.0)];
   exports.MockProducts = MockProducts;
-},528,[529,526],"app\\lib\\data\\mockdata\\MockData.js");
+  exports.MockEvents = MockEvents;
+  exports.MockCustomers = MockCustomers;
+  exports.MockEventSubscriptions = MockEventSubscriptions;
+},523,[524,525,526,527,521],"app\\lib\\data\\mockdata\\data.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -62473,14 +62213,15 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   var Product = function () {
-    function Product(id, name, price, imageUri, categoryId) {
+    function Product(id, name, price, imageUri, inStock, criticalStock) {
       _classCallCheck(this, Product);
 
       this._id = id;
       this._name = name;
       this._price = price;
       this._imageUri = imageUri;
-      this._categoryId = categoryId;
+      this._inStock = inStock;
+      this._criticalStock = criticalStock;
     }
 
     _createClass(Product, [{
@@ -62504,9 +62245,17 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         return this._imageUri;
       }
     }, {
-      key: "categoryId",
+      key: "inStock",
       get: function get() {
-        return this._categoryId;
+        return this._inStock;
+      },
+      set: function set(inStock) {
+        this._inStock = inStock;
+      }
+    }, {
+      key: "criticalStock",
+      get: function get() {
+        return this._criticalStock;
       }
     }]);
 
@@ -62514,150 +62263,1080 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }();
 
   exports.default = Product;
-},529,[],"app\\models\\Product.js");
+},524,[],"app\\models\\Product.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
-  var _react2 = _require(_dependencyMap[0], "react");
-
-  var _react3 = _interopRequireDefault(_react2);
-
-  var _index = _require(_dependencyMap[1], "./../../node_modules/react-transform-hmr/lib/index.js");
-
-  var _index2 = _interopRequireDefault(_index);
-
-  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\containers\\Routes.js";
-
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _reactNative = _require(_dependencyMap[2], "react-native");
-
-  var _reactNavigation = _require(_dependencyMap[3], "react-navigation");
-
-  var _LoginScreen = _require(_dependencyMap[4], "./LoginScreen");
-
-  var _LoginScreen2 = _interopRequireDefault(_LoginScreen);
-
-  var _ChooseEventScreen = _require(_dependencyMap[5], "./ChooseEventScreen");
-
-  var _ChooseEventScreen2 = _interopRequireDefault(_ChooseEventScreen);
-
-  var _CategoryScreen = _require(_dependencyMap[6], "./CategoryScreen");
-
-  var _CategoryScreen2 = _interopRequireDefault(_CategoryScreen);
-
-  var _CategoryDAO = _require(_dependencyMap[7], "../lib/data/CategoryDAO");
-
-  var _CategoryDAO2 = _interopRequireDefault(_CategoryDAO);
-
-  var _Category = _require(_dependencyMap[8], "../models/Category");
-
-  var _Category2 = _interopRequireDefault(_Category);
-
-  var _reactRedux = _require(_dependencyMap[9], "react-redux");
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+  var Customer = function () {
+    function Customer(id, lastName, firstName, role, creditBalance, userName, hashedPass, salt) {
+      _classCallCheck(this, Customer);
 
-  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-  var _components = {
-    Routes: {
-      displayName: "Routes"
-    }
-  };
-
-  var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
-    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/app/containers/Routes.js",
-    components: _components,
-    locals: [module],
-    imports: [_react3.default]
-  });
-
-  function _wrapComponent(id) {
-    return function (Component) {
-      return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
-    };
-  }
-
-  var Routes = _wrapComponent("Routes")(function (_Component) {
-    _inherits(Routes, _Component);
-
-    function Routes(props) {
-      _classCallCheck(this, Routes);
-
-      return _possibleConstructorReturn(this, (Routes.__proto__ || Object.getPrototypeOf(Routes)).call(this, props));
+      this._id = id;
+      this._lastName = lastName;
+      this._firstName = firstName;
+      this._role = role;
+      this._creditBalance = creditBalance;
+      this._userName = userName;
+      this._hashedPass = hashedPass;
+      this._salt = salt;
     }
 
-    _createClass(Routes, [{
-      key: "render",
-      value: function render() {
-        var screens = {};
-        this.props.categories.forEach(function (category) {
-          screens[category.name] = {
-            screen: function screen(props) {
-              return _react3.default.createElement(_CategoryScreen2.default, _extends({}, props, {
-                category: category,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 37
-                }
-              }));
-            }
-          };
-        });
-        var CategoryTabs = (0, _reactNavigation.TabNavigator)(screens, {
-          tabBarPosition: "bottom",
-          animationEnabled: true,
-          tabBarComponent: _reactNavigation.TabBarTop,
-          tabBarOptions: {
-            scrollEnabled: true
-          }
-        });
-        var RootStack = (0, _reactNavigation.StackNavigator)({
-          Login: {
-            screen: _LoginScreen2.default
-          },
-          ChooseEvent: {
-            screen: _ChooseEventScreen2.default
-          },
-          OrderScreen: {
-            screen: CategoryTabs
-          }
-        }, {
-          initialRouteName: "OrderScreen"
-        });
-        return _react3.default.createElement(RootStack, {
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 68
-          }
-        });
+    _createClass(Customer, [{
+      key: "toString",
+      value: function toString() {
+        return this._lastName + " " + this._firstName;
+      }
+    }, {
+      key: "id",
+      get: function get() {
+        return this._id;
+      }
+    }, {
+      key: "lastName",
+      get: function get() {
+        return this._lastName;
+      }
+    }, {
+      key: "firstName",
+      get: function get() {
+        return this._firstName;
+      }
+    }, {
+      key: "role",
+      get: function get() {
+        return this._role;
+      }
+    }, {
+      key: "creditBalance",
+      get: function get() {
+        return this._creditBalance;
+      },
+      set: function set(creditBalance) {
+        this._creditBalance = creditBalance;
+      }
+    }, {
+      key: "userName",
+      get: function get() {
+        return this._userName;
+      }
+    }, {
+      key: "hashedPass",
+      get: function get() {
+        return this._hashedPass;
+      }
+    }, {
+      key: "salt",
+      get: function get() {
+        return this._salt;
       }
     }]);
 
-    return Routes;
-  }(_react2.Component));
+    return Customer;
+  }();
 
-  var mapStateToProps = function mapStateToProps(state) {
-    return {
-      categories: state.categories
+  exports.default = Customer;
+},525,[],"app\\models\\Customer.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  var Event = function () {
+    function Event(id, name, fromDate, toDate, subscriptionFee) {
+      _classCallCheck(this, Event);
+
+      this._id = id;
+      this._name = name;
+      this._fromDate = fromDate;
+      this._toDate = toDate;
+      this._subscriptionFee = subscriptionFee;
+    }
+
+    _createClass(Event, [{
+      key: "id",
+      get: function get() {
+        return this._id;
+      }
+    }, {
+      key: "name",
+      get: function get() {
+        return this._name;
+      }
+    }, {
+      key: "fromDate",
+      get: function get() {
+        return this._fromDate;
+      }
+    }, {
+      key: "toDate",
+      get: function get() {
+        return this._toDate;
+      }
+    }, {
+      key: "subscriptionFee",
+      get: function get() {
+        return this._subscriptionFee;
+      }
+    }]);
+
+    return Event;
+  }();
+
+  exports.default = Event;
+},526,[],"app\\models\\Event.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  var EventSubscription = function () {
+    function EventSubscription(customerId, eventId, remainingCredit) {
+      _classCallCheck(this, EventSubscription);
+
+      this._customerId = customerId;
+      this._eventId = eventId;
+      this._remainingCredit = remainingCredit;
+    }
+
+    _createClass(EventSubscription, [{
+      key: "customerId",
+      get: function get() {
+        return this._customerId;
+      }
+    }, {
+      key: "eventId",
+      get: function get() {
+        return this._eventId;
+      }
+    }, {
+      key: "remainingCredit",
+      get: function get() {
+        return this._remainingCredit;
+      },
+      set: function set(remainingCredit) {
+        this._remainingCredit = remainingCredit;
+      }
+    }]);
+
+    return EventSubscription;
+  }();
+
+  exports.default = EventSubscription;
+},527,[],"app\\models\\EventSubscription.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _redux = _require(_dependencyMap[0], "redux");
+
+  var _reduxThunk = _require(_dependencyMap[1], "redux-thunk");
+
+  var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
+  var _reduxLogger = _require(_dependencyMap[2], "redux-logger");
+
+  var _index = _require(_dependencyMap[3], "./reducers/index");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _reactNavigationReduxHelpers = _require(_dependencyMap[4], "react-navigation-redux-helpers");
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var loggerMiddleWare = (0, _reduxLogger.createLogger)();
+  var Store = (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleWare));
+  exports.default = Store;
+},528,[502,529,530,531,615],"app\\Store.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  'use strict';
+
+  exports.__esModule = true;
+
+  function createThunkMiddleware(extraArgument) {
+    return function (_ref) {
+      var dispatch = _ref.dispatch,
+          getState = _ref.getState;
+      return function (next) {
+        return function (action) {
+          if (typeof action === 'function') {
+            return action(dispatch, getState, extraArgument);
+          }
+
+          return next(action);
+        };
+      };
     };
+  }
+
+  var thunk = createThunkMiddleware();
+  thunk.withExtraArgument = createThunkMiddleware;
+  exports['default'] = thunk;
+},529,[],"node_modules\\redux-thunk\\lib\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  !function (e, t) {
+    "object" == typeof exports && "undefined" != typeof module ? t(exports) : "function" == typeof define && define.amd ? define(["exports"], t) : t(e.reduxLogger = e.reduxLogger || {});
+  }(this, function (e) {
+    "use strict";
+
+    function t(e, t) {
+      e.super_ = t, e.prototype = Object.create(t.prototype, {
+        constructor: {
+          value: e,
+          enumerable: !1,
+          writable: !0,
+          configurable: !0
+        }
+      });
+    }
+
+    function r(e, t) {
+      Object.defineProperty(this, "kind", {
+        value: e,
+        enumerable: !0
+      }), t && t.length && Object.defineProperty(this, "path", {
+        value: t,
+        enumerable: !0
+      });
+    }
+
+    function n(e, t, r) {
+      n.super_.call(this, "E", e), Object.defineProperty(this, "lhs", {
+        value: t,
+        enumerable: !0
+      }), Object.defineProperty(this, "rhs", {
+        value: r,
+        enumerable: !0
+      });
+    }
+
+    function o(e, t) {
+      o.super_.call(this, "N", e), Object.defineProperty(this, "rhs", {
+        value: t,
+        enumerable: !0
+      });
+    }
+
+    function i(e, t) {
+      i.super_.call(this, "D", e), Object.defineProperty(this, "lhs", {
+        value: t,
+        enumerable: !0
+      });
+    }
+
+    function a(e, t, r) {
+      a.super_.call(this, "A", e), Object.defineProperty(this, "index", {
+        value: t,
+        enumerable: !0
+      }), Object.defineProperty(this, "item", {
+        value: r,
+        enumerable: !0
+      });
+    }
+
+    function f(e, t, r) {
+      var n = e.slice((r || t) + 1 || e.length);
+      return e.length = t < 0 ? e.length + t : t, e.push.apply(e, n), e;
+    }
+
+    function u(e) {
+      var t = "undefined" == typeof e ? "undefined" : N(e);
+      return "object" !== t ? t : e === Math ? "math" : null === e ? "null" : Array.isArray(e) ? "array" : "[object Date]" === Object.prototype.toString.call(e) ? "date" : "function" == typeof e.toString && /^\/.*\//.test(e.toString()) ? "regexp" : "object";
+    }
+
+    function l(e, t, r, c, s, d, p) {
+      s = s || [], p = p || [];
+      var g = s.slice(0);
+
+      if ("undefined" != typeof d) {
+        if (c) {
+          if ("function" == typeof c && c(g, d)) return;
+
+          if ("object" === ("undefined" == typeof c ? "undefined" : N(c))) {
+            if (c.prefilter && c.prefilter(g, d)) return;
+
+            if (c.normalize) {
+              var h = c.normalize(g, d, e, t);
+              h && (e = h[0], t = h[1]);
+            }
+          }
+        }
+
+        g.push(d);
+      }
+
+      "regexp" === u(e) && "regexp" === u(t) && (e = e.toString(), t = t.toString());
+      var y = "undefined" == typeof e ? "undefined" : N(e),
+          v = "undefined" == typeof t ? "undefined" : N(t),
+          b = "undefined" !== y || p && p[p.length - 1].lhs && p[p.length - 1].lhs.hasOwnProperty(d),
+          m = "undefined" !== v || p && p[p.length - 1].rhs && p[p.length - 1].rhs.hasOwnProperty(d);
+      if (!b && m) r(new o(g, t));else if (!m && b) r(new i(g, e));else if (u(e) !== u(t)) r(new n(g, e, t));else if ("date" === u(e) && e - t !== 0) r(new n(g, e, t));else if ("object" === y && null !== e && null !== t) {
+        if (p.filter(function (t) {
+          return t.lhs === e;
+        }).length) e !== t && r(new n(g, e, t));else {
+          if (p.push({
+            lhs: e,
+            rhs: t
+          }), Array.isArray(e)) {
+            var w;
+            e.length;
+
+            for (w = 0; w < e.length; w++) {
+              w >= t.length ? r(new a(g, w, new i(void 0, e[w]))) : l(e[w], t[w], r, c, g, w, p);
+            }
+
+            for (; w < t.length;) {
+              r(new a(g, w, new o(void 0, t[w++])));
+            }
+          } else {
+            var x = Object.keys(e),
+                S = Object.keys(t);
+            x.forEach(function (n, o) {
+              var i = S.indexOf(n);
+              i >= 0 ? (l(e[n], t[n], r, c, g, n, p), S = f(S, i)) : l(e[n], void 0, r, c, g, n, p);
+            }), S.forEach(function (e) {
+              l(void 0, t[e], r, c, g, e, p);
+            });
+          }
+
+          p.length = p.length - 1;
+        }
+      } else e !== t && ("number" === y && isNaN(e) && isNaN(t) || r(new n(g, e, t)));
+    }
+
+    function c(e, t, r, n) {
+      return n = n || [], l(e, t, function (e) {
+        e && n.push(e);
+      }, r), n.length ? n : void 0;
+    }
+
+    function s(e, t, r) {
+      if (r.path && r.path.length) {
+        var n,
+            o = e[t],
+            i = r.path.length - 1;
+
+        for (n = 0; n < i; n++) {
+          o = o[r.path[n]];
+        }
+
+        switch (r.kind) {
+          case "A":
+            s(o[r.path[n]], r.index, r.item);
+            break;
+
+          case "D":
+            delete o[r.path[n]];
+            break;
+
+          case "E":
+          case "N":
+            o[r.path[n]] = r.rhs;
+        }
+      } else switch (r.kind) {
+        case "A":
+          s(e[t], r.index, r.item);
+          break;
+
+        case "D":
+          e = f(e, t);
+          break;
+
+        case "E":
+        case "N":
+          e[t] = r.rhs;
+      }
+
+      return e;
+    }
+
+    function d(e, t, r) {
+      if (e && t && r && r.kind) {
+        for (var n = e, o = -1, i = r.path ? r.path.length - 1 : 0; ++o < i;) {
+          "undefined" == typeof n[r.path[o]] && (n[r.path[o]] = "number" == typeof r.path[o] ? [] : {}), n = n[r.path[o]];
+        }
+
+        switch (r.kind) {
+          case "A":
+            s(r.path ? n[r.path[o]] : n, r.index, r.item);
+            break;
+
+          case "D":
+            delete n[r.path[o]];
+            break;
+
+          case "E":
+          case "N":
+            n[r.path[o]] = r.rhs;
+        }
+      }
+    }
+
+    function p(e, t, r) {
+      if (r.path && r.path.length) {
+        var n,
+            o = e[t],
+            i = r.path.length - 1;
+
+        for (n = 0; n < i; n++) {
+          o = o[r.path[n]];
+        }
+
+        switch (r.kind) {
+          case "A":
+            p(o[r.path[n]], r.index, r.item);
+            break;
+
+          case "D":
+            o[r.path[n]] = r.lhs;
+            break;
+
+          case "E":
+            o[r.path[n]] = r.lhs;
+            break;
+
+          case "N":
+            delete o[r.path[n]];
+        }
+      } else switch (r.kind) {
+        case "A":
+          p(e[t], r.index, r.item);
+          break;
+
+        case "D":
+          e[t] = r.lhs;
+          break;
+
+        case "E":
+          e[t] = r.lhs;
+          break;
+
+        case "N":
+          e = f(e, t);
+      }
+
+      return e;
+    }
+
+    function g(e, t, r) {
+      if (e && t && r && r.kind) {
+        var n,
+            o,
+            i = e;
+
+        for (o = r.path.length - 1, n = 0; n < o; n++) {
+          "undefined" == typeof i[r.path[n]] && (i[r.path[n]] = {}), i = i[r.path[n]];
+        }
+
+        switch (r.kind) {
+          case "A":
+            p(i[r.path[n]], r.index, r.item);
+            break;
+
+          case "D":
+            i[r.path[n]] = r.lhs;
+            break;
+
+          case "E":
+            i[r.path[n]] = r.lhs;
+            break;
+
+          case "N":
+            delete i[r.path[n]];
+        }
+      }
+    }
+
+    function h(e, t, r) {
+      if (e && t) {
+        var n = function n(_n) {
+          r && !r(e, t, _n) || d(e, t, _n);
+        };
+
+        l(e, t, n);
+      }
+    }
+
+    function y(e) {
+      return "color: " + F[e].color + "; font-weight: bold";
+    }
+
+    function v(e) {
+      var t = e.kind,
+          r = e.path,
+          n = e.lhs,
+          o = e.rhs,
+          i = e.index,
+          a = e.item;
+
+      switch (t) {
+        case "E":
+          return [r.join("."), n, "→", o];
+
+        case "N":
+          return [r.join("."), o];
+
+        case "D":
+          return [r.join(".")];
+
+        case "A":
+          return [r.join(".") + "[" + i + "]", a];
+
+        default:
+          return [];
+      }
+    }
+
+    function b(e, t, r, n) {
+      var o = c(e, t);
+
+      try {
+        n ? r.groupCollapsed("diff") : r.group("diff");
+      } catch (e) {
+        r.log("diff");
+      }
+
+      o ? o.forEach(function (e) {
+        var t = e.kind,
+            n = v(e);
+        r.log.apply(r, ["%c " + F[t].text, y(t)].concat(P(n)));
+      }) : r.log("—— no diff ——");
+
+      try {
+        r.groupEnd();
+      } catch (e) {
+        r.log("—— diff end —— ");
+      }
+    }
+
+    function m(e, t, r, n) {
+      switch ("undefined" == typeof e ? "undefined" : N(e)) {
+        case "object":
+          return "function" == typeof e[n] ? e[n].apply(e, P(r)) : e[n];
+
+        case "function":
+          return e(t);
+
+        default:
+          return e;
+      }
+    }
+
+    function w(e) {
+      var t = e.timestamp,
+          r = e.duration;
+      return function (e, n, o) {
+        var i = ["action"];
+        return i.push("%c" + String(e.type)), t && i.push("%c@ " + n), r && i.push("%c(in " + o.toFixed(2) + " ms)"), i.join(" ");
+      };
+    }
+
+    function x(e, t) {
+      var r = t.logger,
+          n = t.actionTransformer,
+          o = t.titleFormatter,
+          i = void 0 === o ? w(t) : o,
+          a = t.collapsed,
+          f = t.colors,
+          u = t.level,
+          l = t.diff,
+          c = "undefined" == typeof t.titleFormatter;
+      e.forEach(function (o, s) {
+        var d = o.started,
+            p = o.startedTime,
+            g = o.action,
+            h = o.prevState,
+            y = o.error,
+            v = o.took,
+            w = o.nextState,
+            x = e[s + 1];
+        x && (w = x.prevState, v = x.started - d);
+        var S = n(g),
+            k = "function" == typeof a ? a(function () {
+          return w;
+        }, g, o) : a,
+            j = D(p),
+            E = f.title ? "color: " + f.title(S) + ";" : "",
+            A = ["color: gray; font-weight: lighter;"];
+        A.push(E), t.timestamp && A.push("color: gray; font-weight: lighter;"), t.duration && A.push("color: gray; font-weight: lighter;");
+        var O = i(S, j, v);
+
+        try {
+          k ? f.title && c ? r.groupCollapsed.apply(r, ["%c " + O].concat(A)) : r.groupCollapsed(O) : f.title && c ? r.group.apply(r, ["%c " + O].concat(A)) : r.group(O);
+        } catch (e) {
+          r.log(O);
+        }
+
+        var N = m(u, S, [h], "prevState"),
+            P = m(u, S, [S], "action"),
+            C = m(u, S, [y, h], "error"),
+            F = m(u, S, [w], "nextState");
+        if (N) if (f.prevState) {
+          var L = "color: " + f.prevState(h) + "; font-weight: bold";
+          r[N]("%c prev state", L, h);
+        } else r[N]("prev state", h);
+        if (P) if (f.action) {
+          var T = "color: " + f.action(S) + "; font-weight: bold";
+          r[P]("%c action    ", T, S);
+        } else r[P]("action    ", S);
+        if (y && C) if (f.error) {
+          var M = "color: " + f.error(y, h) + "; font-weight: bold;";
+          r[C]("%c error     ", M, y);
+        } else r[C]("error     ", y);
+        if (F) if (f.nextState) {
+          var _ = "color: " + f.nextState(w) + "; font-weight: bold";
+
+          r[F]("%c next state", _, w);
+        } else r[F]("next state", w);
+        l && b(h, w, r, k);
+
+        try {
+          r.groupEnd();
+        } catch (e) {
+          r.log("—— log end ——");
+        }
+      });
+    }
+
+    function S() {
+      var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+          t = _extends({}, L, e),
+          r = t.logger,
+          n = t.stateTransformer,
+          o = t.errorTransformer,
+          i = t.predicate,
+          a = t.logErrors,
+          f = t.diffPredicate;
+
+      if ("undefined" == typeof r) return function () {
+        return function (e) {
+          return function (t) {
+            return e(t);
+          };
+        };
+      };
+      if (e.getState && e.dispatch) return console.error("[redux-logger] redux-logger not installed. Make sure to pass logger instance as middleware:\n// Logger with default options\nimport { logger } from 'redux-logger'\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n// Or you can create your own logger with custom options http://bit.ly/redux-logger-options\nimport createLogger from 'redux-logger'\nconst logger = createLogger({\n  // ...options\n});\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n"), function () {
+        return function (e) {
+          return function (t) {
+            return e(t);
+          };
+        };
+      };
+      var u = [];
+      return function (e) {
+        var r = e.getState;
+        return function (e) {
+          return function (l) {
+            if ("function" == typeof i && !i(r, l)) return e(l);
+            var c = {};
+            u.push(c), c.started = O.now(), c.startedTime = new Date(), c.prevState = n(r()), c.action = l;
+            var s = void 0;
+            if (a) try {
+              s = e(l);
+            } catch (e) {
+              c.error = o(e);
+            } else s = e(l);
+            c.took = O.now() - c.started, c.nextState = n(r());
+            var d = t.diff && "function" == typeof f ? f(r, l) : t.diff;
+            if (x(u, _extends({}, t, {
+              diff: d
+            })), u.length = 0, c.error) throw c.error;
+            return s;
+          };
+        };
+      };
+    }
+
+    var k,
+        j,
+        E = function E(e, t) {
+      return new Array(t + 1).join(e);
+    },
+        A = function A(e, t) {
+      return E("0", t - e.toString().length) + e;
+    },
+        D = function D(e) {
+      return A(e.getHours(), 2) + ":" + A(e.getMinutes(), 2) + ":" + A(e.getSeconds(), 2) + "." + A(e.getMilliseconds(), 3);
+    },
+        O = "undefined" != typeof performance && null !== performance && "function" == typeof performance.now ? performance : Date,
+        N = "function" == typeof Symbol && "symbol" == typeof (typeof Symbol === "function" ? Symbol.iterator : "@@iterator") ? function (e) {
+      return typeof e;
+    } : function (e) {
+      return e && "function" == typeof Symbol && e.constructor === Symbol && e !== (typeof Symbol === "function" ? Symbol.prototype : "@@prototype") ? "symbol" : typeof e;
+    },
+        P = function P(e) {
+      if (Array.isArray(e)) {
+        for (var t = 0, r = Array(e.length); t < e.length; t++) {
+          r[t] = e[t];
+        }
+
+        return r;
+      }
+
+      return Array.from(e);
+    },
+        C = [];
+
+    k = "object" === ("undefined" == typeof global ? "undefined" : N(global)) && global ? global : "undefined" != typeof window ? window : {}, j = k.DeepDiff, j && C.push(function () {
+      "undefined" != typeof j && k.DeepDiff === c && (k.DeepDiff = j, j = void 0);
+    }), t(n, r), t(o, r), t(i, r), t(a, r), Object.defineProperties(c, {
+      diff: {
+        value: c,
+        enumerable: !0
+      },
+      observableDiff: {
+        value: l,
+        enumerable: !0
+      },
+      applyDiff: {
+        value: h,
+        enumerable: !0
+      },
+      applyChange: {
+        value: d,
+        enumerable: !0
+      },
+      revertChange: {
+        value: g,
+        enumerable: !0
+      },
+      isConflict: {
+        value: function value() {
+          return "undefined" != typeof j;
+        },
+        enumerable: !0
+      },
+      noConflict: {
+        value: function value() {
+          return C && (C.forEach(function (e) {
+            e();
+          }), C = null), c;
+        },
+        enumerable: !0
+      }
+    });
+
+    var F = {
+      E: {
+        color: "#2196F3",
+        text: "CHANGED:"
+      },
+      N: {
+        color: "#4CAF50",
+        text: "ADDED:"
+      },
+      D: {
+        color: "#F44336",
+        text: "DELETED:"
+      },
+      A: {
+        color: "#2196F3",
+        text: "ARRAY:"
+      }
+    },
+        L = {
+      level: "log",
+      logger: console,
+      logErrors: !0,
+      collapsed: void 0,
+      predicate: void 0,
+      duration: !1,
+      timestamp: !0,
+      stateTransformer: function stateTransformer(e) {
+        return e;
+      },
+      actionTransformer: function actionTransformer(e) {
+        return e;
+      },
+      errorTransformer: function errorTransformer(e) {
+        return e;
+      },
+      colors: {
+        title: function title() {
+          return "inherit";
+        },
+        prevState: function prevState() {
+          return "#9E9E9E";
+        },
+        action: function action() {
+          return "#03A9F4";
+        },
+        nextState: function nextState() {
+          return "#4CAF50";
+        },
+        error: function error() {
+          return "#F20404";
+        }
+      },
+      diff: !1,
+      diffPredicate: void 0,
+      transformer: void 0
+    },
+        T = function T() {
+      var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+          t = e.dispatch,
+          r = e.getState;
+      return "function" == typeof t || "function" == typeof r ? S()({
+        dispatch: t,
+        getState: r
+      }) : void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n");
+    };
+
+    e.defaults = L, e.createLogger = S, e.logger = T, e.default = T, Object.defineProperty(e, "__esModule", {
+      value: !0
+    });
+  });
+},530,[],"node_modules\\redux-logger\\dist\\redux-logger.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _redux = _require(_dependencyMap[0], "redux");
+
+  var _customers = _require(_dependencyMap[1], "./customers");
+
+  var _customers2 = _interopRequireDefault(_customers);
+
+  var _cashiers = _require(_dependencyMap[2], "./cashiers");
+
+  var _cashiers2 = _interopRequireDefault(_cashiers);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var reducer = (0, _redux.combineReducers)({
+    customerReducer: _customers2.default,
+    cashierReducer: _cashiers2.default
+  });
+  exports.default = reducer;
+},531,[502,532,533],"app\\reducers\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  var _types = _require(_dependencyMap[0], "../actions/types");
+
+  var initialState = {
+    customers: [],
+    customerId: -1
   };
 
-  var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {};
+  var reducer = function reducer() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+    var action = arguments[1];
+
+    switch (action.type) {
+      case _types.LOAD_CUSTOMERS:
+        return _extends({}, state, {
+          customers: action.data
+        });
+
+      case _types.SET_CUSTOMER:
+        return _extends({}, state, {
+          customerId: action.data
+        });
+
+      default:
+        return state;
+    }
   };
 
-  exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Routes);
-},530,[111,179,12,531,604,606,607,527,526,502],"app\\containers\\Routes.js");
+  exports.default = reducer;
+},532,[520],"app\\reducers\\customers.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  var _types = _require(_dependencyMap[0], "../actions/types");
+
+  var initialState = {
+    cashierId: -1,
+    errorMessage: ""
+  };
+
+  var reducer = function reducer() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+    var action = arguments[1];
+
+    switch (action.type) {
+      case _types.LOGIN_SUCCESS:
+        return _extends({}, state, {
+          cashierId: action.data,
+          errorMessage: ""
+        });
+
+      case _types.LOGIN_ERROR:
+        return _extends({}, state, {
+          cashierId: -1,
+          errorMessage: "Ongeldig(e) wachtwoord en/of gebruikersnaam"
+        });
+
+      default:
+        return state;
+    }
+  };
+
+  exports.default = reducer;
+},533,[520],"app\\reducers\\cashiers.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.createNavigationReducer = undefined;
+
+  var _types = _require(_dependencyMap[0], "./types");
+
+  Object.keys(_types).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _types[key];
+      }
+    });
+  });
+
+  var _middleware = _require(_dependencyMap[1], "./middleware");
+
+  Object.keys(_middleware).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _middleware[key];
+      }
+    });
+  });
+
+  var _reducer = _require(_dependencyMap[2], "./reducer");
+
+  exports.createNavigationReducer = _reducer.createNavigationReducer;
+},615,[616,617,618],"node_modules\\react-navigation-redux-helpers\\src\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {},616,[],"node_modules\\react-navigation-redux-helpers\\src\\types.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.initializeListeners = exports.createReduxBoundAddListener = exports.createReactNavigationReduxMiddleware = undefined;
+
+  var _invariant = _require(_dependencyMap[0], "invariant");
+
+  var _invariant2 = _interopRequireDefault(_invariant);
+
+  var _reducer = _require(_dependencyMap[1], "./reducer");
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var reduxSubscribers = new Map();
+
+  function createReactNavigationReduxMiddleware(key, navStateSelector) {
+    reduxSubscribers.set(key, new Set());
+    return function (store) {
+      return function (next) {
+        return function (action) {
+          var oldState = store.getState();
+          var result = next(action);
+          var newState = store.getState();
+          var subscribers = reduxSubscribers.get(key);
+          (0, _invariant2.default)(subscribers, "subscribers set should exist for " + key);
+          triggerAllSubscribers(subscribers, {
+            type: 'action',
+            action: action,
+            state: navStateSelector(newState),
+            lastState: navStateSelector(oldState)
+          });
+          return result;
+        };
+      };
+    };
+  }
+
+  function triggerAllSubscribers(subscribers, payload) {
+    subscribers.forEach(function (subscriber) {
+      return subscriber(payload);
+    });
+  }
+
+  function createReduxBoundAddListener(key) {
+    (0, _invariant2.default)(reduxSubscribers.has(key), "Cannot listen for a key that isn't associated with a Redux store. " + "First call `createReactNavigationReduxMiddleware` so that we know " + "when to trigger your listener.");
+    return function (eventName, handler) {
+      if (eventName !== 'action') {
+        return {
+          remove: function remove() {}
+        };
+      }
+
+      var subscribers = reduxSubscribers.get(key);
+      (0, _invariant2.default)(subscribers, "subscribers set should exist for " + key);
+      subscribers.add(handler);
+      return {
+        remove: function remove() {
+          subscribers.delete(handler);
+        }
+      };
+    };
+  }
+
+  function initializeListeners(key, state) {
+    var subscribers = reduxSubscribers.get(key);
+    (0, _invariant2.default)(subscribers, "Cannot initialize listeners for a key that isn't associated with a " + "Redux store. First call `createReactNavigationReduxMiddleware` so " + "that we know when to trigger your listener.");
+    triggerAllSubscribers(subscribers, {
+      type: 'action',
+      action: _reducer.initAction,
+      state: state,
+      lastState: null
+    });
+  }
+
+  exports.createReactNavigationReduxMiddleware = createReactNavigationReduxMiddleware;
+  exports.createReduxBoundAddListener = createReduxBoundAddListener;
+  exports.initializeListeners = initializeListeners;
+},617,[497,618],"node_modules\\react-navigation-redux-helpers\\src\\middleware.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.initAction = exports.createNavigationReducer = undefined;
+
+  var _reactNavigation = _require(_dependencyMap[0], "react-navigation");
+
+  var initAction = _reactNavigation.NavigationActions.init();
+
+  function createNavigationReducer(navigator) {
+    var initialState = navigator.router.getStateForAction(initAction, null);
+    return function () {
+      var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+      var action = arguments[1];
+      return navigator.router.getStateForAction(action, state);
+    };
+  }
+
+  ;
+  exports.createNavigationReducer = createNavigationReducer;
+  exports.initAction = initAction;
+},618,[536],"node_modules\\react-navigation-redux-helpers\\src\\reducer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = {
     get createNavigationContainer() {
@@ -62773,7 +63452,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
 
   };
-},531,[532,537,535,534,538,539,575,579,596,566,580,576,563,540,541,543,547,546,549,550,598,601,581,593,595,577,602,603],"node_modules\\react-navigation\\src\\react-navigation.js");
+},536,[537,542,540,539,543,544,580,584,601,571,585,581,568,545,546,548,552,551,554,555,603,606,586,598,600,582,607,608],"node_modules\\react-navigation\\src\\react-navigation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63097,7 +63776,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return NavigationContainer;
   }
-},532,[111,179,12,533,534,535,536],"node_modules\\react-navigation\\src\\createNavigationContainer.js");
+},537,[111,179,12,538,539,540,541],"node_modules\\react-navigation\\src\\createNavigationContainer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63109,7 +63788,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var BackHandler = _reactNative.BackHandler || _reactNative.BackAndroid;
   exports.BackHandler = BackHandler;
   exports.MaskedViewIOS = _reactNative.MaskedViewIOS;
-},533,[12],"node_modules\\react-navigation\\src\\PlatformHelpers.native.js");
+},538,[12],"node_modules\\react-navigation\\src\\PlatformHelpers.native.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63266,7 +63945,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     uri: uri,
     completeTransition: completeTransition
   };
-},534,[],"node_modules\\react-navigation\\src\\NavigationActions.js");
+},539,[],"node_modules\\react-navigation\\src\\NavigationActions.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63357,7 +64036,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _invariant2 = _interopRequireDefault(_invariant);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},535,[534,536],"node_modules\\react-navigation\\src\\addNavigationHelpers.js");
+},540,[539,541],"node_modules\\react-navigation\\src\\addNavigationHelpers.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -63394,7 +64073,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   module.exports = invariant;
-},536,[],"node_modules\\react-navigation\\src\\utils\\invariant.js");
+},541,[],"node_modules\\react-navigation\\src\\utils\\invariant.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63508,7 +64187,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
   };
   exports.default = StateUtils;
-},537,[536],"node_modules\\react-navigation\\src\\StateUtils.js");
+},542,[541],"node_modules\\react-navigation\\src\\StateUtils.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63590,7 +64269,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return Navigator;
     };
   }
-},538,[111,179],"node_modules\\react-navigation\\src\\navigators\\createNavigator.js");
+},543,[111,179],"node_modules\\react-navigation\\src\\navigators\\createNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63671,7 +64350,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     });
     return (0, _createNavigationContainer2.default)(navigator);
   };
-},539,[111,532,538,540,566,534],"node_modules\\react-navigation\\src\\navigators\\StackNavigator.js");
+},544,[111,537,543,545,571,539],"node_modules\\react-navigation\\src\\navigators\\StackNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63814,7 +64493,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp2));
 
   exports.default = CardStackTransitioner;
-},540,[111,179,12,541,561,563,560],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackTransitioner.js");
+},545,[111,179,12,546,566,568,565],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackTransitioner.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64377,14 +65056,14 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = CardStack;
-},541,[111,179,542,12,543,546,534,535,558,559,560,562],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStack.js");
+},546,[111,179,547,12,548,551,539,540,563,564,565,567],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStack.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = clamp;
 
   function clamp(value, min, max) {
     return min < max ? value < min ? min : value > max ? max : value : value < max ? max : value > min ? min : value;
   }
-},542,[],"node_modules\\clamp\\index.js");
+},547,[],"node_modules\\clamp\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64490,7 +65169,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   Card = (0, _PointerEventsContainer2.default)(Card);
   exports.default = Card;
-},543,[111,179,12,544],"node_modules\\react-navigation\\src\\views\\CardStack\\Card.js");
+},548,[111,179,12,549],"node_modules\\react-navigation\\src\\views\\CardStack\\Card.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64654,7 +65333,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return Container;
   }
-},544,[111,179,536,545],"node_modules\\react-navigation\\src\\views\\CardStack\\PointerEventsContainer.js");
+},549,[111,179,541,550],"node_modules\\react-navigation\\src\\views\\CardStack\\PointerEventsContainer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64685,7 +65364,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }();
 
   exports.default = AnimatedValueSubscription;
-},545,[12],"node_modules\\react-navigation\\src\\views\\AnimatedValueSubscription.js");
+},550,[12],"node_modules\\react-navigation\\src\\views\\AnimatedValueSubscription.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65376,7 +66055,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = (0, _withOrientation2.default)(Header);
-},546,[111,179,12,533,547,549,550,553,554,556,557],"node_modules\\react-navigation\\src\\views\\Header\\Header.js");
+},551,[111,179,12,538,552,554,555,558,559,561,562],"node_modules\\react-navigation\\src\\views\\Header\\Header.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65773,7 +66452,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp2));
 
   exports.default = (0, _withOrientation2.default)(SafeView);
-},547,[111,179,12,548],"node_modules\\react-native-safe-area-view\\index.js");
+},552,[111,179,12,553],"node_modules\\react-native-safe-area-view\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65894,7 +66573,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         height = _ref.height;
     return width > height;
   };
-},548,[111,179,12,507],"node_modules\\react-native-safe-area-view\\withOrientation.js");
+},553,[111,179,12,496],"node_modules\\react-native-safe-area-view\\withOrientation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65943,7 +66622,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = HeaderTitle;
-},549,[111,12],"node_modules\\react-navigation\\src\\views\\Header\\HeaderTitle.js");
+},554,[111,12],"node_modules\\react-navigation\\src\\views\\Header\\HeaderTitle.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66136,7 +66815,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = HeaderBackButton;
-},550,[111,179,12,551,552],"node_modules\\react-navigation\\src\\views\\Header\\HeaderBackButton.js");
+},555,[111,179,12,556,557],"node_modules\\react-navigation\\src\\views\\Header\\HeaderBackButton.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66252,7 +66931,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp));
 
   exports.default = TouchableItem;
-},551,[111,179,12],"node_modules\\react-navigation\\src\\views\\TouchableItem.js");
+},556,[111,179,12],"node_modules\\react-navigation\\src\\views\\TouchableItem.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = _require(_dependencyMap[0], "react-native/Libraries/Image/AssetRegistry").registerAsset({
     "__packager_asset": true,
@@ -66264,7 +66943,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     "name": "back-icon",
     "type": "png"
   });
-},552,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon.png");
+},557,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon.png");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66470,7 +67149,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = ModularHeaderBackButton;
-},553,[111,179,12,551,552],"node_modules\\react-navigation\\src\\views\\Header\\ModularHeaderBackButton.js");
+},558,[111,179,12,556,557],"node_modules\\react-navigation\\src\\views\\Header\\ModularHeaderBackButton.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66620,7 +67299,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     forCenter: forCenter,
     forRight: forRight
   };
-},554,[12,555],"node_modules\\react-navigation\\src\\views\\Header\\HeaderStyleInterpolator.js");
+},559,[12,560],"node_modules\\react-navigation\\src\\views\\Header\\HeaderStyleInterpolator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66670,7 +67349,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   exports.default = getSceneIndicesForInterpolationInputRange;
-},555,[],"node_modules\\react-navigation\\src\\utils\\getSceneIndicesForInterpolationInputRange.js");
+},560,[],"node_modules\\react-navigation\\src\\utils\\getSceneIndicesForInterpolationInputRange.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66789,7 +67468,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         height = _ref.height;
     return width > height;
   };
-},556,[111,179,12,507],"node_modules\\react-navigation\\src\\views\\withOrientation.js");
+},561,[111,179,12,496],"node_modules\\react-navigation\\src\\views\\withOrientation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = _require(_dependencyMap[0], "react-native/Libraries/Image/AssetRegistry").registerAsset({
     "__packager_asset": true,
@@ -66801,7 +67480,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     "name": "back-icon-mask",
     "type": "png"
   });
-},557,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon-mask.png");
+},562,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon-mask.png");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66939,7 +67618,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       };
     };
   }
-},558,[],"node_modules\\react-navigation\\src\\getChildEventSubscriber.js");
+},563,[],"node_modules\\react-navigation\\src\\getChildEventSubscriber.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67030,7 +67709,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp));
 
   exports.default = SceneView;
-},559,[111,179,130],"node_modules\\react-navigation\\src\\views\\SceneView.js");
+},564,[111,179,130],"node_modules\\react-navigation\\src\\views\\SceneView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67130,7 +67809,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     defaultTransitionConfig: defaultTransitionConfig,
     getTransitionConfig: getTransitionConfig
   };
-},560,[12,561,562],"node_modules\\react-navigation\\src\\views\\CardStack\\TransitionConfigs.js");
+},565,[12,566,567],"node_modules\\react-navigation\\src\\views\\CardStack\\TransitionConfigs.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67304,7 +67983,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     forFade: forFade,
     canUseNativeDriver: canUseNativeDriver
   };
-},561,[12,555],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackStyleInterpolator.js");
+},566,[12,560],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackStyleInterpolator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67325,7 +68004,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return false;
   };
-},562,[12],"node_modules\\react-navigation\\src\\utils\\ReactNativeFeatures.js");
+},567,[12],"node_modules\\react-navigation\\src\\utils\\ReactNativeFeatures.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67653,7 +68332,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = Transitioner;
-},563,[111,179,12,536,564],"node_modules\\react-navigation\\src\\views\\Transitioner.js");
+},568,[111,179,12,541,569],"node_modules\\react-navigation\\src\\views\\Transitioner.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67816,7 +68495,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return scenes;
   }
-},564,[536,565],"node_modules\\react-navigation\\src\\views\\ScenesReducer.js");
+},569,[541,570],"node_modules\\react-navigation\\src\\views\\ScenesReducer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -67856,7 +68535,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   module.exports = shallowEqual;
-},565,[],"node_modules\\react-navigation\\src\\utils\\shallowEqual.js");
+},570,[],"node_modules\\react-navigation\\src\\utils\\shallowEqual.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68431,7 +69110,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       getScreenConfig: _getScreenConfigDeprecated2.default
     };
   };
-},566,[567,534,569,570,537,572,573,536,574],"node_modules\\react-navigation\\src\\routers\\StackRouter.js");
+},571,[572,539,574,575,542,577,578,541,579],"node_modules\\react-navigation\\src\\routers\\StackRouter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   var isarray = _require(_dependencyMap[0], 'isarray');
 
@@ -68722,12 +69401,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return stringToRegexp(path, keys, options);
   }
-},567,[568],"node_modules\\path-to-regexp\\index.js");
+},572,[573],"node_modules\\path-to-regexp\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = Array.isArray || function (arr) {
     return Object.prototype.toString.call(arr) == '[object Array]';
   };
-},568,[],"node_modules\\isarray\\index.js");
+},573,[],"node_modules\\isarray\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68812,7 +69491,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return outputConfig;
     };
   };
-},569,[536,570,535,571,558],"node_modules\\react-navigation\\src\\routers\\createConfigGetter.js");
+},574,[541,575,540,576,563],"node_modules\\react-navigation\\src\\routers\\createConfigGetter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68846,7 +69525,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return routeConfig;
   }
-},570,[536],"node_modules\\react-navigation\\src\\routers\\getScreenForRouteName.js");
+},575,[541],"node_modules\\react-navigation\\src\\routers\\getScreenForRouteName.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68878,7 +69557,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       })), ['}']).join('\n'));
     }
   };
-},571,[],"node_modules\\react-navigation\\src\\routers\\validateScreenOptions.js");
+},576,[],"node_modules\\react-navigation\\src\\routers\\validateScreenOptions.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68916,7 +69595,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   exports.default = validateRouteConfigMap;
-},572,[536],"node_modules\\react-navigation\\src\\routers\\validateRouteConfigMap.js");
+},577,[541],"node_modules\\react-navigation\\src\\routers\\validateRouteConfigMap.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68931,7 +69610,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   exports.default = function () {
     return (0, _invariant2.default)(false, '`getScreenConfig` has been replaced with `getScreenOptions`');
   };
-},573,[536],"node_modules\\react-navigation\\src\\routers\\getScreenConfigDeprecated.js");
+},578,[541],"node_modules\\react-navigation\\src\\routers\\getScreenConfigDeprecated.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68949,7 +69628,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   function generateKey() {
     return uniqueBaseId + "-" + uuidCount++;
   }
-},574,[],"node_modules\\react-navigation\\src\\routers\\KeyGenerator.js");
+},579,[],"node_modules\\react-navigation\\src\\routers\\KeyGenerator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68994,7 +69673,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     });
     return (0, _createNavigationContainer2.default)(navigator);
   };
-},575,[111,576,577,532,538],"node_modules\\react-navigation\\src\\navigators\\SwitchNavigator.js");
+},580,[111,581,582,537,543],"node_modules\\react-navigation\\src\\navigators\\SwitchNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69338,7 +70017,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       getScreenConfig: _getScreenConfigDeprecated2.default
     };
   };
-},576,[536,570,569,534,572,573],"node_modules\\react-navigation\\src\\routers\\SwitchRouter.js");
+},581,[541,575,574,539,577,578],"node_modules\\react-navigation\\src\\routers\\SwitchRouter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69423,7 +70102,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react3.default.Component));
 
   exports.default = (0, _withCachedChildNavigation2.default)(SwitchContainer);
-},577,[111,179,559,578],"node_modules\\react-navigation\\src\\views\\SwitchView\\SwitchView.js");
+},582,[111,179,564,583],"node_modules\\react-navigation\\src\\views\\SwitchView\\SwitchView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69570,7 +70249,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return _class;
     }(_react3.default.PureComponent), _class.displayName = "withCachedChildNavigation(" + displayName + ")", _temp2));
   }
-},578,[111,179,535,558],"node_modules\\react-navigation\\src\\withCachedChildNavigation.js");
+},583,[111,179,540,563],"node_modules\\react-navigation\\src\\withCachedChildNavigation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69672,7 +70351,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     Default: _reactNative.Platform.OS === 'ios' ? Presets.iOSBottomTabs : Presets.AndroidTopTabs
   };
   exports.default = TabNavigator;
-},579,[111,12,538,532,580,581,593,595],"node_modules\\react-navigation\\src\\navigators\\TabNavigator.js");
+},584,[111,12,543,537,585,586,598,600],"node_modules\\react-navigation\\src\\navigators\\TabNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69996,7 +70675,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       getScreenConfig: _getScreenConfigDeprecated2.default
     };
   };
-},580,[536,570,569,534,572,573],"node_modules\\react-navigation\\src\\routers\\TabRouter.js");
+},585,[541,575,574,539,577,578],"node_modules\\react-navigation\\src\\routers\\TabRouter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70259,7 +70938,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       flex: 1
     }
   });
-},581,[111,179,12,582,547,592,578],"node_modules\\react-navigation\\src\\views\\TabView\\TabView.js");
+},586,[111,179,12,587,552,597,583],"node_modules\\react-navigation\\src\\views\\TabView\\TabView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = {
     get TabViewAnimated() {
@@ -70291,7 +70970,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
 
   };
-},582,[583,587,586,585,588,589,591],"node_modules\\react-native-tab-view\\src\\index.js");
+},587,[588,592,591,590,593,594,596],"node_modules\\react-native-tab-view\\src\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70571,7 +71250,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       overflow: 'hidden'
     }
   });
-},583,[111,179,130,12,584,585,586,587],"node_modules\\react-native-tab-view\\src\\TabViewAnimated.js");
+},588,[111,179,130,12,589,590,591,592],"node_modules\\react-native-tab-view\\src\\TabViewAnimated.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70625,7 +71304,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     useNativeDriver: _propTypes2.default.bool,
     children: _propTypes2.default.node.isRequired
   };
-},584,[130,12],"node_modules\\react-native-tab-view\\src\\TabViewPropTypes.js");
+},589,[130,12],"node_modules\\react-native-tab-view\\src\\TabViewPropTypes.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70824,7 +71503,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       overflow: 'hidden'
     }
   });
-},585,[111,179,12,584],"node_modules\\react-native-tab-view\\src\\TabViewPagerAndroid.js");
+},590,[111,179,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerAndroid.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -71049,7 +71728,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       overflow: 'hidden'
     }
   });
-},586,[111,179,12,584],"node_modules\\react-native-tab-view\\src\\TabViewPagerScroll.js");
+},591,[111,179,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerScroll.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -71321,7 +72000,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       alignItems: 'stretch'
     }
   });
-},587,[111,179,130,12,584],"node_modules\\react-native-tab-view\\src\\TabViewPagerPan.js");
+},592,[111,179,130,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerPan.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -71573,7 +72252,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       alignItems: 'stretch'
     }
   });
-},588,[111,179,130,12,584],"node_modules\\react-native-tab-view\\src\\TabViewPagerExperimental.js");
+},593,[111,179,130,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerExperimental.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72193,7 +72872,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       height: 2
     }
   });
-},589,[111,179,130,12,590,584],"node_modules\\react-native-tab-view\\src\\TabBar.js");
+},594,[111,179,130,12,595,589],"node_modules\\react-native-tab-view\\src\\TabBar.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72337,7 +73016,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp2));
 
   exports.default = TouchableItem;
-},590,[111,179,130,12],"node_modules\\react-native-tab-view\\src\\TouchableItem.js");
+},595,[111,179,130,12],"node_modules\\react-native-tab-view\\src\\TouchableItem.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72419,7 +73098,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       });
     };
   }
-},591,[111,179],"node_modules\\react-native-tab-view\\src\\SceneMap.js");
+},596,[111,179],"node_modules\\react-native-tab-view\\src\\SceneMap.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72615,7 +73294,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       top: FAR_FAR_AWAY
     }
   });
-},592,[111,179,12,130,559],"node_modules\\react-navigation\\src\\views\\ResourceSavingSceneView.js");
+},597,[111,179,12,130,564],"node_modules\\react-navigation\\src\\views\\ResourceSavingSceneView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72835,7 +73514,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       backgroundColor: 'transparent'
     }
   });
-},593,[111,179,12,582,594],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarTop.js");
+},598,[111,179,12,587,599],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarTop.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72986,7 +73665,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       justifyContent: 'center'
     }
   });
-},594,[111,179,12],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarIcon.js");
+},599,[111,179,12],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarIcon.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73419,7 +74098,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = (0, _withOrientation2.default)(TabBarBottom);
-},595,[111,179,12,547,594,534,556],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarBottom.js");
+},600,[111,179,12,552,599,539,561],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarBottom.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73586,7 +74265,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   };
 
   exports.default = DrawerNavigator;
-},596,[111,12,547,538,532,580,597,598,601],"node_modules\\react-navigation\\src\\navigators\\DrawerNavigator.js");
+},601,[111,12,552,543,537,585,602,603,606],"node_modules\\react-navigation\\src\\navigators\\DrawerNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73677,7 +74356,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react3.default.PureComponent));
 
   exports.default = (0, _withCachedChildNavigation2.default)(DrawerScreen);
-},597,[111,179,559,578],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerScreen.js");
+},602,[111,179,564,583],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73930,7 +74609,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react3.default.PureComponent));
 
   exports.default = DrawerView;
-},598,[111,179,12,599,535,600,558],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerView.js");
+},603,[111,179,12,604,540,605,563],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73939,7 +74618,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _reactNative = _require(_dependencyMap[0], 'react-native');
 
   exports.default = _reactNative.DrawerLayoutAndroid;
-},599,[12],"node_modules\\react-native-drawer-layout-polyfill\\dist\\index.android.js");
+},604,[12],"node_modules\\react-native-drawer-layout-polyfill\\dist\\index.android.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74137,7 +74816,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       flex: 1
     }
   });
-},600,[111,179,12,547,578,534,536],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerSidebar.js");
+},605,[111,179,12,552,583,539,541],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerSidebar.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74301,7 +74980,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = DrawerNavigatorItems;
-},601,[111,12,547,551],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerNavigatorItems.js");
+},606,[111,12,552,556],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerNavigatorItems.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74393,7 +75072,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return (0, _hoistNonReactStatics2.default)(ComponentWithNavigation, Component);
   }
-},602,[111,179,130,507],"node_modules\\react-navigation\\src\\views\\withNavigation.js");
+},607,[111,179,130,496],"node_modules\\react-navigation\\src\\views\\withNavigation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74528,7 +75207,73 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return (0, _hoistNonReactStatics2.default)(ComponentWithNavigationFocus, Component);
   }
-},603,[111,179,130,507,536],"node_modules\\react-navigation\\src\\views\\withNavigationFocus.js");
+},608,[111,179,130,496,541],"node_modules\\react-navigation\\src\\views\\withNavigationFocus.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\components\\RootNavigator.js";
+
+  var _react = _require(_dependencyMap[0], "react");
+
+  var _react2 = _interopRequireDefault(_react);
+
+  var _reactNavigation = _require(_dependencyMap[1], "react-navigation");
+
+  var _LoginScreen = _require(_dependencyMap[2], "../containers/LoginScreen");
+
+  var _LoginScreen2 = _interopRequireDefault(_LoginScreen);
+
+  var _EventScreen = _require(_dependencyMap[3], "../containers/EventScreen");
+
+  var _EventScreen2 = _interopRequireDefault(_EventScreen);
+
+  var _LogoTitle = _require(_dependencyMap[4], "../components/LogoTitle");
+
+  var _LogoTitle2 = _interopRequireDefault(_LogoTitle);
+
+  var _colors = _require(_dependencyMap[5], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var RootNavigator = (0, _reactNavigation.StackNavigator)({
+    LoginScreen: {
+      screen: _LoginScreen2.default,
+      navigationOptions: {
+        title: "Aanmelden"
+      }
+    },
+    EventScreen: {
+      screen: _EventScreen2.default,
+      navigationOptions: {
+        title: "Kies Evenement"
+      }
+    }
+  }, {
+    initialRouteName: "LoginScreen",
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: _colors2.default.PRIMARY_COLOR
+      },
+      headerTintColor: _colors2.default.TITLE_COLOR,
+      headerTitleStyle: {
+        fontWeight: "bold"
+      },
+      headerTitle: function headerTitle(props) {
+        return _react2.default.createElement(_LogoTitle2.default, {
+          title: props.children,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 34
+          }
+        });
+      }
+    }
+  });
+  exports.default = RootNavigator;
+},620,[111,536,609,612,613,611],"app\\components\\RootNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74548,9 +75293,23 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _reactNative = _require(_dependencyMap[2], "react-native");
 
-  var _authenticate = _require(_dependencyMap[3], "../lib/authentication/authenticate");
+  var _redux = _require(_dependencyMap[3], "redux");
 
-  var _authenticate2 = _interopRequireDefault(_authenticate);
+  var _reactRedux = _require(_dependencyMap[4], "react-redux");
+
+  var _creators = _require(_dependencyMap[5], "../actions/creators");
+
+  var Actions = _interopRequireWildcard(_creators);
+
+  var _styles = _require(_dependencyMap[6], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[7], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74588,67 +75347,79 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       var _this = _possibleConstructorReturn(this, (LoginScreen.__proto__ || Object.getPrototypeOf(LoginScreen)).call(this, props));
 
       _this.state = {
-        username: "",
+        userName: "",
         password: "",
-        errormessage: ""
+        errorMessage: ""
       };
-      _this.login = _this.login.bind(_this);
+      _this.onLoginButtonPress = _this.onLoginButtonPress.bind(_this);
       return _this;
     }
 
     _createClass(LoginScreen, [{
+      key: "onLoginButtonPress",
+      value: function onLoginButtonPress() {
+        var credentials = {
+          userName: this.state.userName,
+          password: this.state.password
+        };
+        this.props.login(credentials);
+        this.setState({
+          userName: "",
+          password: ""
+        });
+      }
+    }, {
       key: "render",
       value: function render() {
         var _this2 = this;
 
         return _react3.default.createElement(
-          _reactNative.ScrollView,
+          _reactNative.View,
           {
-            style: {
-              padding: 20
-            },
+            style: _styles2.default.container,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 27
+              lineNumber: 48
             }
           },
           _react3.default.createElement(
             _reactNative.Text,
             {
-              style: {
-                fontSize: 27
-              },
+              style: _styles2.default.header1,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 28
+                lineNumber: 49
               }
             },
-            "Login"
+            "Welkom bij DZapp!"
           ),
           _react3.default.createElement(_reactNative.TextInput, {
-            placeholder: "Username",
+            placeholder: "Gebruikersnaam",
             onChangeText: function onChangeText(value) {
               return _this2.setState({
-                username: value
+                userName: value
               });
             },
-            value: this.state.username,
+            value: this.state.userName,
+            placeholderTextColor: _colors2.default.SECONDARY_COLOR,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 29
+              lineNumber: 50
             }
           }),
           _react3.default.createElement(_reactNative.TextInput, {
-            placeholder: "Password",
+            placeholder: "Wachtwoord",
             onChangeText: function onChangeText(value) {
               return _this2.setState({
                 password: value
               });
             },
             value: this.state.password,
+            placeholderTextColor: _colors2.default.SECONDARY_COLOR,
+            secureTextEntry: true,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 34
+              lineNumber: 56
             }
           }),
           _react3.default.createElement(
@@ -74659,10 +75430,10 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               },
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 39
+                lineNumber: 63
               }
             },
-            this.state.errormessage
+            this.props.errorMessage
           ),
           _react3.default.createElement(_reactNative.View, {
             style: {
@@ -74670,56 +75441,99 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             },
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 40
+              lineNumber: 64
             }
           }),
           _react3.default.createElement(_reactNative.Button, {
-            onPress: this.login,
-            title: "Submit",
+            onPress: this.onLoginButtonPress,
+            title: "Aanmelden",
+            color: _colors2.default.PRIMARY_COLOR,
+            disabled: this.state.userName === "" || this.state.password === "",
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 41
+              lineNumber: 65
             }
           })
         );
-      }
-    }, {
-      key: "login",
-      value: function login() {
-        this.setState({
-          errormessage: ""
-        });
-        var username = this.state.username;
-        var password = this.state.password;
-
-        if ((0, _authenticate2.default)(username, password)) {
-          this.props.navigation.navigate("ChooseEvent");
-        } else {
-          this.setState({
-            username: "",
-            password: "",
-            errormessage: "Invalid username or password"
-          });
-        }
       }
     }]);
 
     return LoginScreen;
   }(_react2.Component));
 
-  exports.default = LoginScreen;
-},604,[111,179,12,605],"app\\containers\\LoginScreen.js");
+  var mapStateToProps = function mapStateToProps(state) {
+    return {
+      customers: state.customerReducer.customers,
+      cashierId: state.cashierReducer.cashierId,
+      errorMessage: state.cashierReducer.errorMessage
+    };
+  };
+
+  var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return (0, _redux.bindActionCreators)(Actions, dispatch);
+  };
+
+  exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginScreen);
+},609,[111,179,12,502,491,519,610,611],"app\\containers\\LoginScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = authenticate;
 
-  function authenticate(username, password) {
-    if (username === "test1" && password === "pass1") return true;
-    return false;
-  }
-},605,[],"app\\lib\\authentication\\authenticate.js");
+  var _react = _require(_dependencyMap[0], "react");
+
+  var _react2 = _interopRequireDefault(_react);
+
+  var _reactNative = _require(_dependencyMap[1], "react-native");
+
+  var _colors = _require(_dependencyMap[2], "./colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var styles = _reactNative.StyleSheet.create({
+    header1: {
+      fontSize: 27,
+      color: _colors2.default.PRIMARY_COLOR,
+      marginBottom: 5
+    },
+    button: {},
+    actionBarTitle: {
+      color: _colors2.default.TITLE_COLOR,
+      fontSize: 24
+    },
+    actionBar: {
+      flex: 1,
+      alignContent: "center",
+      alignItems: "center",
+      flexDirection: "row"
+    },
+    logo: {
+      width: 45,
+      height: 45,
+      marginRight: 10
+    },
+    container: {
+      flex: 1,
+      padding: 20,
+      justifyContent: "center"
+    }
+  });
+
+  exports.default = styles;
+},610,[111,12,611],"app\\styles\\styles.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var colors = {
+    PRIMARY_COLOR: "#398a59",
+    SECONDARY_COLOR: "#036565",
+    TITLE_COLOR: "#fff5fe"
+  };
+  exports.default = colors;
+},611,[],"app\\styles\\colors.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74733,7 +75547,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _index2 = _interopRequireDefault(_index);
 
-  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\containers\\ChooseEventScreen.js";
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\containers\\EventScreen.js";
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -74748,13 +75562,13 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
   var _components = {
-    LoginScreen: {
-      displayName: "LoginScreen"
+    EventScreen: {
+      displayName: "EventScreen"
     }
   };
 
   var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
-    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/app/containers/ChooseEventScreen.js",
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/app/containers/EventScreen.js",
     components: _components,
     locals: [module],
     imports: [_react3.default]
@@ -74766,13 +75580,13 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     };
   }
 
-  var LoginScreen = _wrapComponent("LoginScreen")(function (_Component) {
-    _inherits(LoginScreen, _Component);
+  var EventScreen = _wrapComponent("EventScreen")(function (_Component) {
+    _inherits(EventScreen, _Component);
 
-    function LoginScreen(props) {
-      _classCallCheck(this, LoginScreen);
+    function EventScreen(props) {
+      _classCallCheck(this, EventScreen);
 
-      var _this = _possibleConstructorReturn(this, (LoginScreen.__proto__ || Object.getPrototypeOf(LoginScreen)).call(this, props));
+      var _this = _possibleConstructorReturn(this, (EventScreen.__proto__ || Object.getPrototypeOf(EventScreen)).call(this, props));
 
       _this.state = {
         event: ""
@@ -74781,7 +75595,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return _this;
     }
 
-    _createClass(LoginScreen, [{
+    _createClass(EventScreen, [{
       key: "render",
       value: function render() {
         var _this2 = this;
@@ -74797,19 +75611,6 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               lineNumber: 22
             }
           },
-          _react3.default.createElement(
-            _reactNative.Text,
-            {
-              style: {
-                fontSize: 27
-              },
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 23
-              }
-            },
-            "Choose Event"
-          ),
           _react3.default.createElement(
             _reactNative.Picker,
             {
@@ -74821,7 +75622,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               },
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 24
+                lineNumber: 23
               }
             },
             _react3.default.createElement(_reactNative.Picker.Item, {
@@ -74829,7 +75630,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               value: "event1",
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 30
+                lineNumber: 29
               }
             }),
             _react3.default.createElement(_reactNative.Picker.Item, {
@@ -74837,7 +75638,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               value: "event2",
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 31
+                lineNumber: 30
               }
             })
           ),
@@ -74846,7 +75647,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             title: "Submit",
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 33
+              lineNumber: 32
             }
           })
         );
@@ -74858,11 +75659,11 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       }
     }]);
 
-    return LoginScreen;
+    return EventScreen;
   }(_react2.Component));
 
-  exports.default = LoginScreen;
-},606,[111,179,12],"app\\containers\\ChooseEventScreen.js");
+  exports.default = EventScreen;
+},612,[111,179,12],"app\\containers\\EventScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74876,25 +75677,15 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _index2 = _interopRequireDefault(_index);
 
-  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\containers\\CategoryScreen.js";
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\components\\LogoTitle.js";
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
   var _reactNative = _require(_dependencyMap[2], "react-native");
 
-  var _Category = _require(_dependencyMap[3], "../models/Category");
+  var _styles = _require(_dependencyMap[3], "../styles/styles");
 
-  var _Category2 = _interopRequireDefault(_Category);
-
-  var _ProductGridView = _require(_dependencyMap[4], "../components/ProductGridView");
-
-  var _ProductGridView2 = _interopRequireDefault(_ProductGridView);
-
-  var _Product = _require(_dependencyMap[5], "../models/Product");
-
-  var _Product2 = _interopRequireDefault(_Product);
-
-  var _reactRedux = _require(_dependencyMap[6], "react-redux");
+  var _styles2 = _interopRequireDefault(_styles);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74905,13 +75696,13 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
   var _components = {
-    CategoryScreen: {
-      displayName: "CategoryScreen"
+    Logotitle: {
+      displayName: "Logotitle"
     }
   };
 
   var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
-    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/app/containers/CategoryScreen.js",
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/app/components/LogoTitle.js",
     components: _components,
     locals: [module],
     imports: [_react3.default]
@@ -74923,861 +75714,66 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     };
   }
 
-  var CategoryScreen = _wrapComponent("CategoryScreen")(function (_Component) {
-    _inherits(CategoryScreen, _Component);
+  var Logotitle = _wrapComponent("Logotitle")(function (_Component) {
+    _inherits(Logotitle, _Component);
 
-    function CategoryScreen(props) {
-      _classCallCheck(this, CategoryScreen);
+    function Logotitle() {
+      _classCallCheck(this, Logotitle);
 
-      return _possibleConstructorReturn(this, (CategoryScreen.__proto__ || Object.getPrototypeOf(CategoryScreen)).call(this, props));
+      return _possibleConstructorReturn(this, (Logotitle.__proto__ || Object.getPrototypeOf(Logotitle)).apply(this, arguments));
     }
 
-    _createClass(CategoryScreen, [{
+    _createClass(Logotitle, [{
       key: "render",
       value: function render() {
-        var _this2 = this;
-
-        var products = this.props.products.filter(function (product) {
-          return product.categoryId === _this2.props.category.id;
-        });
-        return _react3.default.createElement(_ProductGridView2.default, {
-          products: products,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 25
-          }
-        });
-      }
-    }]);
-
-    return CategoryScreen;
-  }(_react2.Component));
-
-  var mapStateToProps = function mapStateToProps(state) {
-    return {
-      products: state.products
-    };
-  };
-
-  var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {};
-  };
-
-  exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CategoryScreen);
-},607,[111,179,12,526,608,529,502],"app\\containers\\CategoryScreen.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _react2 = _require(_dependencyMap[0], "react");
-
-  var _react3 = _interopRequireDefault(_react2);
-
-  var _index = _require(_dependencyMap[1], "./../../node_modules/react-transform-hmr/lib/index.js");
-
-  var _index2 = _interopRequireDefault(_index);
-
-  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\components\\ProductGridView.js";
-
-  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _reactNativeSuperGrid = _require(_dependencyMap[2], "react-native-super-grid");
-
-  var _reactNativeSuperGrid2 = _interopRequireDefault(_reactNativeSuperGrid);
-
-  var _Product = _require(_dependencyMap[3], "../models/Product");
-
-  var _Product2 = _interopRequireDefault(_Product);
-
-  var _Order = _require(_dependencyMap[4], "../models/Order");
-
-  var _Order2 = _interopRequireDefault(_Order);
-
-  var _ProductThumbnail = _require(_dependencyMap[5], "./ProductThumbnail");
-
-  var _ProductThumbnail2 = _interopRequireDefault(_ProductThumbnail);
-
-  var _creators = _require(_dependencyMap[6], "../actions/creators");
-
-  var _reactRedux = _require(_dependencyMap[7], "react-redux");
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-  var _components = {
-    ProductGridView: {
-      displayName: "ProductGridView"
-    }
-  };
-
-  var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
-    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/app/components/ProductGridView.js",
-    components: _components,
-    locals: [module],
-    imports: [_react3.default]
-  });
-
-  function _wrapComponent(id) {
-    return function (Component) {
-      return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
-    };
-  }
-
-  var ProductGridView = _wrapComponent("ProductGridView")(function (_Component) {
-    _inherits(ProductGridView, _Component);
-
-    function ProductGridView(props) {
-      _classCallCheck(this, ProductGridView);
-
-      var _this = _possibleConstructorReturn(this, (ProductGridView.__proto__ || Object.getPrototypeOf(ProductGridView)).call(this, props));
-
-      _this._addItemToOrder = function (productId, quantity) {
-        _this.props.addItemToOrder(productId, quantity);
-      };
-
-      _this._removeItemFromOrder = function (productId) {
-        _this.props.removeItemFromOrder(productId);
-      };
-
-      _this.state = {};
-      return _this;
-    }
-
-    _createClass(ProductGridView, [{
-      key: "render",
-      value: function render() {
-        var _this2 = this;
-
-        console.log(this.props);
-        return _react3.default.createElement(_reactNativeSuperGrid2.default, {
-          itemDimension: 130,
-          items: this.props.products,
-          renderItem: function renderItem(product) {
-            return _react3.default.createElement(_ProductThumbnail2.default, {
-              product: product,
-              quantity: _this2.props.orders.order.getQuantity(product.id),
-              onPress: function onPress() {
-                return _this2._addItemToOrder(product.id, 1);
-              },
-              onLongPress: function onLongPress() {
-                return _this2._removeItemFromOrder(product.id, 1);
-              },
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 42
-              }
-            });
-          },
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 37
-          }
-        });
-      }
-    }]);
-
-    return ProductGridView;
-  }(_react2.Component));
-
-  var mapStateToProps = function mapStateToProps(state) {
-    return {
-      orders: state.orders
-    };
-  };
-
-  var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-      newOrder: function newOrder() {
-        dispatch((0, _creators.newOrder)());
-      },
-      addItemToOrder: function addItemToOrder(productId, quantity) {
-        dispatch((0, _creators.addItemToOrder)(productId, quantity));
-      },
-      removeItemFromOrder: function removeItemFromOrder(productId) {
-        dispatch((0, _creators.removeItemFromOrder)(productId));
-      }
-    };
-  };
-
-  exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ProductGridView);
-},608,[111,179,609,529,522,611,612,502],"app\\components\\ProductGridView.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _react2 = _require(_dependencyMap[0], "react");
-
-  var _react3 = _interopRequireDefault(_react2);
-
-  var _index = _require(_dependencyMap[1], "./../react-transform-hmr/lib/index.js");
-
-  var _index2 = _interopRequireDefault(_index);
-
-  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\node_modules\\react-native-super-grid\\index.js";
-
-  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _propTypes = _require(_dependencyMap[2], "prop-types");
-
-  var _propTypes2 = _interopRequireDefault(_propTypes);
-
-  var _reactNative = _require(_dependencyMap[3], "react-native");
-
-  var _utils = _require(_dependencyMap[4], "./utils");
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-  var _components = {
-    SuperGrid: {
-      displayName: "SuperGrid"
-    }
-  };
-
-  var _reactTransformHmrLibIndexJs2 = (0, _index2.default)({
-    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/node_modules/react-native-super-grid/index.js",
-    components: _components,
-    locals: [module],
-    imports: [_react3.default]
-  });
-
-  function _wrapComponent(id) {
-    return function (Component) {
-      return _reactTransformHmrLibIndexJs2(Component, id);
-    };
-  }
-
-  var SuperGrid = _wrapComponent("SuperGrid")(function (_Component) {
-    _inherits(SuperGrid, _Component);
-
-    function SuperGrid(props) {
-      _classCallCheck(this, SuperGrid);
-
-      var _this = _possibleConstructorReturn(this, (SuperGrid.__proto__ || Object.getPrototypeOf(SuperGrid)).call(this, props));
-
-      _this.renderRow = _this.renderRow.bind(_this);
-      _this.onLayout = _this.onLayout.bind(_this);
-      _this.getDimensions = _this.getDimensions.bind(_this);
-      _this.state = _this.getDimensions();
-      return _this;
-    }
-
-    _createClass(SuperGrid, [{
-      key: "componentWillReceiveProps",
-      value: function componentWillReceiveProps(nextProps) {
-        if (nextProps.itemDimension !== this.props.itemDimension) {
-          this.setState(_extends({}, this.getDimensions(this.state.totalDimension, nextProps.itemDimension)));
-        }
-      }
-    }, {
-      key: "onLayout",
-      value: function onLayout(e) {
-        var _props = this.props,
-            staticDimension = _props.staticDimension,
-            horizontal = _props.horizontal;
-
-        if (!staticDimension) {
-          var _ref = e.nativeEvent.layout || {},
-              width = _ref.width,
-              height = _ref.height;
-
-          this.setState(_extends({}, this.getDimensions(horizontal ? height : width)));
-        }
-      }
-    }, {
-      key: "getDimensions",
-      value: function getDimensions(lvDimension, itemDim) {
-        var _props2 = this.props,
-            itemWidth = _props2.itemWidth,
-            spacing = _props2.spacing,
-            fixed = _props2.fixed,
-            staticDimension = _props2.staticDimension,
-            horizontal = _props2.horizontal;
-        var itemDimension = itemDim || this.props.itemDimension;
-
-        if (itemWidth) {
-          itemDimension = itemWidth;
-          console.warn('React Native Super Grid - property "itemWidth" is depreciated. Use "itemDimension" instead.');
-        }
-
-        var dimension = horizontal ? 'height' : 'width';
-
-        var totalDimension = lvDimension || staticDimension || _reactNative.Dimensions.get('window')[dimension];
-
-        var itemTotalDimension = itemDimension + spacing;
-        var availableDimension = totalDimension - spacing;
-        var itemsPerRow = Math.floor(availableDimension / itemTotalDimension);
-        var containerDimension = availableDimension / itemsPerRow;
-        return {
-          totalDimension: totalDimension,
-          itemDimension: itemDimension,
-          spacing: spacing,
-          itemsPerRow: itemsPerRow,
-          containerDimension: containerDimension,
-          fixed: fixed
-        };
-      }
-    }, {
-      key: "renderVerticalRow",
-      value: function renderVerticalRow(data, sectionId, rowId) {
-        var _this2 = this;
-
-        var _state = this.state,
-            itemDimension = _state.itemDimension,
-            spacing = _state.spacing,
-            containerDimension = _state.containerDimension,
-            fixed = _state.fixed;
-        var columnStyle = {
-          flexDirection: 'column',
-          paddingLeft: spacing
-        };
-        var rowStyle = {
-          height: containerDimension,
-          paddingBottom: spacing
-        };
-        var itemStyle = {};
-
-        if (fixed) {
-          itemStyle = {
-            height: itemDimension,
-            alignSelf: 'center',
-            paddingBottom: spacing
-          };
-        }
-
         return _react3.default.createElement(
           _reactNative.View,
           {
-            style: columnStyle,
+            style: _styles2.default.actionBar,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 80
+              lineNumber: 12
             }
           },
-          (data || []).map(function (item, i) {
-            return _react3.default.createElement(
-              _reactNative.View,
-              {
-                key: rowId + "_" + i,
-                style: rowStyle,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 82
-                }
-              },
-              _react3.default.createElement(
-                _reactNative.View,
-                {
-                  style: itemStyle,
-                  __source: {
-                    fileName: _jsxFileName,
-                    lineNumber: 83
-                  }
-                },
-                _this2.props.renderItem(item, i)
-              )
-            );
-          })
-        );
-      }
-    }, {
-      key: "renderHorizontalRow",
-      value: function renderHorizontalRow(data, sectionId, rowId) {
-        var _this3 = this;
-
-        var _state2 = this.state,
-            itemDimension = _state2.itemDimension,
-            containerDimension = _state2.containerDimension,
-            spacing = _state2.spacing,
-            fixed = _state2.fixed;
-        var rowStyle = {
-          flexDirection: 'row',
-          paddingLeft: spacing,
-          paddingBottom: spacing
-        };
-        var columnStyle = {
-          flexDirection: 'column',
-          justifyContent: 'center',
-          width: containerDimension,
-          paddingRight: spacing
-        };
-        var itemStyle = {};
-
-        if (fixed) {
-          itemStyle = {
-            width: itemDimension,
-            alignSelf: 'center'
-          };
-        }
-
-        return _react3.default.createElement(
-          _reactNative.View,
-          {
-            style: rowStyle,
+          _react3.default.createElement(_reactNative.Image, {
+            source: _require(_dependencyMap[4], "../assets/images/site_dz.jpg"),
+            style: _styles2.default.logo,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 114
+              lineNumber: 13
             }
-          },
-          (data || []).map(function (item, i) {
-            return _react3.default.createElement(
-              _reactNative.View,
-              {
-                key: rowId + "_" + i,
-                style: columnStyle,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 116
-                }
-              },
-              _react3.default.createElement(
-                _reactNative.View,
-                {
-                  style: itemStyle,
-                  __source: {
-                    fileName: _jsxFileName,
-                    lineNumber: 117
-                  }
-                },
-                _this3.props.renderItem(item, i)
-              )
-            );
-          })
-        );
-      }
-    }, {
-      key: "renderRow",
-      value: function renderRow(data, sectionId, rowId) {
-        var horizontal = this.props.horizontal;
-
-        if (horizontal) {
-          return this.renderVerticalRow(data, sectionId, rowId);
-        }
-
-        return this.renderHorizontalRow(data, sectionId, rowId);
-      }
-    }, {
-      key: "render",
-      value: function render() {
-        var _props3 = this.props,
-            items = _props3.items,
-            style = _props3.style,
-            renderItem = _props3.renderItem,
-            spacing = _props3.spacing,
-            fixed = _props3.fixed,
-            itemDimension = _props3.itemDimension,
-            horizontal = _props3.horizontal,
-            props = _objectWithoutProperties(_props3, ["items", "style", "renderItem", "spacing", "fixed", "itemDimension", "horizontal"]);
-
-        var itemsPerRow = this.state.itemsPerRow;
-        var rows = (0, _utils.chunkArray)(items, itemsPerRow);
-        var ds = new _reactNative.ListView.DataSource({
-          rowHasChanged: function rowHasChanged(r1, r2) {
-            return r1 !== r2;
-          }
-        });
-        return _react3.default.createElement(_reactNative.ListView, _extends({
-          enableEmptySections: true,
-          style: [{
-            paddingTop: spacing
-          }, style],
-          onLayout: this.onLayout,
-          dataSource: ds.cloneWithRows(rows),
-          renderRow: this.renderRow
-        }, props, {
-          horizontal: horizontal,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 143
-          }
-        }));
-      }
-    }]);
-
-    return SuperGrid;
-  }(_react2.Component));
-
-  SuperGrid.propTypes = {
-    renderItem: _propTypes2.default.func.isRequired,
-    items: _propTypes2.default.arrayOf(_propTypes2.default.any).isRequired,
-    itemDimension: _propTypes2.default.number,
-    itemWidth: _propTypes2.default.number,
-    fixed: _propTypes2.default.bool,
-    spacing: _propTypes2.default.number,
-    style: _reactNative.ViewPropTypes.style,
-    staticDimension: _propTypes2.default.number,
-    horizontal: _propTypes2.default.bool
-  };
-  SuperGrid.defaultProps = {
-    fixed: false,
-    itemDimension: 120,
-    itemWidth: null,
-    spacing: 10,
-    style: {},
-    staticDimension: undefined,
-    horizontal: false
-  };
-  exports.default = SuperGrid;
-},609,[111,179,130,12,610],"node_modules\\react-native-super-grid\\index.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.chunkArray = chunkArray;
-
-  function chunkArray(array, size) {
-    return array.reduce(function (acc, val) {
-      if (acc.length === 0) acc.push([]);
-      var last = acc[acc.length - 1];
-
-      if (last.length < size) {
-        last.push(val);
-      } else {
-        acc.push([val]);
-      }
-
-      return acc;
-    }, []);
-  }
-},610,[],"node_modules\\react-native-super-grid\\utils.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _react2 = _require(_dependencyMap[0], "react");
-
-  var _react3 = _interopRequireDefault(_react2);
-
-  var _index = _require(_dependencyMap[1], "./../../node_modules/react-transform-hmr/lib/index.js");
-
-  var _index2 = _interopRequireDefault(_index);
-
-  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\app\\components\\ProductThumbnail.js";
-
-  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _reactNative = _require(_dependencyMap[2], "react-native");
-
-  var _Product = _require(_dependencyMap[3], "../models/Product");
-
-  var _Product2 = _interopRequireDefault(_Product);
-
-  var _Order = _require(_dependencyMap[4], "../models/Order");
-
-  var _Order2 = _interopRequireDefault(_Order);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-  var _components = {
-    ProductThumbnail: {
-      displayName: "ProductThumbnail"
-    }
-  };
-
-  var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
-    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/app/components/ProductThumbnail.js",
-    components: _components,
-    locals: [module],
-    imports: [_react3.default]
-  });
-
-  function _wrapComponent(id) {
-    return function (Component) {
-      return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
-    };
-  }
-
-  var ProductThumbnail = _wrapComponent("ProductThumbnail")(function (_Component) {
-    _inherits(ProductThumbnail, _Component);
-
-    function ProductThumbnail(props) {
-      _classCallCheck(this, ProductThumbnail);
-
-      var _this = _possibleConstructorReturn(this, (ProductThumbnail.__proto__ || Object.getPrototypeOf(ProductThumbnail)).call(this, props));
-
-      _this.state = {};
-      return _this;
-    }
-
-    _createClass(ProductThumbnail, [{
-      key: "render",
-      value: function render() {
-        return _react3.default.createElement(
-          _reactNative.TouchableOpacity,
-          {
-            style: styles.button,
-            onPress: this.props.onPress,
-            onLongPress: this.props.onLongPress,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 22
-            }
-          },
+          }),
           _react3.default.createElement(
-            _reactNative.View,
+            _reactNative.Text,
             {
-              style: styles.imageView,
+              style: _styles2.default.actionBarTitle,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 27
+                lineNumber: 17
               }
             },
-            _react3.default.createElement(_reactNative.Image, {
-              style: styles.image,
-              source: {
-                uri: this.props.product.imageUri
-              },
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 28
-              }
-            }),
-            _react3.default.createElement(
-              _reactNative.Text,
-              {
-                style: styles.quantityLabel,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 32
-                }
-              },
-              this.props.quantity
-            )
-          ),
-          _react3.default.createElement(
-            _reactNative.View,
-            {
-              style: styles.caption,
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 34
-              }
-            },
-            _react3.default.createElement(
-              _reactNative.Text,
-              {
-                style: styles.nameLabel,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 35
-                }
-              },
-              this.props.product.name
-            ),
-            _react3.default.createElement(
-              _reactNative.Text,
-              {
-                style: styles.priceLabel,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 36
-                }
-              },
-              this.props.product.price.toLocaleString(undefined, {
-                minimumFractionDigits: 2
-              }),
-              " ",
-              "\u20AC"
-            )
+            this.props.title
           )
         );
       }
     }]);
 
-    return ProductThumbnail;
+    return Logotitle;
   }(_react2.Component));
 
-  exports.default = ProductThumbnail;
-
-  var styles = _reactNative.StyleSheet.create({
-    button: {
-      flexDirection: "column",
-      width: 150,
-      height: 150,
-      borderWidth: 3,
-      borderColor: "#398a59",
-      borderRadius: 10
-    },
-    imageView: {
-      flex: 4
-    },
-    image: {
-      width: null,
-      height: null,
-      resizeMode: "contain",
-      padding: 10,
-      flex: 1
-    },
-    quantityLabel: {
-      position: "absolute",
-      right: 5,
-      top: 5,
-      borderRadius: 100,
-      width: 30,
-      height: 30,
-      backgroundColor: "#398958",
-      textAlign: "center",
-      textAlignVertical: "center",
-      color: "#ffffff"
-    },
-    caption: {
-      flex: 2,
-      flexDirection: "column",
-      padding: 5
-    },
-    nameLabel: {
-      flex: 1,
-      fontWeight: "bold"
-    },
-    priceLabel: {
-      flex: 1
-    }
-  });
-},611,[111,179,12,529,522],"app\\components\\ProductThumbnail.js");
+  exports.default = Logotitle;
+},613,[111,179,12,610,614],"app\\components\\LogoTitle.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
+  module.exports = _require(_dependencyMap[0], "react-native/Libraries/Image/AssetRegistry").registerAsset({
+    "__packager_asset": true,
+    "httpServerLocation": "/assets/app/assets/images",
+    "width": 218,
+    "height": 240,
+    "scales": [1],
+    "hash": "f25b432723d2ded6a4646ae4430f73a7",
+    "name": "site_dz",
+    "type": "jpg"
   });
-  exports.removeItemFromOrder = exports.addItemToOrder = exports.newOrder = undefined;
-
-  var _types = _require(_dependencyMap[0], "./types");
-
-  var _Order = _require(_dependencyMap[1], "../models/Order");
-
-  var _Order2 = _interopRequireDefault(_Order);
-
-  var _OrderLine = _require(_dependencyMap[2], "../models/OrderLine");
-
-  var _OrderLine2 = _interopRequireDefault(_OrderLine);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  var newOrder = exports.newOrder = function newOrder() {
-    return {
-      type: _types.NEW_ORDER,
-      data: {}
-    };
-  };
-
-  var addItemToOrder = exports.addItemToOrder = function addItemToOrder(productId, quantity) {
-    return {
-      type: _types.ADD_ITEM_TO_ORDER,
-      data: {
-        productId: productId,
-        quantity: quantity
-      }
-    };
-  };
-
-  var removeItemFromOrder = exports.removeItemFromOrder = function removeItemFromOrder(productId) {
-    return {
-      type: _types.REMOVE_ITEM_FROM_ORDER,
-      data: {
-        productId: productId
-      }
-    };
-  };
-},612,[521,522,523],"app\\actions\\creators.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  var _MockData = _require(_dependencyMap[0], "./mockdata/MockData");
-
-  var _Product = _require(_dependencyMap[1], "../../models/Product");
-
-  var _Product2 = _interopRequireDefault(_Product);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-  var ProductDAO = function () {
-    function ProductDAO() {
-      _classCallCheck(this, ProductDAO);
-    }
-
-    _createClass(ProductDAO, null, [{
-      key: "fetchAll",
-      value: function fetchAll() {
-        return _MockData.MockProducts;
-      }
-    }, {
-      key: "fetchByCategoryId",
-      value: function fetchByCategoryId(categoryId) {
-        return _MockData.MockProducts.filter(function (product) {
-          return product.categoryId === categoryId;
-        });
-      }
-    }]);
-
-    return ProductDAO;
-  }();
-
-  exports.default = ProductDAO;
-},613,[528,529],"app\\lib\\data\\ProductDAO.js");
-__d(function (global, _require, module, exports, _dependencyMap) {
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.mkProductState = undefined;
-
-  var _Product = _require(_dependencyMap[0], "../models/Product");
-
-  var _Product2 = _interopRequireDefault(_Product);
-
-  var _ProductDAO = _require(_dependencyMap[1], "../lib/data/ProductDAO");
-
-  var _ProductDAO2 = _interopRequireDefault(_ProductDAO);
-
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-  var mkProductState = exports.mkProductState = function mkProductState() {
-    var products = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : fetchAllProducts();
-    return products;
-  };
-
-  function fetchAllProducts() {
-    return _ProductDAO2.default.fetchAll();
-  }
-
-  var reducer = function reducer() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : mkProductState();
-    var action = arguments[1];
-
-    switch (action.type) {
-      default:
-        return state;
-    }
-  };
-
-  exports.default = reducer;
-},614,[529,613],"app\\reducers\\products.js");
+},614,[164],"app\\assets\\images\\site_dz.jpg");
 require(23);
 require(11);

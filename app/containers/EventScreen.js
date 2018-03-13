@@ -8,7 +8,7 @@ type State = {
   test: string
 };
 
-export default class LoginScreen extends Component<Props, State> {
+export default class EventScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +20,6 @@ export default class LoginScreen extends Component<Props, State> {
   render() {
     return (
       <ScrollView style={{ padding: 20 }}>
-        <Text style={{ fontSize: 27 }}>Choose Event</Text>
         <Picker
           selectedValue={this.state.test}
           onValueChange={(itemValue, itemIndex) =>
