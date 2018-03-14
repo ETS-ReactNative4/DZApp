@@ -60206,7 +60206,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     };
   }
 
-  _Store2.default.dispatch((0, _creators.loadCustomers)());
+  _Store2.default.dispatch((0, _creators.fetchCustomers)());
 
   var App = _wrapComponent("App")(function (_Component) {
     _inherits(App, _Component);
@@ -60243,7 +60243,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = App;
-},490,[111,179,12,491,519,528,620],"app\\App.js");
+},490,[111,179,12,491,519,528,611],"app\\App.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -62047,7 +62047,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.login = exports.setCustomer = exports.loadCustomers = undefined;
+  exports.fetchCustomers = exports.login = exports.setCustomer = exports.loadCustomers = exports.receiveCustomers = exports.requestCustomers = undefined;
 
   var _types = _require(_dependencyMap[0], "./types");
 
@@ -62059,11 +62059,38 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _CustomerDAO2 = _interopRequireDefault(_CustomerDAO);
 
-  var _Store = _require(_dependencyMap[3], "../Store");
+  var _Customer = _require(_dependencyMap[3], "../models/Customer");
+
+  var _Customer2 = _interopRequireDefault(_Customer);
+
+  var _Store = _require(_dependencyMap[4], "../Store");
 
   var _Store2 = _interopRequireDefault(_Store);
 
+  var _fetchWrapper = _require(_dependencyMap[5], "./fetchWrapper");
+
+  var _fetchWrapper2 = _interopRequireDefault(_fetchWrapper);
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var requestCustomers = exports.requestCustomers = function requestCustomers() {
+    return {
+      type: _types.REQUEST_CUSTOMERS
+    };
+  };
+
+  var receiveCustomers = exports.receiveCustomers = function receiveCustomers(json) {
+    var customers = [];
+
+    for (var i = 0; i < json.length; i++) {
+      customers.push(_Customer2.default.fromObject(json[i]));
+    }
+
+    return {
+      type: _types.RECEIVE_CUSTOMERS,
+      data: customers
+    };
+  };
 
   var loadCustomers = exports.loadCustomers = function loadCustomers() {
     var customers = _CustomerDAO2.default.fetchAll();
@@ -62081,13 +62108,13 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     };
   };
 
-  var login = exports.login = function login(userCredentials) {
+  var login = exports.login = function login(userCredentials, navigation) {
     var customers = _Store2.default.getState().customerReducer.customers;
 
     var cashiers = customers.filter(function (c) {
       return c.role === _Roles2.default.CASHIER;
     });
-    var cashierId = -1;
+    var cashierId = null;
 
     for (var i = 0; i < cashiers.length; i++) {
       var userName = cashiers[i].userName;
@@ -62099,7 +62126,8 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       }
     }
 
-    if (cashierId !== -1) {
+    if (cashierId) {
+      navigation.navigate("EventScreen");
       return {
         type: _types.LOGIN_SUCCESS,
         data: cashierId
@@ -62110,7 +62138,20 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       };
     }
   };
-},519,[520,521,522,528],"app\\actions\\creators.js");
+
+  var fetchCustomers = exports.fetchCustomers = function fetchCustomers() {
+    return function (dispatch) {
+      dispatch(requestCustomers());
+      return (0, _fetchWrapper2.default)(1000, fetch("http://10.0.2.2:8000/customers")).then(function (response) {
+        return response.json();
+      }).then(function (json) {
+        return dispatch(receiveCustomers(json));
+      }).catch(function (error) {
+        return console.log("An error occured", error);
+      });
+    };
+  };
+},519,[520,521,522,525,528,619],"app\\actions\\creators.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -62118,6 +62159,9 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var LOGIN_AT_START = exports.LOGIN_AT_START = "LOGIN_AT_START";
   var LOGIN_SUCCESS = exports.LOGIN_SUCCESS = "LOGIN_SUCCESS";
   var LOGIN_ERROR = exports.LOGIN_ERROR = "LOGIN_ERROR";
+  var FETCH_CUSTOMERS = exports.FETCH_CUSTOMERS = "FETCH_CUSTOMERS";
+  var REQUEST_CUSTOMERS = exports.REQUEST_CUSTOMERS = "FETCH_CUSTOMERS";
+  var RECEIVE_CUSTOMERS = exports.RECEIVE_CUSTOMERS = "RECEIVE_CUSTOMERS";
   var LOAD_CUSTOMERS = exports.LOAD_CUSTOMERS = "LOAD_CUSTOMERS";
   var SET_CUSTOMER = exports.SET_CUSTOMER = "SET_CUSTOMER";
 },520,[],"app\\actions\\types.js");
@@ -62274,6 +62318,13 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   var Customer = function () {
+    _createClass(Customer, null, [{
+      key: "fromObject",
+      value: function fromObject(obj) {
+        return new Customer(obj._id, obj.firstName, obj.lastName, obj.role, obj.creditBalance, obj.userName, obj.hashedPass, obj.salt);
+      }
+    }]);
+
     function Customer(id, lastName, firstName, role, creditBalance, userName, hashedPass, salt) {
       _classCallCheck(this, Customer);
 
@@ -62461,7 +62512,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var loggerMiddleWare = (0, _reduxLogger.createLogger)();
   var Store = (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleWare));
   exports.default = Store;
-},528,[502,529,530,531,615],"app\\Store.js");
+},528,[502,529,530,531,534],"app\\Store.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -63136,8 +63187,9 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _types = _require(_dependencyMap[0], "../actions/types");
 
   var initialState = {
+    isFetching: false,
     customers: [],
-    customerId: -1
+    customerId: null
   };
 
   var reducer = function reducer() {
@@ -63145,6 +63197,16 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     var action = arguments[1];
 
     switch (action.type) {
+      case _types.REQUEST_CUSTOMERS:
+        return _extends({}, state, {
+          isFetching: true
+        });
+
+      case _types.RECEIVE_CUSTOMERS:
+        return _extends({}, state, {
+          customers: action.data
+        });
+
       case _types.LOAD_CUSTOMERS:
         return _extends({}, state, {
           customers: action.data
@@ -63172,7 +63234,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _types = _require(_dependencyMap[0], "../actions/types");
 
   var initialState = {
-    cashierId: -1,
+    cashierId: null,
     errorMessage: ""
   };
 
@@ -63189,7 +63251,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
       case _types.LOGIN_ERROR:
         return _extends({}, state, {
-          cashierId: -1,
+          cashierId: null,
           errorMessage: "Ongeldig(e) wachtwoord en/of gebruikersnaam"
         });
 
@@ -63233,8 +63295,8 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _reducer = _require(_dependencyMap[2], "./reducer");
 
   exports.createNavigationReducer = _reducer.createNavigationReducer;
-},615,[616,617,618],"node_modules\\react-navigation-redux-helpers\\src\\index.js");
-__d(function (global, _require, module, exports, _dependencyMap) {},616,[],"node_modules\\react-navigation-redux-helpers\\src\\types.js");
+},534,[535,536,537],"node_modules\\react-navigation-redux-helpers\\src\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {},535,[],"node_modules\\react-navigation-redux-helpers\\src\\types.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63313,7 +63375,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   exports.createReactNavigationReduxMiddleware = createReactNavigationReduxMiddleware;
   exports.createReduxBoundAddListener = createReduxBoundAddListener;
   exports.initializeListeners = initializeListeners;
-},617,[497,618],"node_modules\\react-navigation-redux-helpers\\src\\middleware.js");
+},536,[497,537],"node_modules\\react-navigation-redux-helpers\\src\\middleware.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63336,7 +63398,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   ;
   exports.createNavigationReducer = createNavigationReducer;
   exports.initAction = initAction;
-},618,[536],"node_modules\\react-navigation-redux-helpers\\src\\reducer.js");
+},537,[538],"node_modules\\react-navigation-redux-helpers\\src\\reducer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = {
     get createNavigationContainer() {
@@ -63452,7 +63514,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
 
   };
-},536,[537,542,540,539,543,544,580,584,601,571,585,581,568,545,546,548,552,551,554,555,603,606,586,598,600,582,607,608],"node_modules\\react-navigation\\src\\react-navigation.js");
+},538,[539,544,542,541,545,546,582,586,603,573,587,583,570,547,548,550,554,553,556,557,605,608,588,600,602,584,609,610],"node_modules\\react-navigation\\src\\react-navigation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63776,7 +63838,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return NavigationContainer;
   }
-},537,[111,179,12,538,539,540,541],"node_modules\\react-navigation\\src\\createNavigationContainer.js");
+},539,[111,179,12,540,541,542,543],"node_modules\\react-navigation\\src\\createNavigationContainer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63788,7 +63850,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var BackHandler = _reactNative.BackHandler || _reactNative.BackAndroid;
   exports.BackHandler = BackHandler;
   exports.MaskedViewIOS = _reactNative.MaskedViewIOS;
-},538,[12],"node_modules\\react-navigation\\src\\PlatformHelpers.native.js");
+},540,[12],"node_modules\\react-navigation\\src\\PlatformHelpers.native.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -63945,7 +64007,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     uri: uri,
     completeTransition: completeTransition
   };
-},539,[],"node_modules\\react-navigation\\src\\NavigationActions.js");
+},541,[],"node_modules\\react-navigation\\src\\NavigationActions.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64036,7 +64098,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _invariant2 = _interopRequireDefault(_invariant);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},540,[539,541],"node_modules\\react-navigation\\src\\addNavigationHelpers.js");
+},542,[541,543],"node_modules\\react-navigation\\src\\addNavigationHelpers.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -64073,7 +64135,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   module.exports = invariant;
-},541,[],"node_modules\\react-navigation\\src\\utils\\invariant.js");
+},543,[],"node_modules\\react-navigation\\src\\utils\\invariant.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64187,7 +64249,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
   };
   exports.default = StateUtils;
-},542,[541],"node_modules\\react-navigation\\src\\StateUtils.js");
+},544,[543],"node_modules\\react-navigation\\src\\StateUtils.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64269,7 +64331,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return Navigator;
     };
   }
-},543,[111,179],"node_modules\\react-navigation\\src\\navigators\\createNavigator.js");
+},545,[111,179],"node_modules\\react-navigation\\src\\navigators\\createNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64350,7 +64412,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     });
     return (0, _createNavigationContainer2.default)(navigator);
   };
-},544,[111,537,543,545,571,539],"node_modules\\react-navigation\\src\\navigators\\StackNavigator.js");
+},546,[111,539,545,547,573,541],"node_modules\\react-navigation\\src\\navigators\\StackNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -64493,7 +64555,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp2));
 
   exports.default = CardStackTransitioner;
-},545,[111,179,12,546,566,568,565],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackTransitioner.js");
+},547,[111,179,12,548,568,570,567],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackTransitioner.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65056,14 +65118,14 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = CardStack;
-},546,[111,179,547,12,548,551,539,540,563,564,565,567],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStack.js");
+},548,[111,179,549,12,550,553,541,542,565,566,567,569],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStack.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = clamp;
 
   function clamp(value, min, max) {
     return min < max ? value < min ? min : value > max ? max : value : value < max ? max : value > min ? min : value;
   }
-},547,[],"node_modules\\clamp\\index.js");
+},549,[],"node_modules\\clamp\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65169,7 +65231,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   Card = (0, _PointerEventsContainer2.default)(Card);
   exports.default = Card;
-},548,[111,179,12,549],"node_modules\\react-navigation\\src\\views\\CardStack\\Card.js");
+},550,[111,179,12,551],"node_modules\\react-navigation\\src\\views\\CardStack\\Card.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65333,7 +65395,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return Container;
   }
-},549,[111,179,541,550],"node_modules\\react-navigation\\src\\views\\CardStack\\PointerEventsContainer.js");
+},551,[111,179,543,552],"node_modules\\react-navigation\\src\\views\\CardStack\\PointerEventsContainer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -65364,7 +65426,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }();
 
   exports.default = AnimatedValueSubscription;
-},550,[12],"node_modules\\react-navigation\\src\\views\\AnimatedValueSubscription.js");
+},552,[12],"node_modules\\react-navigation\\src\\views\\AnimatedValueSubscription.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66055,7 +66117,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = (0, _withOrientation2.default)(Header);
-},551,[111,179,12,538,552,554,555,558,559,561,562],"node_modules\\react-navigation\\src\\views\\Header\\Header.js");
+},553,[111,179,12,540,554,556,557,560,561,563,564],"node_modules\\react-navigation\\src\\views\\Header\\Header.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66452,7 +66514,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp2));
 
   exports.default = (0, _withOrientation2.default)(SafeView);
-},552,[111,179,12,553],"node_modules\\react-native-safe-area-view\\index.js");
+},554,[111,179,12,555],"node_modules\\react-native-safe-area-view\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66573,7 +66635,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         height = _ref.height;
     return width > height;
   };
-},553,[111,179,12,496],"node_modules\\react-native-safe-area-view\\withOrientation.js");
+},555,[111,179,12,496],"node_modules\\react-native-safe-area-view\\withOrientation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66622,7 +66684,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = HeaderTitle;
-},554,[111,12],"node_modules\\react-navigation\\src\\views\\Header\\HeaderTitle.js");
+},556,[111,12],"node_modules\\react-navigation\\src\\views\\Header\\HeaderTitle.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66815,7 +66877,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = HeaderBackButton;
-},555,[111,179,12,556,557],"node_modules\\react-navigation\\src\\views\\Header\\HeaderBackButton.js");
+},557,[111,179,12,558,559],"node_modules\\react-navigation\\src\\views\\Header\\HeaderBackButton.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -66931,7 +66993,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp));
 
   exports.default = TouchableItem;
-},556,[111,179,12],"node_modules\\react-navigation\\src\\views\\TouchableItem.js");
+},558,[111,179,12],"node_modules\\react-navigation\\src\\views\\TouchableItem.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = _require(_dependencyMap[0], "react-native/Libraries/Image/AssetRegistry").registerAsset({
     "__packager_asset": true,
@@ -66943,7 +67005,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     "name": "back-icon",
     "type": "png"
   });
-},557,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon.png");
+},559,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon.png");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67149,7 +67211,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = ModularHeaderBackButton;
-},558,[111,179,12,556,557],"node_modules\\react-navigation\\src\\views\\Header\\ModularHeaderBackButton.js");
+},560,[111,179,12,558,559],"node_modules\\react-navigation\\src\\views\\Header\\ModularHeaderBackButton.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67299,7 +67361,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     forCenter: forCenter,
     forRight: forRight
   };
-},559,[12,560],"node_modules\\react-navigation\\src\\views\\Header\\HeaderStyleInterpolator.js");
+},561,[12,562],"node_modules\\react-navigation\\src\\views\\Header\\HeaderStyleInterpolator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67349,7 +67411,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   exports.default = getSceneIndicesForInterpolationInputRange;
-},560,[],"node_modules\\react-navigation\\src\\utils\\getSceneIndicesForInterpolationInputRange.js");
+},562,[],"node_modules\\react-navigation\\src\\utils\\getSceneIndicesForInterpolationInputRange.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67468,7 +67530,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         height = _ref.height;
     return width > height;
   };
-},561,[111,179,12,496],"node_modules\\react-navigation\\src\\views\\withOrientation.js");
+},563,[111,179,12,496],"node_modules\\react-navigation\\src\\views\\withOrientation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = _require(_dependencyMap[0], "react-native/Libraries/Image/AssetRegistry").registerAsset({
     "__packager_asset": true,
@@ -67480,7 +67542,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     "name": "back-icon-mask",
     "type": "png"
   });
-},562,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon-mask.png");
+},564,[164],"node_modules\\react-navigation\\src\\views\\assets\\back-icon-mask.png");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67618,7 +67680,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       };
     };
   }
-},563,[],"node_modules\\react-navigation\\src\\getChildEventSubscriber.js");
+},565,[],"node_modules\\react-navigation\\src\\getChildEventSubscriber.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67709,7 +67771,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp));
 
   exports.default = SceneView;
-},564,[111,179,130],"node_modules\\react-navigation\\src\\views\\SceneView.js");
+},566,[111,179,130],"node_modules\\react-navigation\\src\\views\\SceneView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67809,7 +67871,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     defaultTransitionConfig: defaultTransitionConfig,
     getTransitionConfig: getTransitionConfig
   };
-},565,[12,566,567],"node_modules\\react-navigation\\src\\views\\CardStack\\TransitionConfigs.js");
+},567,[12,568,569],"node_modules\\react-navigation\\src\\views\\CardStack\\TransitionConfigs.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -67983,7 +68045,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     forFade: forFade,
     canUseNativeDriver: canUseNativeDriver
   };
-},566,[12,560],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackStyleInterpolator.js");
+},568,[12,562],"node_modules\\react-navigation\\src\\views\\CardStack\\CardStackStyleInterpolator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68004,7 +68066,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return false;
   };
-},567,[12],"node_modules\\react-navigation\\src\\utils\\ReactNativeFeatures.js");
+},569,[12],"node_modules\\react-navigation\\src\\utils\\ReactNativeFeatures.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68332,7 +68394,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = Transitioner;
-},568,[111,179,12,541,569],"node_modules\\react-navigation\\src\\views\\Transitioner.js");
+},570,[111,179,12,543,571],"node_modules\\react-navigation\\src\\views\\Transitioner.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -68495,7 +68557,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return scenes;
   }
-},569,[541,570],"node_modules\\react-navigation\\src\\views\\ScenesReducer.js");
+},571,[543,572],"node_modules\\react-navigation\\src\\views\\ScenesReducer.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   'use strict';
 
@@ -68535,7 +68597,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   module.exports = shallowEqual;
-},570,[],"node_modules\\react-navigation\\src\\utils\\shallowEqual.js");
+},572,[],"node_modules\\react-navigation\\src\\utils\\shallowEqual.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69110,7 +69172,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       getScreenConfig: _getScreenConfigDeprecated2.default
     };
   };
-},571,[572,539,574,575,542,577,578,541,579],"node_modules\\react-navigation\\src\\routers\\StackRouter.js");
+},573,[574,541,576,577,544,579,580,543,581],"node_modules\\react-navigation\\src\\routers\\StackRouter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   var isarray = _require(_dependencyMap[0], 'isarray');
 
@@ -69401,12 +69463,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return stringToRegexp(path, keys, options);
   }
-},572,[573],"node_modules\\path-to-regexp\\index.js");
+},574,[575],"node_modules\\path-to-regexp\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = Array.isArray || function (arr) {
     return Object.prototype.toString.call(arr) == '[object Array]';
   };
-},573,[],"node_modules\\isarray\\index.js");
+},575,[],"node_modules\\isarray\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69491,7 +69553,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return outputConfig;
     };
   };
-},574,[541,575,540,576,563],"node_modules\\react-navigation\\src\\routers\\createConfigGetter.js");
+},576,[543,577,542,578,565],"node_modules\\react-navigation\\src\\routers\\createConfigGetter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69525,7 +69587,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return routeConfig;
   }
-},575,[541],"node_modules\\react-navigation\\src\\routers\\getScreenForRouteName.js");
+},577,[543],"node_modules\\react-navigation\\src\\routers\\getScreenForRouteName.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69557,7 +69619,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       })), ['}']).join('\n'));
     }
   };
-},576,[],"node_modules\\react-navigation\\src\\routers\\validateScreenOptions.js");
+},578,[],"node_modules\\react-navigation\\src\\routers\\validateScreenOptions.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69595,7 +69657,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }
 
   exports.default = validateRouteConfigMap;
-},577,[541],"node_modules\\react-navigation\\src\\routers\\validateRouteConfigMap.js");
+},579,[543],"node_modules\\react-navigation\\src\\routers\\validateRouteConfigMap.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69610,7 +69672,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   exports.default = function () {
     return (0, _invariant2.default)(false, '`getScreenConfig` has been replaced with `getScreenOptions`');
   };
-},578,[541],"node_modules\\react-navigation\\src\\routers\\getScreenConfigDeprecated.js");
+},580,[543],"node_modules\\react-navigation\\src\\routers\\getScreenConfigDeprecated.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69628,7 +69690,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   function generateKey() {
     return uniqueBaseId + "-" + uuidCount++;
   }
-},579,[],"node_modules\\react-navigation\\src\\routers\\KeyGenerator.js");
+},581,[],"node_modules\\react-navigation\\src\\routers\\KeyGenerator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -69673,7 +69735,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     });
     return (0, _createNavigationContainer2.default)(navigator);
   };
-},580,[111,581,582,537,543],"node_modules\\react-navigation\\src\\navigators\\SwitchNavigator.js");
+},582,[111,583,584,539,545],"node_modules\\react-navigation\\src\\navigators\\SwitchNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70017,7 +70079,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       getScreenConfig: _getScreenConfigDeprecated2.default
     };
   };
-},581,[541,575,574,539,577,578],"node_modules\\react-navigation\\src\\routers\\SwitchRouter.js");
+},583,[543,577,576,541,579,580],"node_modules\\react-navigation\\src\\routers\\SwitchRouter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70102,7 +70164,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react3.default.Component));
 
   exports.default = (0, _withCachedChildNavigation2.default)(SwitchContainer);
-},582,[111,179,564,583],"node_modules\\react-navigation\\src\\views\\SwitchView\\SwitchView.js");
+},584,[111,179,566,585],"node_modules\\react-navigation\\src\\views\\SwitchView\\SwitchView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70249,7 +70311,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return _class;
     }(_react3.default.PureComponent), _class.displayName = "withCachedChildNavigation(" + displayName + ")", _temp2));
   }
-},583,[111,179,540,563],"node_modules\\react-navigation\\src\\withCachedChildNavigation.js");
+},585,[111,179,542,565],"node_modules\\react-navigation\\src\\withCachedChildNavigation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70351,7 +70413,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     Default: _reactNative.Platform.OS === 'ios' ? Presets.iOSBottomTabs : Presets.AndroidTopTabs
   };
   exports.default = TabNavigator;
-},584,[111,12,543,537,585,586,598,600],"node_modules\\react-navigation\\src\\navigators\\TabNavigator.js");
+},586,[111,12,545,539,587,588,600,602],"node_modules\\react-navigation\\src\\navigators\\TabNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70675,7 +70737,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       getScreenConfig: _getScreenConfigDeprecated2.default
     };
   };
-},585,[541,575,574,539,577,578],"node_modules\\react-navigation\\src\\routers\\TabRouter.js");
+},587,[543,577,576,541,579,580],"node_modules\\react-navigation\\src\\routers\\TabRouter.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -70938,7 +71000,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       flex: 1
     }
   });
-},586,[111,179,12,587,552,597,583],"node_modules\\react-navigation\\src\\views\\TabView\\TabView.js");
+},588,[111,179,12,589,554,599,585],"node_modules\\react-navigation\\src\\views\\TabView\\TabView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = {
     get TabViewAnimated() {
@@ -70970,7 +71032,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
 
   };
-},587,[588,592,591,590,593,594,596],"node_modules\\react-native-tab-view\\src\\index.js");
+},589,[590,594,593,592,595,596,598],"node_modules\\react-native-tab-view\\src\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -71250,7 +71312,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       overflow: 'hidden'
     }
   });
-},588,[111,179,130,12,589,590,591,592],"node_modules\\react-native-tab-view\\src\\TabViewAnimated.js");
+},590,[111,179,130,12,591,592,593,594],"node_modules\\react-native-tab-view\\src\\TabViewAnimated.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -71304,7 +71366,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     useNativeDriver: _propTypes2.default.bool,
     children: _propTypes2.default.node.isRequired
   };
-},589,[130,12],"node_modules\\react-native-tab-view\\src\\TabViewPropTypes.js");
+},591,[130,12],"node_modules\\react-native-tab-view\\src\\TabViewPropTypes.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -71503,7 +71565,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       overflow: 'hidden'
     }
   });
-},590,[111,179,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerAndroid.js");
+},592,[111,179,12,591],"node_modules\\react-native-tab-view\\src\\TabViewPagerAndroid.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -71728,7 +71790,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       overflow: 'hidden'
     }
   });
-},591,[111,179,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerScroll.js");
+},593,[111,179,12,591],"node_modules\\react-native-tab-view\\src\\TabViewPagerScroll.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72000,7 +72062,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       alignItems: 'stretch'
     }
   });
-},592,[111,179,130,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerPan.js");
+},594,[111,179,130,12,591],"node_modules\\react-native-tab-view\\src\\TabViewPagerPan.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72252,7 +72314,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       alignItems: 'stretch'
     }
   });
-},593,[111,179,130,12,589],"node_modules\\react-native-tab-view\\src\\TabViewPagerExperimental.js");
+},595,[111,179,130,12,591],"node_modules\\react-native-tab-view\\src\\TabViewPagerExperimental.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -72872,7 +72934,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       height: 2
     }
   });
-},594,[111,179,130,12,595,589],"node_modules\\react-native-tab-view\\src\\TabBar.js");
+},596,[111,179,130,12,597,591],"node_modules\\react-native-tab-view\\src\\TabBar.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73016,7 +73078,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }, _temp2));
 
   exports.default = TouchableItem;
-},595,[111,179,130,12],"node_modules\\react-native-tab-view\\src\\TouchableItem.js");
+},597,[111,179,130,12],"node_modules\\react-native-tab-view\\src\\TouchableItem.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73098,7 +73160,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       });
     };
   }
-},596,[111,179],"node_modules\\react-native-tab-view\\src\\SceneMap.js");
+},598,[111,179],"node_modules\\react-native-tab-view\\src\\SceneMap.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73294,7 +73356,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       top: FAR_FAR_AWAY
     }
   });
-},597,[111,179,12,130,564],"node_modules\\react-navigation\\src\\views\\ResourceSavingSceneView.js");
+},599,[111,179,12,130,566],"node_modules\\react-navigation\\src\\views\\ResourceSavingSceneView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73514,7 +73576,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       backgroundColor: 'transparent'
     }
   });
-},598,[111,179,12,587,599],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarTop.js");
+},600,[111,179,12,589,601],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarTop.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -73665,7 +73727,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       justifyContent: 'center'
     }
   });
-},599,[111,179,12],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarIcon.js");
+},601,[111,179,12],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarIcon.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74098,7 +74160,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = (0, _withOrientation2.default)(TabBarBottom);
-},600,[111,179,12,552,599,539,561],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarBottom.js");
+},602,[111,179,12,554,601,541,563],"node_modules\\react-navigation\\src\\views\\TabView\\TabBarBottom.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74265,7 +74327,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   };
 
   exports.default = DrawerNavigator;
-},601,[111,12,552,543,537,585,602,603,606],"node_modules\\react-navigation\\src\\navigators\\DrawerNavigator.js");
+},603,[111,12,554,545,539,587,604,605,608],"node_modules\\react-navigation\\src\\navigators\\DrawerNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74356,7 +74418,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react3.default.PureComponent));
 
   exports.default = (0, _withCachedChildNavigation2.default)(DrawerScreen);
-},602,[111,179,564,583],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerScreen.js");
+},604,[111,179,566,585],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74609,7 +74671,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react3.default.PureComponent));
 
   exports.default = DrawerView;
-},603,[111,179,12,604,540,605,563],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerView.js");
+},605,[111,179,12,606,542,607,565],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerView.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74618,7 +74680,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _reactNative = _require(_dependencyMap[0], 'react-native');
 
   exports.default = _reactNative.DrawerLayoutAndroid;
-},604,[12],"node_modules\\react-native-drawer-layout-polyfill\\dist\\index.android.js");
+},606,[12],"node_modules\\react-native-drawer-layout-polyfill\\dist\\index.android.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74816,7 +74878,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       flex: 1
     }
   });
-},605,[111,179,12,552,583,539,541],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerSidebar.js");
+},607,[111,179,12,554,585,541,543],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerSidebar.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -74980,7 +75042,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = DrawerNavigatorItems;
-},606,[111,12,552,556],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerNavigatorItems.js");
+},608,[111,12,554,558],"node_modules\\react-navigation\\src\\views\\Drawer\\DrawerNavigatorItems.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75072,7 +75134,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return (0, _hoistNonReactStatics2.default)(ComponentWithNavigation, Component);
   }
-},607,[111,179,130,496],"node_modules\\react-navigation\\src\\views\\withNavigation.js");
+},609,[111,179,130,496],"node_modules\\react-navigation\\src\\views\\withNavigation.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75207,7 +75269,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
     return (0, _hoistNonReactStatics2.default)(ComponentWithNavigationFocus, Component);
   }
-},608,[111,179,130,496,541],"node_modules\\react-navigation\\src\\views\\withNavigationFocus.js");
+},610,[111,179,130,496,543],"node_modules\\react-navigation\\src\\views\\withNavigationFocus.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75273,7 +75335,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
   });
   exports.default = RootNavigator;
-},620,[111,536,609,612,613,611],"app\\components\\RootNavigator.js");
+},611,[111,538,612,615,616,614],"app\\components\\RootNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75362,7 +75424,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
           userName: this.state.userName,
           password: this.state.password
         };
-        this.props.login(credentials);
+        this.props.login(credentials, this.props.navigation);
         this.setState({
           userName: "",
           password: ""
@@ -75391,7 +75453,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
                 lineNumber: 49
               }
             },
-            "Welkom bij DZapp!"
+            "Gelieve eerst aan te melden:"
           ),
           _react3.default.createElement(_reactNative.TextInput, {
             placeholder: "Gebruikersnaam",
@@ -75474,7 +75536,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   };
 
   exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginScreen);
-},609,[111,179,12,502,491,519,610,611],"app\\containers\\LoginScreen.js");
+},612,[111,179,12,502,491,519,613,614],"app\\containers\\LoginScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75522,7 +75584,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   });
 
   exports.default = styles;
-},610,[111,12,611],"app\\styles\\styles.js");
+},613,[111,12,614],"app\\styles\\styles.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75533,7 +75595,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     TITLE_COLOR: "#fff5fe"
   };
   exports.default = colors;
-},611,[],"app\\styles\\colors.js");
+},614,[],"app\\styles\\colors.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75663,7 +75725,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = EventScreen;
-},612,[111,179,12],"app\\containers\\EventScreen.js");
+},615,[111,179,12],"app\\containers\\EventScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -75762,7 +75824,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = Logotitle;
-},613,[111,179,12,610,614],"app\\components\\LogoTitle.js");
+},616,[111,179,12,613,617],"app\\components\\LogoTitle.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = _require(_dependencyMap[0], "react-native/Libraries/Image/AssetRegistry").registerAsset({
     "__packager_asset": true,
@@ -75774,6 +75836,21 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     "name": "site_dz",
     "type": "jpg"
   });
-},614,[164],"app\\assets\\images\\site_dz.jpg");
+},617,[164],"app\\assets\\images\\site_dz.jpg");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = fetchWrapper;
+
+  function fetchWrapper(ms, promise) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        reject(new Error("timeout"));
+      }, ms);
+      promise.then(resolve, reject);
+    });
+  }
+},619,[],"app\\actions\\fetchWrapper.js");
 require(23);
 require(11);

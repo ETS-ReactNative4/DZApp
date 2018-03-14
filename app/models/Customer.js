@@ -10,6 +10,19 @@ export default class Customer {
   _hashedPass: ?String;
   _salt: ?String;
 
+  static fromObject(obj: {}) {
+    return new Customer(
+      obj._id,
+      obj.firstName,
+      obj.lastName,
+      obj.role,
+      obj.creditBalance,
+      obj.userName,
+      obj.hashedPass,
+      obj.salt
+    );
+  }
+
   constructor(
     id: number,
     lastName: String,

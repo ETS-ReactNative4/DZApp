@@ -5,14 +5,14 @@ import { Text } from "react-native";
 
 //redux
 import { Provider, connect } from "react-redux";
-import { loadCustomers } from "./actions/creators";
+import { fetchCustomers } from "./actions/creators";
 import Store from "./Store";
 
 //containers
 import RootNavigator from "./components/RootNavigator";
 
 //load data on application start
-Store.dispatch(loadCustomers());
+Store.dispatch(fetchCustomers());
 
 type Props = {};
 type State = {};

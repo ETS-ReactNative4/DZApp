@@ -3,16 +3,23 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { createLogger } from "redux-logger";
 import rootReducer from "./reducers/index";
-import {
-  createReduxBoundAddListener,
-  createReactNavigationReduxMiddleware
-} from "react-navigation-redux-helpers";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 const loggerMiddleWare = createLogger();
 
-const Store = createStore(
-  rootReducer,
-  applyMiddleware(thunk, loggerMiddleWare)
-);
+const persistConfig = {
+  key: "root",
+  storage
+};
 
-export default Store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export default () => {
+  const store = createStore(
+    persistedReducer,
+    applyMiddleware(thunk, loggerMiddleWare)
+  );
+  const persistor = persistStore(store);
+  return store, persistor;
+};

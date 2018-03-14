@@ -36,7 +36,7 @@ class LoginScreen extends Component<Props, State> {
       userName: this.state.userName,
       password: this.state.password
     };
-    this.props.login(credentials);
+    this.props.login(credentials, this.props.navigation);
     this.setState({
       userName: "",
       password: ""
@@ -46,7 +46,7 @@ class LoginScreen extends Component<Props, State> {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.header1}>Welkom bij DZapp!</Text>
+        <Text style={styles.header1}>Gelieve eerst aan te melden:</Text>
         <TextInput
           placeholder="Gebruikersnaam"
           onChangeText={value => this.setState({ userName: value })}

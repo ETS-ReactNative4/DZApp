@@ -2,7 +2,7 @@
 import { LOGIN_SUCCESS, LOGIN_ERROR } from "../actions/types";
 
 const initialState = {
-  cashierId: -1,
+  cashierId: null,
   errorMessage: ""
 };
 
@@ -15,7 +15,7 @@ const reducer = (state: any = initialState, action: any) => {
       });
     case LOGIN_ERROR:
       return Object.assign({}, state, {
-        cashierId: -1,
+        cashierId: null,
         errorMessage: "Ongeldig(e) wachtwoord en/of gebruikersnaam"
       });
     default:
