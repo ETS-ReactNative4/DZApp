@@ -1,25 +1,20 @@
 //@flow
 import { createStore, applyMiddleware } from "redux";
+import { AsyncStorage } from "react-native";
+
+import {fetchCustomers} from "./actions/creators";
+
+//redux-persist
+import { persistStore, persistReducer } from "redux-persist";
+
+//middleware
 import thunk from "redux-thunk";
 import { createLogger } from "redux-logger";
+
+//reducer
 import rootReducer from "./reducers/index";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
 
-const loggerMiddleWare = createLogger();
+const middleware = [thunk, createLogger()];
 
-const persistConfig = {
-  key: "root",
-  storage
-};
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-export default () => {
-  const store = createStore(
-    persistedReducer,
-    applyMiddleware(thunk, loggerMiddleWare)
-  );
-  const persistor = persistStore(store);
-  return store, persistor;
-};
+export const store = createStore(rootReducer, applyMiddleware(...middleware));
+export const persistor = persistStore(store, null,() => store.dispatch(fetchCustomers()));

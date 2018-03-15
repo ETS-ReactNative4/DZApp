@@ -17,16 +17,16 @@ type Props = {};
 type State = {
   userName: string,
   password: string,
-  errorMessage: string
+  //errorMessage: string
 };
 
 class LoginScreen extends Component<Props, State> {
   constructor(props: {}) {
-    super(props);
+    super(props);    
     this.state = {
       userName: "",
       password: "",
-      errorMessage: ""
+      //errorMessage: ""
     };
     this.onLoginButtonPress = this.onLoginButtonPress.bind(this);
   }
@@ -44,6 +44,7 @@ class LoginScreen extends Component<Props, State> {
   }
 
   render() {
+    
     return (
       <View style={styles.container}>
         <Text style={styles.header1}>Gelieve eerst aan te melden:</Text>

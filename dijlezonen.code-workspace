@@ -8,10 +8,6 @@
 		}
 	],
 	"settings": {
-		"flow.useNPMPackagedFlow": true,
-		"javascript.format.enable": false,
-		"javascript.validate.enable": false,
-		"prettier.eslintIntegration": true,
-		"editor.formatOnSave": true
+		"todohighlight.keywords": ["TODO"]
 	}
 }

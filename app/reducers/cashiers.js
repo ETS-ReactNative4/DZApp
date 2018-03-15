@@ -1,22 +1,31 @@
 //@flow
-import { LOGIN_SUCCESS, LOGIN_ERROR } from "../actions/types";
+import * as ActionConstants from "../actions/types";
 
 const initialState = {
+  isAuthenticating: true,
   cashierId: null,
   errorMessage: ""
 };
 
 const reducer = (state: any = initialState, action: any) => {
   switch (action.type) {
-    case LOGIN_SUCCESS:
+    case ActionConstants.REQUEST_LOGIN:
+      return Object.assign({},state, {
+        isAuthenticating: true,
+        cashierId: null,
+        errorMessage: "",
+      })
+    case ActionConstants.LOGIN_SUCCESS:
       return Object.assign({}, state, {
+        isAuthenticating: false,
         cashierId: action.data,
         errorMessage: ""
       });
-    case LOGIN_ERROR:
+    case ActionConstants.LOGIN_ERROR:
       return Object.assign({}, state, {
+        isAuthenticating: false,
         cashierId: null,
-        errorMessage: "Ongeldig(e) wachtwoord en/of gebruikersnaam"
+        errorMessage: action.data
       });
     default:
       return state;

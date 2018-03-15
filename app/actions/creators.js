@@ -1,98 +1,101 @@
 //@flow
-import {
-  REQUEST_CUSTOMERS,
-  RECEIVE_CUSTOMERS,
-  LOAD_CUSTOMERS,
-  SET_CUSTOMER,
-  SET_CASHIER,
-  LOGIN_SUCCESS,
-  LOGIN_ERROR
-} from "./types";
+import * as ActionTypes from "./types";
 import Roles from "../models/Roles";
 import CustomerDAO from "../lib/data/mockremote/CustomerDAO";
 import Customer from "../models/Customer";
-import Store from "../Store";
+import { store, persistor } from "../Store";
 import fetchWrapper from "./fetchWrapper";
 
-//request customer list from API
+//ip addres to access localhost from android emulator
+const URI = "http://10.0.0.2:8000"
+
+/************ Synchronous Actions ***************/
+
+//API request for customer list started
 export const requestCustomers = () => {
   return {
-    type: REQUEST_CUSTOMERS
+    type: ActionTypes.REQUEST_CUSTOMERS
   };
 };
 
-//receive customer list from API
+//API response for customer list received
 export const receiveCustomers = json => {
   let customers = [];
   for (let i = 0; i < json.length; i++) {
-    customers.push(Customer.fromObject(json[i]));
+    //customers.push(Customer.fromObject(json[i]));
+    customers.push(json[i]);
   }
 
   return {
-    type: RECEIVE_CUSTOMERS,
+    type: ActionTypes.RECEIVE_CUSTOMERS,
     data: customers
   };
 };
 
-export const loadCustomers = () => {
-  let customers = CustomerDAO.fetchAll();
-  return {
-    type: LOAD_CUSTOMERS,
-    data: customers
-  };
-};
-
+//Set the active customer in global state
 export const setCustomer = (customerId: number): {} => {
   return {
-    type: SET_CUSTOMER,
+    type: ActionTypes.SET_CUSTOMER,
     data: customerId
   };
 };
 
-export const login = (userCredentials: {}, navigation: {}) => {
-  let customers = Store.getState().customerReducer.customers;
-  let cashiers = customers.filter(c => c.role === Roles.CASHIER);
-  let cashierId = null;
-
-  for (let i = 0; i < cashiers.length; i++) {
-    let userName = cashiers[i].userName;
-    let regexp = new RegExp(userName, "i");
-    if (
-      userCredentials.userName.match(regexp) &&
-      userCredentials.password === cashiers[i].hashedPass
-    ) {
-      cashierId = cashiers[i].id;
-      break;
-    }
+export const requestLogin = () => {
+  return {
+    type: ActionTypes.REQUEST_LOGIN,
   }
+}
 
-  if (cashierId) {
-    navigation.navigate("EventScreen");
-    return {
-      type: LOGIN_SUCCESS,
-      data: cashierId
-    };
-  } else {
-    return {
-      type: LOGIN_ERROR
-    };
+export const loginSuccess = (id:String) => {
+  return {
+    type: ActionTypes.LOGIN_SUCCESS,
+    data: id
   }
-};
+}
 
-//asynchronous actions for API calls
+export const loginError = (error:String) => {
+  return {
+    type: ActionTypes.LOGIN_ERROR,
+    data: error
+  }
+}
+
+/************ Asynchronous Actions ***************/
+
+//request Customer list from API
 export const fetchCustomers = () => {
   return function(dispatch) {
     dispatch(requestCustomers());
-
-    // return fetch("http://10.0.0.2:8000/customers", {
-    //   method: "GET",
-    //   timeout: 10
-    // })
-    //   .then(response => response.json(), error => dispatch(loadCustomers()))
-    //   .then(json => dispatch(receiveCustomers(json)));
-    return fetchWrapper(1000, fetch("http://10.0.2.2:8000/customers"))
+    return fetchWrapper(2000, fetch(URI + "/customers"))
       .then(response => response.json())
       .then(json => dispatch(receiveCustomers(json)))
-      .catch(error => console.log("An error occured", error));
+      .catch(error => console.log(error));
   };
 };
+
+//authentication against the API, since we don't want to store sensitive information
+//on mobile device
+export const login = (userCredentials:{},navigation:{}) => {
+  return function(dispatch){
+
+    dispatch(requestLogin());
+
+    return fetchWrapper(2000,
+    fetch(URI + "/customers/login",{
+      method:'POST',
+      body: JSON.stringify(userCredentials),
+      headers: new Headers({
+        'Content-Type':'application/json'
+      })
+    })).then(response => response.json())
+    .then(json => {
+      if(json.error){
+        dispatch(loginError(json.error));
+      } else{
+        navigation.navigate("EventScreen");
+        dispatch(loginSuccess(json.id));
+      } 
+    })
+    .catch(error => dispatch(loginError(error.message)));
+  }
+}

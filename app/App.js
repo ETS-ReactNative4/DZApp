@@ -5,14 +5,26 @@ import { Text } from "react-native";
 
 //redux
 import { Provider, connect } from "react-redux";
-import { fetchCustomers } from "./actions/creators";
-import Store from "./Store";
+import { store, persistor } from "./Store";
+
+//redux-persist
+import { PersistGate } from "redux-persist/integration/react";
 
 //containers
 import RootNavigator from "./components/RootNavigator";
 
+import { YellowBox } from 'react-native';
+YellowBox.ignoreWarnings([
+  'Warning: componentWillMount is deprecated',
+  'Warning: componentWillReceiveProps is deprecated',
+  'Warning: componentWillUpdate is deprecated'
+]);
+
 //load data on application start
-Store.dispatch(fetchCustomers());
+
+//store.dispatch(fetchCustomers());
+//persistor.purge();
+
 
 type Props = {};
 type State = {};
@@ -20,8 +32,10 @@ type State = {};
 export default class App extends Component {
   render() {
     return (
-      <Provider store={Store}>
-        <RootNavigator />
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <RootNavigator />
+        </PersistGate>
       </Provider>
     );
   }
