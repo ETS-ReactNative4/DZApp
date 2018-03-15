@@ -2,7 +2,8 @@
 import { createStore, applyMiddleware } from "redux";
 import { AsyncStorage } from "react-native";
 
-import {fetchCustomers} from "./actions/creators";
+import {fetchCustomers} from "./actions/customerActions";
+import {fetchEvents} from "./actions/eventActions";
 
 //redux-persist
 import { persistStore, persistReducer } from "redux-persist";
@@ -17,4 +18,9 @@ import rootReducer from "./reducers/index";
 const middleware = [thunk, createLogger()];
 
 export const store = createStore(rootReducer, applyMiddleware(...middleware));
-export const persistor = persistStore(store, null,() => store.dispatch(fetchCustomers()));
+//after rehydrating the store, we fetch updated list from backend (e.g. customers, products,...)
+export const persistor = persistStore(store, null,() => 
+{
+    store.dispatch(fetchCustomers());
+    store.dispatch(fetchEvents());
+});

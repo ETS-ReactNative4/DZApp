@@ -29,6 +29,27 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center"
+  },
+  eventBox: {
+    borderColor: colors.SECONDARY_COLOR,
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 5,
+    marginBottom:10,
+    flexDirection: 'row'
+  },
+  bold: {
+    fontWeight: 'bold'
+  },
+  row:{
+    flexDirection: 'row'
+  },
+  column:{
+    flexDirection: 'column',
+    marginRight: 15
+  },
+  primary:{
+    color:colors.PRIMARY_COLOR
   }
 });
 

@@ -3,26 +3,25 @@ import * as ActionConstants from "../actions/constants";
 
 const initialState = {
   isFetching: false,
-  customers: [],
-  customerId: null
+  events: [],
+  eventId: null
 };
 
 const reducer = (state: any = initialState, action: any) => {
   switch (action.type) {
-    case ActionConstants.REQUEST_CUSTOMERS:
+    case ActionConstants.REQUEST_EVENTS:
       return Object.assign({}, state, {
         isFetching: true
       });
-    case ActionConstants.RECEIVE_CUSTOMERS:
+    case ActionConstants.RECEIVE_EVENTS:
       return Object.assign({}, state, {
         isFetching: false,
-        customers: action.data
+        events: action.data
       });
-    case ActionConstants.SET_CUSTOMER:
+    case ActionConstants.SET_EVENT:
       return Object.assign({}, state, {
-        customerId: action.data
+        eventId: action.data
       });
-
     default:
       return state;
   }

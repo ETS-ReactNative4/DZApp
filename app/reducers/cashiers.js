@@ -1,5 +1,5 @@
 //@flow
-import * as ActionConstants from "../actions/types";
+import * as ActionConstants from "../actions/constants";
 
 const initialState = {
   isAuthenticating: true,

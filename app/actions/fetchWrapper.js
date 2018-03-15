@@ -1,3 +1,4 @@
+//wrapper for adding a timeout option to the promise returned by fetch()
 export default function fetchWrapper(ms, promise) {
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
