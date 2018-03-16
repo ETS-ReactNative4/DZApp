@@ -26,6 +26,13 @@ export const setEvent = (eventId: String): {} => {
   };
 };
 
+export const fetchEventsFailed = (error: {}): {} => {
+  return {
+    type: ActionConstants.FETCH_EVENTS_FAILED,
+    data: error
+  };
+};
+
 /************ Asynchronous Actions ***************/
 
 //request Customer list from API
@@ -35,6 +42,6 @@ export const fetchEvents = () => {
     return fetchWrapper(2000, fetch(ActionConstants.URL + "/events"))
       .then(response => response.json())
       .then(json => dispatch(receiveEvents(json)))
-      .catch(error => console.log(error));
+      .catch(error => dispatch(fetchEventsFailed(error)));
   };
 };

@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: "center"
+    justifyContent: "center",    
   },
   eventBox: {
     borderColor: colors.SECONDARY_COLOR,
@@ -50,6 +50,23 @@ const styles = StyleSheet.create({
   },
   primary:{
     color:colors.PRIMARY_COLOR
+  },
+  //loading screen
+  loadingContainer:{
+    backgroundColor:colors.PRIMARY_COLOR,
+    flexDirection:'column',
+    alignItems: "center"
+  },
+  loadingLogo:{
+    width: 100,
+    height: 100,
+    marginBottom:20
+  },
+  statusText:{
+    color: colors.TITLE_COLOR,    
+  },
+  loadingIndicator:{
+    marginBottom:20
   }
 });
 

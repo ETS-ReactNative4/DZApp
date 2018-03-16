@@ -12,6 +12,7 @@ import { PersistGate } from "redux-persist/integration/react";
 
 //containers
 import RootNavigator from "./components/RootNavigator";
+import LoadingScreen from "./containers/LoadingScreen"
 
 //remove deprecation warns in emulator
 import { YellowBox } from 'react-native';
@@ -28,7 +29,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+        <PersistGate loading={<LoadingScreen />} persistor={persistor}>
           <RootNavigator />
         </PersistGate>
       </Provider>

@@ -1,28 +1,36 @@
 //@flow
 import React, { Component } from "react";
-import { StackNavigator } from "react-navigation";
+import { StackNavigator,SwitchNavigator } from "react-navigation";
+
 import LoginScreen from "../containers/LoginScreen";
 import EventScreen from "../containers/EventScreen";
+import LoadingScreen from "../containers/LoadingScreen";
+
 import LogoTitle from "../components/LogoTitle";
 import colors from "../styles/colors";
 
-const RootNavigator = StackNavigator(
-  {
+
+
+const RootNavigator = SwitchNavigator(
+  {    
+    LoadingScreen:{
+      screen: LoadingScreen,
+    },
     LoginScreen: {
       screen: LoginScreen,
-      navigationOptions: {
-        title: "Aanmelden"
-      }
+      // navigationOptions: {
+      //   title: "Aanmelden"
+      // }
     },
     EventScreen: {
       screen: EventScreen,
-      navigationOptions: {
-        title: "Kies Evenement"
-      }
+      // navigationOptions: {
+      //   title: "Kies Evenement"
+      // }
     }
   },
   {
-    initialRouteName: "LoginScreen",
+    initialRouteName: "LoadingScreen",
     navigationOptions: {
       headerStyle: {
         backgroundColor: colors.PRIMARY_COLOR
