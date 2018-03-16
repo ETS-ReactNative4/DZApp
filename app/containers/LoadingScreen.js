@@ -50,10 +50,7 @@ class LoadingScreen extends Component<Props, State> {
     );
   }
 
-  componentDidMount() {}
-
-  componentDidUpdate() {
-    
+  componentDidUpdate() {    
     if (this.props.navigation && !this.props.isFetchingCustomers && !this.props.isFetchingEvents) {
       setTimeout(() => {
         this.props.navigation.navigate(
@@ -63,6 +60,7 @@ class LoadingScreen extends Component<Props, State> {
       }, 3000);
     }
   }
+
 }
 
 const mapStateToProps = state => {

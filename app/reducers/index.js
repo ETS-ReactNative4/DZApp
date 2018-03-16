@@ -3,6 +3,7 @@ import { combineReducers } from "redux";
 import customerReducer from "./customers";
 import cashierReducer from "./cashiers";
 import eventReducer from "./events";
+import productReducer from "./products";
 
 import { AsyncStorage } from "react-native";
 
@@ -38,6 +39,13 @@ const cashierReducerPersistConfig = {
   stateReconciler: autoMergeLevel2
 };
 
+const productReducerPersistConfig = {
+  key: "productReducer",
+  storage: AsyncStorage,
+  whitelist: ["products"],
+  stateReconciler: autoMergeLevel2
+}
+
 //create root reducer with persist configs
 const reducer = combineReducers({
   customerReducer: persistReducer(
@@ -45,7 +53,8 @@ const reducer = combineReducers({
     customerReducer
   ),
   eventReducer: persistReducer(eventReducerPersistConfig, eventReducer),
-  cashierReducer: persistReducer(cashierReducerPersistConfig, cashierReducer)
+  cashierReducer: persistReducer(cashierReducerPersistConfig, cashierReducer),
+  productReducer: persistReducer(productReducerPersistConfig,productReducer)
 });
 
 export default persistReducer(rootPersistConfig, reducer);

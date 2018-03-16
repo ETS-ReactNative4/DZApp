@@ -1,8 +1,7 @@
 //@ flow
 //react-native
 import React, { Component } from "react";
-import { View, Text, Button, ActivityIndicator,Picker } from "react-native";
-
+import { View, Text, Button, ActivityIndicator, Picker } from "react-native";
 
 //redux
 import { bindActionCreators } from "redux";
@@ -23,55 +22,57 @@ class EventScreen extends Component<Props, State> {
     this.state = {
       eventId: null
     };
-    this.onPress = this.onPress.bind(this);
+    this.onPress = this.onPress.bind(this);    
   }
 
-  componentWillUpdate(){
-      //we want to be logged in for this one
-    // if(!this.props.cashierId){
-    //   this.props.navigation.navigate('LoginScreen');
-    // }
+  componentDidUpdate(){
+    if(!this.props.cashierId){
+      this.props.navigation.navigate("LoginScreen");
+    }    
   }
 
-  render() {  
+  render() {
     if (this.props.isFetching) {
       return (
         <View style={styles.container}>
           <ActivityIndicator size="large" color={colors.SECONDARY_COLOR} />
         </View>
       );
-    } else {      
+    } else {
       return (
         <View style={styles.container}>
-        <Text style={styles.header1}>Kies een evenement:</Text>
+          <Text style={styles.header1}>Kies een evenement:</Text>
           <Picker
-            selectedValue={this.state.eventId}            
+            selectedValue={this.state.eventId}
             onValueChange={(itemValue, itemIndex) =>
               this.setState({ eventId: itemValue })
             }
           >
-          <Picker.Item label="Kies evenement..." />
+            <Picker.Item label="Kies evenement..." />
             {this.props.events.map((event, key) => (
               <Picker.Item label={event.name} value={event._id} key={key} />
             ))}
           </Picker>
-          {
-            this.state.eventId ? 
+          {this.state.eventId ? (
             <View style={styles.eventBox}>
-            <View style={styles.column}>
-            <Text style={styles.bold}>Van:</Text>
-            <Text style={styles.bold}>Tot:</Text>
-            <Text style={styles.bold}>Inschrijvingsgeld:</Text>
+              <View style={styles.column}>
+                <Text style={styles.bold}>Van:</Text>
+                <Text style={styles.bold}>Tot:</Text>
+                <Text style={styles.bold}>Inschrijvingsgeld:</Text>
+              </View>
+              <View style={styles.column}>
+                <Text style={styles.primary}>
+                  {this._getEventProps(this.state.eventId).fromDate}
+                </Text>
+                <Text style={styles.primary}>
+                  {this._getEventProps(this.state.eventId).toDate}
+                </Text>
+                <Text style={styles.primary}>
+                  {this._getEventProps(this.state.eventId).subscriptionFee}
+                </Text>
+              </View>
             </View>
-            <View style={styles.column}>
-            <Text style={styles.primary}>{this._getEventProps(this.state.eventId).fromDate}</Text>
-              <Text style={styles.primary}>{this._getEventProps(this.state.eventId).toDate}</Text>
-              <Text style={styles.primary}>{this._getEventProps(this.state.eventId).subscriptionFee}</Text>
-            </View>
-             
-
-            </View> : null
-          }          
+          ) : null}
           <Button
             onPress={this.onPress}
             title="Kies evenement"
@@ -85,23 +86,24 @@ class EventScreen extends Component<Props, State> {
   onPress() {
     console.log(this.state.eventId);
     this.props.setEvent(this.state.eventId);
-    //this.props.navigation.navigate("OrderScreen");
+    this.props.navigation.navigate("MainFlow");
   }
 
-  _getEventProps(eventId:number) {
+  _getEventProps(eventId: number) {
     let event = this.props.events.filter(e => e._id === eventId)[0];
     let fromDate = new Date(event.fromDate);
     let toDate = new Date(event.toDate);
-    let subscriptionFee = event.subscriptionFee ? event.subscriptionFee + ' €' : "geen";
+    let subscriptionFee = event.subscriptionFee
+      ? event.subscriptionFee + " €"
+      : "geen";
     let fromDateString = `${fromDate.getDate()}/${fromDate.getMonth()}/${fromDate.getFullYear()}`;
     let toDateString = `${toDate.getDate()}/${toDate.getMonth()}/${toDate.getFullYear()}`;
 
     return {
       fromDate: fromDateString,
       toDate: toDateString,
-      subscriptionFee: subscriptionFee,
-    }
-
+      subscriptionFee: subscriptionFee
+    };
   }
 }
 
@@ -112,7 +114,7 @@ const mapStateToProps = state => {
       return new Date(a.fromDate) - new Date(b.fromDate);
     }),
     isFetching: state.eventReducer.isFetching,
-    cashierId: state.cashierReducer.cashierId,
+    cashierId: state.cashierReducer.cashierId
   };
 };
 

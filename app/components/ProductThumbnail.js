@@ -1,33 +1,33 @@
 //@flow
 import React, { Component } from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
-import Product from "../models/Product";
-import Order from "../models/Order";
+//import Product from "../models/Product";
+//import Order from "../models/Order";
 
 type Props = {
-  product: Product,
+  product: {},
   quantity: number,
-  onPress: () => void,
-  onLongPress: () => void
+  //onPress: () => void,
+  //onLongPress: () => void
 };
 
 export default class ProductThumbnail extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {};
+    this.state = {};    
   }
 
   render() {
     return (
       <TouchableOpacity
         style={styles.button}
-        onPress={this.props.onPress}
-        onLongPress={this.props.onLongPress}
+        //onPress={this.props.onPress}
+        //onLongPress={this.props.onLongPress}
       >
         <View style={styles.imageView}>
           <Image
             style={styles.image}
-            source={{ uri: this.props.product.imageUri }}
+            source={{ uri: this.props.product.imageUrl }}
           />
           <Text style={styles.quantityLabel}>{this.props.quantity}</Text>
         </View>
