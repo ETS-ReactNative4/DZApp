@@ -35,7 +35,7 @@ class OrderScreen extends Component<Props,State> {
   render() {    
     console.log(this.props.products);
     return (
-    <View>
+    <View style={styles.container}>
         <GridView
           itemDimension={130}
           items={this.props.products}

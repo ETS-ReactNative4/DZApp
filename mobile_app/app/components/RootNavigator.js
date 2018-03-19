@@ -54,7 +54,7 @@ const RootNavigator = SwitchNavigator(
     MainFlow: flowNavigator
   },
   {
-    initialRouteName: "LoginScreen",
+    initialRouteName: "LoadingScreen",
     navigationOptions: {
       headerStyle: {
         backgroundColor: colors.PRIMARY_COLOR
