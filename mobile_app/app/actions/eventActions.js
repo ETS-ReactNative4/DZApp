@@ -39,7 +39,7 @@ export const fetchEventsFailed = (error: {}): {} => {
 export const fetchEvents = () => {
   return function(dispatch) {
     dispatch(requestEvents());
-    return fetchWrapper(2000, fetch(ActionConstants.URL + "/events"))
+    return fetchWrapper(5000, fetch(ActionConstants.URL + "/events"))
       .then(response => response.json())
       .then(json => dispatch(receiveEvents(json)))
       .catch(error => dispatch(fetchEventsFailed(error)));

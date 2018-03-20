@@ -60208,7 +60208,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     };
   }
 
-  _reactNative.YellowBox.ignoreWarnings(['Warning: componentWillMount is deprecated', 'Warning: componentWillReceiveProps is deprecated', 'Warning: componentWillUpdate is deprecated']);
+  _reactNative.YellowBox.ignoreWarnings(["Warning: componentWillMount is deprecated", "Warning: componentWillReceiveProps is deprecated", "Warning: componentWillUpdate is deprecated"]);
 
   var App = _wrapComponent("App")(function (_Component) {
     _inherits(App, _Component);
@@ -62147,7 +62147,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var fetchCustomers = exports.fetchCustomers = function fetchCustomers() {
     return function (dispatch) {
       dispatch(requestCustomers());
-      return (0, _fetchWrapper2.default)(2000, fetch(ActionConstants.URL + "/customers")).then(function (response) {
+      return (0, _fetchWrapper2.default)(5000, fetch(ActionConstants.URL + "/customers")).then(function (response) {
         return response.json();
       }).then(function (json) {
         return dispatch(receiveCustomers(json));
@@ -62161,7 +62161,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  var URL = exports.URL = "http://10.0.2.2:8000";
+  var URL = exports.URL = "http://192.168.0.132:8000";
   var REQUEST_CUSTOMERS = exports.REQUEST_CUSTOMERS = "REQUEST_CUSTOMERS";
   var RECEIVE_CUSTOMERS = exports.RECEIVE_CUSTOMERS = "RECEIVE_CUSTOMERS";
   var SET_CUSTOMER = exports.SET_CUSTOMER = "SET_CUSTOMER";
@@ -62243,7 +62243,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var fetchEvents = exports.fetchEvents = function fetchEvents() {
     return function (dispatch) {
       dispatch(requestEvents());
-      return (0, _fetchWrapper2.default)(2000, fetch(ActionConstants.URL + "/events")).then(function (response) {
+      return (0, _fetchWrapper2.default)(5000, fetch(ActionConstants.URL + "/events")).then(function (response) {
         return response.json();
       }).then(function (json) {
         return dispatch(receiveEvents(json));
@@ -62311,7 +62311,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var fetchProducts = exports.fetchProducts = function fetchProducts() {
     return function (dispatch) {
       dispatch(requestProducts());
-      return (0, _fetchWrapper2.default)(2000, fetch(ActionConstants.URL + "/products")).then(function (response) {
+      return (0, _fetchWrapper2.default)(5000, fetch(ActionConstants.URL + "/products")).then(function (response) {
         return response.json();
       }).then(function (json) {
         return dispatch(receiveProducts(json));
@@ -63803,7 +63803,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     key: "root",
     storage: _reactNative.AsyncStorage,
     stateReconciler: _autoMergeLevel2.default,
-    blacklist: ["cashierReducer", "customerReducer", "eventReducer"]
+    blacklist: ["cashierReducer", "customerReducer", "eventReducer", "productReducer"]
   };
   var customerReducerPersistConfig = {
     key: "customerReducer",
@@ -64262,11 +64262,17 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _OrderScreen2 = _interopRequireDefault(_OrderScreen);
 
-  var _LogoTitle = _require(_dependencyMap[6], "../components/LogoTitle");
+  var _OverviewScreen = _require(_dependencyMap[6], "../containers/OverviewScreen");
+
+  var _OverviewScreen2 = _interopRequireDefault(_OverviewScreen);
+
+  var _LogoTitle = _require(_dependencyMap[7], "../components/LogoTitle");
 
   var _LogoTitle2 = _interopRequireDefault(_LogoTitle);
 
-  var _colors = _require(_dependencyMap[7], "../styles/colors");
+  var _HeaderButtons = _require(_dependencyMap[8], "../components/HeaderButtons");
+
+  var _colors = _require(_dependencyMap[9], "../styles/colors");
 
   var _colors2 = _interopRequireDefault(_colors);
 
@@ -64274,9 +64280,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var flowNavigator = (0, _reactNavigation.StackNavigator)({
     OrderScreen: {
-      screen: _OrderScreen2.default,
+      screen: _OrderScreen2.default
+    },
+    OverviewScreen: {
+      screen: _OverviewScreen2.default,
       navigationOptions: {
-        title: "Bestellen"
+        title: "Overzicht"
       }
     }
   }, {
@@ -64288,15 +64297,6 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       headerTintColor: _colors2.default.TITLE_COLOR,
       headerTitleStyle: {
         fontWeight: "bold"
-      },
-      headerTitle: function headerTitle(props) {
-        return _react2.default.createElement(_LogoTitle2.default, {
-          title: props.children,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 32
-          }
-        });
       }
     }
   });
@@ -64312,7 +64312,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     },
     MainFlow: flowNavigator
   }, {
-    initialRouteName: "MainFlow",
+    initialRouteName: "LoadingScreen",
     navigationOptions: {
       headerStyle: {
         backgroundColor: _colors2.default.PRIMARY_COLOR
@@ -64326,14 +64326,14 @@ __d(function (global, _require, module, exports, _dependencyMap) {
           title: props.children,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 66
+            lineNumber: 75
           }
         });
       }
     }
   });
   exports.default = RootNavigator;
-},545,[111,546,619,623,624,626,655,622],"app\\components\\RootNavigator.js");
+},545,[111,546,619,623,624,626,703,704,702,622],"app\\components\\RootNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = {
     get createNavigationContainer() {
@@ -76550,7 +76550,8 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       fontWeight: "bold"
     },
     row: {
-      flexDirection: "row"
+      flexDirection: "row",
+      justifyContent: "space-between"
     },
     column: {
       flexDirection: "column",
@@ -76629,9 +76630,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       marginBottom: 5
     },
     quantityValueLabel: {
-      color: _colors2.default.SECONDARY_COLOR,
-      fontSize: 20,
-      marginBottom: 5
+      color: _colors2.default.SECONDARY_COLOR
     },
     quantitySliderTrackStyle: {
       height: 2,
@@ -76657,6 +76656,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       borderColor: _colors2.default.PRIMARY_COLOR,
       borderRadius: 10,
       justifyContent: "center"
+    },
+    listItemContainer: {},
+    separator: {
+      height: 2,
+      width: "100%",
+      backgroundColor: _colors2.default.SECONDARY_COLOR
     }
   });
 
@@ -77073,7 +77078,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             style: [_styles2.default.loadingContainer, _styles2.default.container],
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 36
+              lineNumber: 35
             }
           },
           _react3.default.createElement(_reactNative.Image, {
@@ -77082,7 +77087,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             resizemode: "contain",
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 37
+              lineNumber: 36
             }
           }),
           _react3.default.createElement(_reactNative.ActivityIndicator, {
@@ -77092,7 +77097,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             animating: this.props.loading,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 42
+              lineNumber: 41
             }
           }),
           _react3.default.createElement(
@@ -77101,7 +77106,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               style: _styles2.default.statusText,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 48
+                lineNumber: 47
               }
             },
             this.props.statusText
@@ -77109,13 +77114,13 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         );
       }
     }, {
-      key: "componentDidUpdate",
-      value: function componentDidUpdate() {
+      key: "componentDidMount",
+      value: function componentDidMount() {
         var _this2 = this;
 
         if (this.props.navigation && !this.props.isFetchingCustomers && !this.props.isFetchingEvents) {
           setTimeout(function () {
-            _this2.props.navigation.navigate(!_this2.props.cashierId ? 'LoginScreen' : !_this2.props.eventId ? 'EventScreen' : '');
+            _this2.props.navigation.navigate(!_this2.props.cashierId ? "LoginScreen" : !_this2.props.eventId ? "EventScreen" : "");
           }, 3000);
         }
       }
@@ -77167,9 +77172,11 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _index2 = _interopRequireDefault(_index);
 
-  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\containers\\OrderScreen.js";
-
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  var _class,
+      _temp,
+      _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\containers\\OrderScreen.js";
 
   var _reactNative = _require(_dependencyMap[2], "react-native");
 
@@ -77181,27 +77188,33 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _reactNativeModal2 = _interopRequireDefault(_reactNativeModal);
 
-  var _styles = _require(_dependencyMap[5], "../styles/styles");
+  var _MaterialIcons = _require(_dependencyMap[5], "react-native-vector-icons/MaterialIcons");
+
+  var _MaterialIcons2 = _interopRequireDefault(_MaterialIcons);
+
+  var _styles = _require(_dependencyMap[6], "../styles/styles");
 
   var _styles2 = _interopRequireDefault(_styles);
 
-  var _colors = _require(_dependencyMap[6], "../styles/colors");
+  var _colors = _require(_dependencyMap[7], "../styles/colors");
 
   var _colors2 = _interopRequireDefault(_colors);
 
-  var _reactNativeSuperGrid = _require(_dependencyMap[7], "react-native-super-grid");
+  var _reactNativeSuperGrid = _require(_dependencyMap[8], "react-native-super-grid");
 
   var _reactNativeSuperGrid2 = _interopRequireDefault(_reactNativeSuperGrid);
 
-  var _ProductThumbnail = _require(_dependencyMap[8], "../components/ProductThumbnail");
+  var _ProductThumbnail = _require(_dependencyMap[9], "../components/ProductThumbnail");
 
   var _ProductThumbnail2 = _interopRequireDefault(_ProductThumbnail);
 
-  var _reactRedux = _require(_dependencyMap[9], "react-redux");
+  var _HeaderButtons = _require(_dependencyMap[10], "../components/HeaderButtons");
 
-  var _redux = _require(_dependencyMap[10], "redux");
+  var _reactRedux = _require(_dependencyMap[11], "react-redux");
 
-  var _productActions = _require(_dependencyMap[11], "../actions/productActions");
+  var _redux = _require(_dependencyMap[12], "redux");
+
+  var _productActions = _require(_dependencyMap[13], "../actions/productActions");
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77230,7 +77243,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     };
   }
 
-  var OrderScreen = _wrapComponent("OrderScreen")(function (_Component) {
+  var OrderScreen = _wrapComponent("OrderScreen")((_temp = _class = function (_Component) {
     _inherits(OrderScreen, _Component);
 
     function OrderScreen(props) {
@@ -77247,10 +77260,18 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       _this.onProductThumbnailLongPress = _this.onProductThumbnailLongPress.bind(_this);
       _this.removeSelectedProduct = _this.removeSelectedProduct.bind(_this);
       _this.toggleModalVisible = _this.toggleModalVisible.bind(_this);
+      _this.navToOverview = _this.navToOverview.bind(_this);
       return _this;
     }
 
     _createClass(OrderScreen, [{
+      key: "componentWillMount",
+      value: function componentWillMount() {
+        this.props.navigation.setParams({
+          navToOverview: this.navToOverview
+        });
+      }
+    }, {
       key: "render",
       value: function render() {
         var _this2 = this;
@@ -77261,7 +77282,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             style: _styles2.default.container,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 51
+              lineNumber: 73
             }
           },
           _react3.default.createElement(_reactNativeSuperGrid2.default, {
@@ -77281,7 +77302,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
                 isSelected: _this2.state.product === product,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 58
+                  lineNumber: 80
                 }
               });
             },
@@ -77289,7 +77310,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             spacing: 10,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 52
+              lineNumber: 74
             }
           }),
           _react3.default.createElement(
@@ -77297,9 +77318,9 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             {
               isVisible: this.state.modalIsVisible,
               animationIn: "slideInUp",
-              animationInTiming: 500,
+              animationInTiming: 200,
               animationOut: "slideOutDown",
-              animationOutTiming: 500,
+              animationOutTiming: 200,
               backdropColor: _colors2.default.PRIMARY_COLOR,
               onBackButtonPress: function onBackButtonPress() {
                 return _this2.toggleModalVisible();
@@ -77313,7 +77334,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               style: _styles2.default.quantityModal,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 73
+                lineNumber: 94
               }
             },
             this.renderModalContent()
@@ -77321,9 +77342,18 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         );
       }
     }, {
+      key: "navToOverview",
+      value: function navToOverview() {
+        this.props.navigation.navigate("OverviewScreen");
+      }
+    }, {
       key: "onProductThumbnailPress",
       value: function onProductThumbnailPress(productId) {
-        this.props.incrementProductQuantity(productId);
+        var unitsInOrderline = this.props.order.orderlines[productId] || 0;
+        var unitsInStock = this.props.products.find(function (p) {
+          return p._id === productId;
+        }).inStock;
+        if (unitsInOrderline < unitsInStock) this.props.incrementProductQuantity(productId);else _reactNative.Alert.alert("Onvoldoende stock");
       }
     }, {
       key: "onProductThumbnailLongPress",
@@ -77335,6 +77365,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
           product: product,
           quantity: this.props.order.orderlines[productId] ? this.props.order.orderlines[productId] : 0
         });
+        this.toggleModalVisible();
+      }
+    }, {
+      key: "onModalTrashIconPress",
+      value: function onModalTrashIconPress() {
+        this.props.setProductQuantity(this.state.product._id, 0);
         this.toggleModalVisible();
       }
     }, {
@@ -77363,38 +77399,63 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             style: _styles2.default.quantityModalContent,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 156
+              lineNumber: 160
             }
           },
-          _react3.default.createElement(_reactNative.View, {
-            style: _styles2.default.row,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 157
-            }
-          }),
           _react3.default.createElement(
-            _reactNative.Text,
+            _reactNative.View,
             {
-              style: _styles2.default.quantityInputTitle,
+              style: _styles2.default.row,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 158
+                lineNumber: 161
               }
             },
-            this.state.product ? this.state.product.name : "",
-            ":",
-            " ",
             _react3.default.createElement(
               _reactNative.Text,
               {
-                style: _styles2.default.quantityValueLabel,
+                style: _styles2.default.quantityInputTitle,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 160
+                  lineNumber: 162
                 }
               },
-              this.state.quantity
+              this.state.product ? this.state.product.name : "",
+              ":",
+              " ",
+              _react3.default.createElement(
+                _reactNative.Text,
+                {
+                  style: _styles2.default.quantityValueLabel,
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 164
+                  }
+                },
+                this.state.quantity
+              )
+            ),
+            this.state.quantity != 0 && _react3.default.createElement(
+              _reactNative.TouchableHighlight,
+              {
+                onPress: function onPress() {
+                  return _this3.onModalTrashIconPress();
+                },
+                underlayColor: _colors2.default.TITLE_COLOR,
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 168
+                }
+              },
+              _react3.default.createElement(_MaterialIcons2.default, {
+                name: "delete",
+                size: 30,
+                color: _colors2.default.SECONDARY_COLOR,
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 172
+                }
+              })
             )
           ),
           _react3.default.createElement(_reactNativeSlider2.default, {
@@ -77408,7 +77469,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               return _this3.props.setProductQuantity(_this3.state.product._id, value);
             },
             minimumValue: 0,
-            maximumValue: 50,
+            maximumValue: this.state.product ? this.state.product.inStock : 0,
             step: 1,
             trackStyle: _styles2.default.quantitySliderTrackStyle,
             thumbStyle: _styles2.default.quantitySliderThumbStyle,
@@ -77416,7 +77477,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             maximumTrackTintColor: _colors2.default.PRIMARY_COLOR,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 163
+              lineNumber: 176
             }
           }),
           _react3.default.createElement(_reactNative.Button, {
@@ -77425,7 +77486,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             onPress: this.toggleModalVisible,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 177
+              lineNumber: 190
             }
           })
         );
@@ -77433,7 +77494,20 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }]);
 
     return OrderScreen;
-  }(_react2.Component));
+  }(_react2.Component), _class.navigationOptions = function (_ref) {
+    var navigation = _ref.navigation;
+    var params = navigation.state.params || {};
+    return {
+      title: "Bestellen",
+      headerRight: _react3.default.createElement(_HeaderButtons.OverviewButton, {
+        onPress: params.navToOverview,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 47
+        }
+      })
+    };
+  }, _temp));
 
   var mapStateToProps = function mapStateToProps(state) {
     return {
@@ -77450,7 +77524,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   };
 
   exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(OrderScreen);
-},626,[111,179,12,627,628,621,622,652,654,491,502,524],"app\\containers\\OrderScreen.js");
+},626,[111,179,12,627,628,652,621,622,699,701,702,491,502,524],"app\\containers\\OrderScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
      'use strict';
 
@@ -80507,6 +80581,2518 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
+  exports.getImageSource = exports.ToolbarAndroid = exports.TabBarItemIOS = exports.TabBarItem = exports.Button = undefined;
+
+  var _createIconSet = _require(_dependencyMap[0], "./lib/create-icon-set");
+
+  var _createIconSet2 = _interopRequireDefault(_createIconSet);
+
+  var _MaterialIcons = _require(_dependencyMap[1], "./glyphmaps/MaterialIcons.json");
+
+  var _MaterialIcons2 = _interopRequireDefault(_MaterialIcons);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var iconSet = (0, _createIconSet2.default)(_MaterialIcons2.default, 'Material Icons', 'MaterialIcons.ttf');
+  exports.default = iconSet;
+  var Button = exports.Button = iconSet.Button;
+  var TabBarItem = exports.TabBarItem = iconSet.TabBarItem;
+  var TabBarItemIOS = exports.TabBarItemIOS = iconSet.TabBarItemIOS;
+  var ToolbarAndroid = exports.ToolbarAndroid = iconSet.ToolbarAndroid;
+  var getImageSource = exports.getImageSource = iconSet.getImageSource;
+},652,[653,698],"node_modules\\react-native-vector-icons\\MaterialIcons.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\node_modules\\react-native-vector-icons\\lib\\create-icon-set.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  exports.default = createIconSet;
+
+  var _propTypes = _require(_dependencyMap[2], "prop-types");
+
+  var _propTypes2 = _interopRequireDefault(_propTypes);
+
+  var _reactNative = _require(_dependencyMap[3], "./react-native");
+
+  var _iconButton = _require(_dependencyMap[4], "./icon-button");
+
+  var _iconButton2 = _interopRequireDefault(_iconButton);
+
+  var _tabBarItemIos = _require(_dependencyMap[5], "./tab-bar-item-ios");
+
+  var _tabBarItemIos2 = _interopRequireDefault(_tabBarItemIos);
+
+  var _toolbarAndroid = _require(_dependencyMap[6], "./toolbar-android");
+
+  var _toolbarAndroid2 = _interopRequireDefault(_toolbarAndroid);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+  function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    Icon: {
+      displayName: "Icon",
+      isInFunction: true
+    }
+  };
+
+  var _reactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/node_modules/react-native-vector-icons/lib/create-icon-set.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _reactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  var NativeIconAPI = _reactNative.NativeModules.RNVectorIconsManager || _reactNative.NativeModules.RNVectorIconsModule;
+  var DEFAULT_ICON_SIZE = 12;
+  var DEFAULT_ICON_COLOR = 'black';
+
+  function createIconSet(glyphMap, fontFamily, fontFile) {
+    var _class, _temp2;
+
+    var fontReference = fontFamily;
+
+    if (_reactNative.Platform.OS === 'android' && fontFile) {
+      fontReference = fontFile.replace(/\.(otf|ttf)$/, '');
+    }
+
+    if (_reactNative.Platform.OS === 'windows' && fontFile) {
+      fontReference = "Assets/" + fontFile + "#" + fontFamily;
+    }
+
+    var IconNamePropType = _propTypes2.default.oneOf(Object.keys(glyphMap));
+
+    var Icon = _wrapComponent("Icon")((_temp2 = _class = function (_PureComponent) {
+      _inherits(Icon, _PureComponent);
+
+      function Icon() {
+        var _ref;
+
+        var _temp, _this, _ret;
+
+        _classCallCheck(this, Icon);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Icon.__proto__ || Object.getPrototypeOf(Icon)).call.apply(_ref, [this].concat(args))), _this), _this.root = null, _this.handleRef = function (ref) {
+          _this.root = ref;
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+      }
+
+      _createClass(Icon, [{
+        key: "setNativeProps",
+        value: function setNativeProps(nativeProps) {
+          if (this.root) {
+            this.root.setNativeProps(nativeProps);
+          }
+        }
+      }, {
+        key: "render",
+        value: function render() {
+          var _props = this.props,
+              name = _props.name,
+              size = _props.size,
+              color = _props.color,
+              style = _props.style,
+              props = _objectWithoutProperties(_props, ["name", "size", "color", "style"]);
+
+          var glyph = name ? glyphMap[name] || '?' : '';
+
+          if (typeof glyph === 'number') {
+            glyph = String.fromCharCode(glyph);
+          }
+
+          var styleDefaults = {
+            fontSize: size,
+            color: color
+          };
+          var styleOverrides = {
+            fontFamily: fontReference,
+            fontWeight: 'normal',
+            fontStyle: 'normal'
+          };
+          props.style = [styleDefaults, style, styleOverrides];
+          props.ref = this.handleRef;
+          return _react3.default.createElement(
+            _reactNative.Text,
+            _extends({}, props, {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 82
+              }
+            }),
+            glyph,
+            this.props.children
+          );
+        }
+      }]);
+
+      return Icon;
+    }(_react2.PureComponent), _class.propTypes = {
+      name: IconNamePropType,
+      size: _propTypes2.default.number,
+      color: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+      children: _propTypes2.default.node,
+      style: _propTypes2.default.any
+    }, _class.defaultProps = {
+      size: DEFAULT_ICON_SIZE,
+      allowFontScaling: false
+    }, _temp2));
+
+    var imageSourceCache = {};
+
+    function ensureNativeModuleAvailable() {
+      if (!NativeIconAPI) {
+        if (_reactNative.Platform.OS === 'android') {
+          throw new Error('RNVectorIconsModule not available, did you properly integrate the module? Try running `react-native link react-native-vector-icons` and recompiling.');
+        }
+
+        throw new Error('RNVectorIconsManager not available, did you add the library to your project and link with libRNVectorIcons.a? Try running `react-native link react-native-vector-icons` and recompiling.');
+      }
+    }
+
+    function getImageSource(name) {
+      var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DEFAULT_ICON_SIZE;
+      var color = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DEFAULT_ICON_COLOR;
+      ensureNativeModuleAvailable();
+      var glyph = glyphMap[name] || '?';
+
+      if (typeof glyph === 'number') {
+        glyph = String.fromCharCode(glyph);
+      }
+
+      var processedColor = (0, _reactNative.processColor)(color);
+      var cacheKey = glyph + ":" + size + ":" + processedColor;
+
+      var scale = _reactNative.PixelRatio.get();
+
+      return new Promise(function (resolve, reject) {
+        var cached = imageSourceCache[cacheKey];
+
+        if (typeof cached !== 'undefined') {
+          if (!cached || cached instanceof Error) {
+            reject(cached);
+          } else {
+            resolve({
+              uri: cached,
+              scale: scale
+            });
+          }
+        } else {
+          NativeIconAPI.getImageForFont(fontReference, glyph, size, processedColor, function (err, image) {
+            var error = typeof err === 'string' ? new Error(err) : err;
+            imageSourceCache[cacheKey] = image || error || false;
+
+            if (!error && image) {
+              resolve({
+                uri: image,
+                scale: scale
+              });
+            } else {
+              reject(error);
+            }
+          });
+        }
+      });
+    }
+
+    function loadFont() {
+      var file = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : fontFile;
+
+      if (_reactNative.Platform.OS === 'ios') {
+        ensureNativeModuleAvailable();
+
+        if (!file) {
+          return Promise.reject(new Error('Unable to load font, because no file was specified. '));
+        }
+
+        return NativeIconAPI.loadFontWithFileName.apply(NativeIconAPI, _toConsumableArray(file.split('.')));
+      }
+
+      return Promise.resolve();
+    }
+
+    Icon.Button = (0, _iconButton2.default)(Icon);
+    Icon.TabBarItem = (0, _tabBarItemIos2.default)(IconNamePropType, getImageSource);
+    Icon.TabBarItemIOS = Icon.TabBarItem;
+    Icon.ToolbarAndroid = (0, _toolbarAndroid2.default)(IconNamePropType, getImageSource);
+    Icon.getImageSource = getImageSource;
+    Icon.loadFont = loadFont;
+    return Icon;
+  }
+},653,[111,179,130,654,655,695,697],"node_modules\\react-native-vector-icons\\lib\\create-icon-set.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _reactNative = _require(_dependencyMap[0], "react-native");
+
+  Object.keys(_reactNative).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _reactNative[key];
+      }
+    });
+  });
+},654,[12],"node_modules\\react-native-vector-icons\\lib\\react-native.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\node_modules\\react-native-vector-icons\\lib\\icon-button.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  exports.default = createIconButtonComponent;
+
+  var _isString = _require(_dependencyMap[2], "lodash/isString");
+
+  var _isString2 = _interopRequireDefault(_isString);
+
+  var _omit = _require(_dependencyMap[3], "lodash/omit");
+
+  var _omit2 = _interopRequireDefault(_omit);
+
+  var _pick = _require(_dependencyMap[4], "lodash/pick");
+
+  var _pick2 = _interopRequireDefault(_pick);
+
+  var _propTypes = _require(_dependencyMap[5], "prop-types");
+
+  var _propTypes2 = _interopRequireDefault(_propTypes);
+
+  var _reactNative = _require(_dependencyMap[6], "./react-native");
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    IconButton: {
+      displayName: "IconButton",
+      isInFunction: true
+    }
+  };
+
+  var _reactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/node_modules/react-native-vector-icons/lib/icon-button.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _reactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  var styles = _reactNative.StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      padding: 8
+    },
+    touchable: {
+      overflow: 'hidden'
+    },
+    icon: {
+      marginRight: 10
+    },
+    text: {
+      fontWeight: '600',
+      backgroundColor: 'transparent'
+    }
+  });
+
+  var IOS7_BLUE = '#007AFF';
+
+  function createIconButtonComponent(Icon) {
+    var _class, _temp;
+
+    return _wrapComponent("IconButton")((_temp = _class = function (_PureComponent) {
+      _inherits(IconButton, _PureComponent);
+
+      function IconButton() {
+        _classCallCheck(this, IconButton);
+
+        return _possibleConstructorReturn(this, (IconButton.__proto__ || Object.getPrototypeOf(IconButton)).apply(this, arguments));
+      }
+
+      _createClass(IconButton, [{
+        key: "render",
+        value: function render() {
+          var _props = this.props,
+              style = _props.style,
+              iconStyle = _props.iconStyle,
+              children = _props.children,
+              restProps = _objectWithoutProperties(_props, ["style", "iconStyle", "children"]);
+
+          var iconProps = (0, _pick2.default)(restProps, Object.keys(_reactNative.Text.propTypes), 'style', 'name', 'size', 'color');
+          var touchableProps = (0, _pick2.default)(restProps, Object.keys(_reactNative.TouchableHighlight.propTypes));
+          var props = (0, _omit2.default)(restProps, Object.keys(iconProps), Object.keys(touchableProps), 'iconStyle', 'borderRadius', 'backgroundColor');
+          iconProps.style = iconStyle ? [styles.icon, iconStyle] : styles.icon;
+          var colorStyle = (0, _pick2.default)(this.props, 'color');
+          var blockStyle = (0, _pick2.default)(this.props, 'backgroundColor', 'borderRadius');
+          return _react3.default.createElement(
+            _reactNative.TouchableHighlight,
+            _extends({
+              style: [styles.touchable, blockStyle]
+            }, touchableProps, {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 80
+              }
+            }),
+            _react3.default.createElement(
+              _reactNative.View,
+              _extends({
+                style: [styles.container, blockStyle, style]
+              }, props, {
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 84
+                }
+              }),
+              _react3.default.createElement(Icon, _extends({}, iconProps, {
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 85
+                }
+              })),
+              (0, _isString2.default)(children) ? _react3.default.createElement(
+                _reactNative.Text,
+                {
+                  style: [styles.text, colorStyle],
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 87
+                  }
+                },
+                children
+              ) : children
+            )
+          );
+        }
+      }]);
+
+      return IconButton;
+    }(_react2.PureComponent), _class.propTypes = {
+      backgroundColor: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+      borderRadius: _propTypes2.default.number,
+      color: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+      size: _propTypes2.default.number,
+      iconStyle: _propTypes2.default.any,
+      style: _propTypes2.default.any,
+      children: _propTypes2.default.node
+    }, _class.defaultProps = {
+      backgroundColor: IOS7_BLUE,
+      borderRadius: 5,
+      color: 'white',
+      size: 20
+    }, _temp));
+  }
+},655,[111,179,656,657,691,130,654],"node_modules\\react-native-vector-icons\\lib\\icon-button.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+    var baseGetTag = _require(_dependencyMap[0], './_baseGetTag'),
+        isArray = _require(_dependencyMap[1], './isArray'),
+        isObjectLike = _require(_dependencyMap[2], './isObjectLike');
+
+    var stringTag = '[object String]';
+
+    function isString(value) {
+        return typeof value == 'string' || !isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag;
+    }
+
+    module.exports = isString;
+},656,[206,248,257],"node_modules\\lodash\\isString.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var arrayMap = _require(_dependencyMap[0], './_arrayMap'),
+      baseClone = _require(_dependencyMap[1], './_baseClone'),
+      baseUnset = _require(_dependencyMap[2], './_baseUnset'),
+      castPath = _require(_dependencyMap[3], './_castPath'),
+      copyObject = _require(_dependencyMap[4], './_copyObject'),
+      customOmitClone = _require(_dependencyMap[5], './_customOmitClone'),
+      flatRest = _require(_dependencyMap[6], './_flatRest'),
+      getAllKeysIn = _require(_dependencyMap[7], './_getAllKeysIn');
+
+  var CLONE_DEEP_FLAG = 1,
+      CLONE_FLAT_FLAG = 2,
+      CLONE_SYMBOLS_FLAG = 4;
+  var omit = flatRest(function (object, paths) {
+    var result = {};
+
+    if (object == null) {
+      return result;
+    }
+
+    var isDeep = false;
+    paths = arrayMap(paths, function (path) {
+      path = castPath(path, object);
+      isDeep || (isDeep = path.length > 1);
+      return path;
+    });
+    copyObject(object, getAllKeysIn(object), result);
+
+    if (isDeep) {
+      result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG, customOmitClone);
+    }
+
+    var length = paths.length;
+
+    while (length--) {
+      baseUnset(result, paths[length]);
+    }
+
+    return result;
+  });
+  module.exports = omit;
+},657,[290,658,684,282,309,688,689,670],"node_modules\\lodash\\omit.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var Stack = _require(_dependencyMap[0], './_Stack'),
+      arrayEach = _require(_dependencyMap[1], './_arrayEach'),
+      assignValue = _require(_dependencyMap[2], './_assignValue'),
+      baseAssign = _require(_dependencyMap[3], './_baseAssign'),
+      baseAssignIn = _require(_dependencyMap[4], './_baseAssignIn'),
+      cloneBuffer = _require(_dependencyMap[5], './_cloneBuffer'),
+      copyArray = _require(_dependencyMap[6], './_copyArray'),
+      copySymbols = _require(_dependencyMap[7], './_copySymbols'),
+      copySymbolsIn = _require(_dependencyMap[8], './_copySymbolsIn'),
+      getAllKeys = _require(_dependencyMap[9], './_getAllKeys'),
+      getAllKeysIn = _require(_dependencyMap[10], './_getAllKeysIn'),
+      getTag = _require(_dependencyMap[11], './_getTag'),
+      initCloneArray = _require(_dependencyMap[12], './_initCloneArray'),
+      initCloneByTag = _require(_dependencyMap[13], './_initCloneByTag'),
+      initCloneObject = _require(_dependencyMap[14], './_initCloneObject'),
+      isArray = _require(_dependencyMap[15], './isArray'),
+      isBuffer = _require(_dependencyMap[16], './isBuffer'),
+      isMap = _require(_dependencyMap[17], './isMap'),
+      isObject = _require(_dependencyMap[18], './isObject'),
+      isSet = _require(_dependencyMap[19], './isSet'),
+      keys = _require(_dependencyMap[20], './keys');
+
+  var CLONE_DEEP_FLAG = 1,
+      CLONE_FLAT_FLAG = 2,
+      CLONE_SYMBOLS_FLAG = 4;
+  var argsTag = '[object Arguments]',
+      arrayTag = '[object Array]',
+      boolTag = '[object Boolean]',
+      dateTag = '[object Date]',
+      errorTag = '[object Error]',
+      funcTag = '[object Function]',
+      genTag = '[object GeneratorFunction]',
+      mapTag = '[object Map]',
+      numberTag = '[object Number]',
+      objectTag = '[object Object]',
+      regexpTag = '[object RegExp]',
+      setTag = '[object Set]',
+      stringTag = '[object String]',
+      symbolTag = '[object Symbol]',
+      weakMapTag = '[object WeakMap]';
+  var arrayBufferTag = '[object ArrayBuffer]',
+      dataViewTag = '[object DataView]',
+      float32Tag = '[object Float32Array]',
+      float64Tag = '[object Float64Array]',
+      int8Tag = '[object Int8Array]',
+      int16Tag = '[object Int16Array]',
+      int32Tag = '[object Int32Array]',
+      uint8Tag = '[object Uint8Array]',
+      uint8ClampedTag = '[object Uint8ClampedArray]',
+      uint16Tag = '[object Uint16Array]',
+      uint32Tag = '[object Uint32Array]';
+  var cloneableTags = {};
+  cloneableTags[argsTag] = cloneableTags[arrayTag] = cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] = cloneableTags[boolTag] = cloneableTags[dateTag] = cloneableTags[float32Tag] = cloneableTags[float64Tag] = cloneableTags[int8Tag] = cloneableTags[int16Tag] = cloneableTags[int32Tag] = cloneableTags[mapTag] = cloneableTags[numberTag] = cloneableTags[objectTag] = cloneableTags[regexpTag] = cloneableTags[setTag] = cloneableTags[stringTag] = cloneableTags[symbolTag] = cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] = cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
+  cloneableTags[errorTag] = cloneableTags[funcTag] = cloneableTags[weakMapTag] = false;
+
+  function baseClone(value, bitmask, customizer, key, object, stack) {
+    var result,
+        isDeep = bitmask & CLONE_DEEP_FLAG,
+        isFlat = bitmask & CLONE_FLAT_FLAG,
+        isFull = bitmask & CLONE_SYMBOLS_FLAG;
+
+    if (customizer) {
+      result = object ? customizer(value, key, object, stack) : customizer(value);
+    }
+
+    if (result !== undefined) {
+      return result;
+    }
+
+    if (!isObject(value)) {
+      return value;
+    }
+
+    var isArr = isArray(value);
+
+    if (isArr) {
+      result = initCloneArray(value);
+
+      if (!isDeep) {
+        return copyArray(value, result);
+      }
+    } else {
+      var tag = getTag(value),
+          isFunc = tag == funcTag || tag == genTag;
+
+      if (isBuffer(value)) {
+        return cloneBuffer(value, isDeep);
+      }
+
+      if (tag == objectTag || tag == argsTag || isFunc && !object) {
+        result = isFlat || isFunc ? {} : initCloneObject(value);
+
+        if (!isDeep) {
+          return isFlat ? copySymbolsIn(value, baseAssignIn(result, value)) : copySymbols(value, baseAssign(result, value));
+        }
+      } else {
+        if (!cloneableTags[tag]) {
+          return object ? value : {};
+        }
+
+        result = initCloneByTag(value, tag, isDeep);
+      }
+    }
+
+    stack || (stack = new Stack());
+    var stacked = stack.get(value);
+
+    if (stacked) {
+      return stacked;
+    }
+
+    stack.set(value, result);
+
+    if (isSet(value)) {
+      value.forEach(function (subValue) {
+        result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
+      });
+      return result;
+    }
+
+    if (isMap(value)) {
+      value.forEach(function (subValue, key) {
+        result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
+      });
+      return result;
+    }
+
+    var keysFunc = isFull ? isFlat ? getAllKeysIn : getAllKeys : isFlat ? keysIn : keys;
+    var props = isArr ? undefined : keysFunc(value);
+    arrayEach(props || value, function (subValue, key) {
+      if (props) {
+        key = subValue;
+        subValue = value[key];
+      }
+
+      assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
+    });
+    return result;
+  }
+
+  module.exports = baseClone;
+},658,[188,659,306,660,661,665,666,667,668,245,670,271,671,672,678,248,258,680,212,682,252],"node_modules\\lodash\\_baseClone.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  function arrayEach(array, iteratee) {
+    var index = -1,
+        length = array == null ? 0 : array.length;
+
+    while (++index < length) {
+      if (iteratee(array[index], index, array) === false) {
+        break;
+      }
+    }
+
+    return array;
+  }
+
+  module.exports = arrayEach;
+},659,[],"node_modules\\lodash\\_arrayEach.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var copyObject = _require(_dependencyMap[0], './_copyObject'),
+      keys = _require(_dependencyMap[1], './keys');
+
+  function baseAssign(object, source) {
+    return object && copyObject(source, keys(source), object);
+  }
+
+  module.exports = baseAssign;
+},660,[309,252],"node_modules\\lodash\\_baseAssign.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var copyObject = _require(_dependencyMap[0], './_copyObject'),
+      keysIn = _require(_dependencyMap[1], './keysIn');
+
+  function baseAssignIn(object, source) {
+    return object && copyObject(source, keysIn(source), object);
+  }
+
+  module.exports = baseAssignIn;
+},661,[309,662],"node_modules\\lodash\\_baseAssignIn.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var arrayLikeKeys = _require(_dependencyMap[0], './_arrayLikeKeys'),
+      baseKeysIn = _require(_dependencyMap[1], './_baseKeysIn'),
+      isArrayLike = _require(_dependencyMap[2], './isArrayLike');
+
+  function keysIn(object) {
+    return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
+  }
+
+  module.exports = keysIn;
+},662,[253,663,270],"node_modules\\lodash\\keysIn.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var isObject = _require(_dependencyMap[0], './isObject'),
+      isPrototype = _require(_dependencyMap[1], './_isPrototype'),
+      nativeKeysIn = _require(_dependencyMap[2], './_nativeKeysIn');
+
+  var objectProto = Object.prototype;
+  var hasOwnProperty = objectProto.hasOwnProperty;
+
+  function baseKeysIn(object) {
+    if (!isObject(object)) {
+      return nativeKeysIn(object);
+    }
+
+    var isProto = isPrototype(object),
+        result = [];
+
+    for (var key in object) {
+      if (!(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+        result.push(key);
+      }
+    }
+
+    return result;
+  }
+
+  module.exports = baseKeysIn;
+},663,[212,267,664],"node_modules\\lodash\\_baseKeysIn.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  function nativeKeysIn(object) {
+    var result = [];
+
+    if (object != null) {
+      for (var key in Object(object)) {
+        result.push(key);
+      }
+    }
+
+    return result;
+  }
+
+  module.exports = nativeKeysIn;
+},664,[],"node_modules\\lodash\\_nativeKeysIn.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var root = _require(_dependencyMap[0], './_root');
+
+  var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+  var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+  var moduleExports = freeModule && freeModule.exports === freeExports;
+  var Buffer = moduleExports ? root.Buffer : undefined,
+      allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
+
+  function cloneBuffer(buffer, isDeep) {
+    if (isDeep) {
+      return buffer.slice();
+    }
+
+    var length = buffer.length,
+        result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
+    buffer.copy(result);
+    return result;
+  }
+
+  module.exports = cloneBuffer;
+},665,[208],"node_modules\\lodash\\_cloneBuffer.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  function copyArray(source, array) {
+    var index = -1,
+        length = source.length;
+    array || (array = Array(length));
+
+    while (++index < length) {
+      array[index] = source[index];
+    }
+
+    return array;
+  }
+
+  module.exports = copyArray;
+},666,[],"node_modules\\lodash\\_copyArray.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var copyObject = _require(_dependencyMap[0], './_copyObject'),
+      getSymbols = _require(_dependencyMap[1], './_getSymbols');
+
+  function copySymbols(source, object) {
+    return copyObject(source, getSymbols(source), object);
+  }
+
+  module.exports = copySymbols;
+},667,[309,249],"node_modules\\lodash\\_copySymbols.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var copyObject = _require(_dependencyMap[0], './_copyObject'),
+      getSymbolsIn = _require(_dependencyMap[1], './_getSymbolsIn');
+
+  function copySymbolsIn(source, object) {
+    return copyObject(source, getSymbolsIn(source), object);
+  }
+
+  module.exports = copySymbolsIn;
+},668,[309,669],"node_modules\\lodash\\_copySymbolsIn.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var arrayPush = _require(_dependencyMap[0], './_arrayPush'),
+      getPrototype = _require(_dependencyMap[1], './_getPrototype'),
+      getSymbols = _require(_dependencyMap[2], './_getSymbols'),
+      stubArray = _require(_dependencyMap[3], './stubArray');
+
+  var nativeGetSymbols = Object.getOwnPropertySymbols;
+  var getSymbolsIn = !nativeGetSymbols ? stubArray : function (object) {
+    var result = [];
+
+    while (object) {
+      arrayPush(result, getSymbols(object));
+      object = getPrototype(object);
+    }
+
+    return result;
+  };
+  module.exports = getSymbolsIn;
+},669,[247,505,249,251],"node_modules\\lodash\\_getSymbolsIn.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var baseGetAllKeys = _require(_dependencyMap[0], './_baseGetAllKeys'),
+      getSymbolsIn = _require(_dependencyMap[1], './_getSymbolsIn'),
+      keysIn = _require(_dependencyMap[2], './keysIn');
+
+  function getAllKeysIn(object) {
+    return baseGetAllKeys(object, keysIn, getSymbolsIn);
+  }
+
+  module.exports = getAllKeysIn;
+},670,[246,669,662],"node_modules\\lodash\\_getAllKeysIn.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var objectProto = Object.prototype;
+  var hasOwnProperty = objectProto.hasOwnProperty;
+
+  function initCloneArray(array) {
+    var length = array.length,
+        result = new array.constructor(length);
+
+    if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
+      result.index = array.index;
+      result.input = array.input;
+    }
+
+    return result;
+  }
+
+  module.exports = initCloneArray;
+},671,[],"node_modules\\lodash\\_initCloneArray.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var cloneArrayBuffer = _require(_dependencyMap[0], './_cloneArrayBuffer'),
+      cloneDataView = _require(_dependencyMap[1], './_cloneDataView'),
+      cloneRegExp = _require(_dependencyMap[2], './_cloneRegExp'),
+      cloneSymbol = _require(_dependencyMap[3], './_cloneSymbol'),
+      cloneTypedArray = _require(_dependencyMap[4], './_cloneTypedArray');
+
+  var boolTag = '[object Boolean]',
+      dateTag = '[object Date]',
+      mapTag = '[object Map]',
+      numberTag = '[object Number]',
+      regexpTag = '[object RegExp]',
+      setTag = '[object Set]',
+      stringTag = '[object String]',
+      symbolTag = '[object Symbol]';
+  var arrayBufferTag = '[object ArrayBuffer]',
+      dataViewTag = '[object DataView]',
+      float32Tag = '[object Float32Array]',
+      float64Tag = '[object Float64Array]',
+      int8Tag = '[object Int8Array]',
+      int16Tag = '[object Int16Array]',
+      int32Tag = '[object Int32Array]',
+      uint8Tag = '[object Uint8Array]',
+      uint8ClampedTag = '[object Uint8ClampedArray]',
+      uint16Tag = '[object Uint16Array]',
+      uint32Tag = '[object Uint32Array]';
+
+  function initCloneByTag(object, tag, isDeep) {
+    var Ctor = object.constructor;
+
+    switch (tag) {
+      case arrayBufferTag:
+        return cloneArrayBuffer(object);
+
+      case boolTag:
+      case dateTag:
+        return new Ctor(+object);
+
+      case dataViewTag:
+        return cloneDataView(object, isDeep);
+
+      case float32Tag:
+      case float64Tag:
+      case int8Tag:
+      case int16Tag:
+      case int32Tag:
+      case uint8Tag:
+      case uint8ClampedTag:
+      case uint16Tag:
+      case uint32Tag:
+        return cloneTypedArray(object, isDeep);
+
+      case mapTag:
+        return new Ctor();
+
+      case numberTag:
+      case stringTag:
+        return new Ctor(object);
+
+      case regexpTag:
+        return cloneRegExp(object);
+
+      case setTag:
+        return new Ctor();
+
+      case symbolTag:
+        return cloneSymbol(object);
+    }
+  }
+
+  module.exports = initCloneByTag;
+},672,[673,674,675,676,677],"node_modules\\lodash\\_initCloneByTag.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var Uint8Array = _require(_dependencyMap[0], './_Uint8Array');
+
+  function cloneArrayBuffer(arrayBuffer) {
+    var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+    new Uint8Array(result).set(new Uint8Array(arrayBuffer));
+    return result;
+  }
+
+  module.exports = cloneArrayBuffer;
+},673,[241],"node_modules\\lodash\\_cloneArrayBuffer.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var cloneArrayBuffer = _require(_dependencyMap[0], './_cloneArrayBuffer');
+
+  function cloneDataView(dataView, isDeep) {
+    var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
+    return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
+  }
+
+  module.exports = cloneDataView;
+},674,[673],"node_modules\\lodash\\_cloneDataView.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var reFlags = /\w*$/;
+
+  function cloneRegExp(regexp) {
+    var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
+    result.lastIndex = regexp.lastIndex;
+    return result;
+  }
+
+  module.exports = cloneRegExp;
+},675,[],"node_modules\\lodash\\_cloneRegExp.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var Symbol = _require(_dependencyMap[0], './_Symbol');
+
+  var symbolProto = Symbol ? typeof Symbol === "function" ? Symbol.prototype : "@@prototype" : undefined,
+      symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+  function cloneSymbol(symbol) {
+    return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
+  }
+
+  module.exports = cloneSymbol;
+},676,[207],"node_modules\\lodash\\_cloneSymbol.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var cloneArrayBuffer = _require(_dependencyMap[0], './_cloneArrayBuffer');
+
+  function cloneTypedArray(typedArray, isDeep) {
+    var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+    return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
+  }
+
+  module.exports = cloneTypedArray;
+},677,[673],"node_modules\\lodash\\_cloneTypedArray.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+    var baseCreate = _require(_dependencyMap[0], './_baseCreate'),
+        getPrototype = _require(_dependencyMap[1], './_getPrototype'),
+        isPrototype = _require(_dependencyMap[2], './_isPrototype');
+
+    function initCloneObject(object) {
+        return typeof object.constructor == 'function' && !isPrototype(object) ? baseCreate(getPrototype(object)) : {};
+    }
+
+    module.exports = initCloneObject;
+},678,[679,505,267],"node_modules\\lodash\\_initCloneObject.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var isObject = _require(_dependencyMap[0], './isObject');
+
+  var objectCreate = Object.create;
+
+  var baseCreate = function () {
+    function object() {}
+
+    return function (proto) {
+      if (!isObject(proto)) {
+        return {};
+      }
+
+      if (objectCreate) {
+        return objectCreate(proto);
+      }
+
+      object.prototype = proto;
+      var result = new object();
+      object.prototype = undefined;
+      return result;
+    };
+  }();
+
+  module.exports = baseCreate;
+},679,[212],"node_modules\\lodash\\_baseCreate.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var baseIsMap = _require(_dependencyMap[0], './_baseIsMap'),
+      baseUnary = _require(_dependencyMap[1], './_baseUnary'),
+      nodeUtil = _require(_dependencyMap[2], './_nodeUtil');
+
+  var nodeIsMap = nodeUtil && nodeUtil.isMap;
+  var isMap = nodeIsMap ? baseUnary(nodeIsMap) : baseIsMap;
+  module.exports = isMap;
+},680,[681,264,265],"node_modules\\lodash\\isMap.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var getTag = _require(_dependencyMap[0], './_getTag'),
+      isObjectLike = _require(_dependencyMap[1], './isObjectLike');
+
+  var mapTag = '[object Map]';
+
+  function baseIsMap(value) {
+    return isObjectLike(value) && getTag(value) == mapTag;
+  }
+
+  module.exports = baseIsMap;
+},681,[271,257],"node_modules\\lodash\\_baseIsMap.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var baseIsSet = _require(_dependencyMap[0], './_baseIsSet'),
+      baseUnary = _require(_dependencyMap[1], './_baseUnary'),
+      nodeUtil = _require(_dependencyMap[2], './_nodeUtil');
+
+  var nodeIsSet = nodeUtil && nodeUtil.isSet;
+  var isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;
+  module.exports = isSet;
+},682,[683,264,265],"node_modules\\lodash\\isSet.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var getTag = _require(_dependencyMap[0], './_getTag'),
+      isObjectLike = _require(_dependencyMap[1], './isObjectLike');
+
+  var setTag = '[object Set]';
+
+  function baseIsSet(value) {
+    return isObjectLike(value) && getTag(value) == setTag;
+  }
+
+  module.exports = baseIsSet;
+},683,[271,257],"node_modules\\lodash\\_baseIsSet.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var castPath = _require(_dependencyMap[0], './_castPath'),
+      last = _require(_dependencyMap[1], './last'),
+      parent = _require(_dependencyMap[2], './_parent'),
+      toKey = _require(_dependencyMap[3], './_toKey');
+
+  function baseUnset(object, path) {
+    path = castPath(path, object);
+    object = parent(object, path);
+    return object == null || delete object[toKey(last(path))];
+  }
+
+  module.exports = baseUnset;
+},684,[282,685,686,291],"node_modules\\lodash\\_baseUnset.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  function last(array) {
+    var length = array == null ? 0 : array.length;
+    return length ? array[length - 1] : undefined;
+  }
+
+  module.exports = last;
+},685,[],"node_modules\\lodash\\last.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var baseGet = _require(_dependencyMap[0], './_baseGet'),
+      baseSlice = _require(_dependencyMap[1], './_baseSlice');
+
+  function parent(object, path) {
+    return path.length < 2 ? object : baseGet(object, baseSlice(path, 0, -1));
+  }
+
+  module.exports = parent;
+},686,[281,687],"node_modules\\lodash\\_parent.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  function baseSlice(array, start, end) {
+    var index = -1,
+        length = array.length;
+
+    if (start < 0) {
+      start = -start > length ? 0 : length + start;
+    }
+
+    end = end > length ? length : end;
+
+    if (end < 0) {
+      end += length;
+    }
+
+    length = start > end ? 0 : end - start >>> 0;
+    start >>>= 0;
+    var result = Array(length);
+
+    while (++index < length) {
+      result[index] = array[index + start];
+    }
+
+    return result;
+  }
+
+  module.exports = baseSlice;
+},687,[],"node_modules\\lodash\\_baseSlice.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var isPlainObject = _require(_dependencyMap[0], './isPlainObject');
+
+  function customOmitClone(value) {
+    return isPlainObject(value) ? undefined : value;
+  }
+
+  module.exports = customOmitClone;
+},688,[504],"node_modules\\lodash\\_customOmitClone.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var flatten = _require(_dependencyMap[0], './flatten'),
+      overRest = _require(_dependencyMap[1], './_overRest'),
+      setToString = _require(_dependencyMap[2], './_setToString');
+
+  function flatRest(func) {
+    return setToString(overRest(func, undefined, flatten), func + '');
+  }
+
+  module.exports = flatRest;
+},689,[690,312,314],"node_modules\\lodash\\_flatRest.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var baseFlatten = _require(_dependencyMap[0], './_baseFlatten');
+
+  function flatten(array) {
+    var length = array == null ? 0 : array.length;
+    return length ? baseFlatten(array, 1) : [];
+  }
+
+  module.exports = flatten;
+},690,[326],"node_modules\\lodash\\flatten.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var basePick = _require(_dependencyMap[0], './_basePick'),
+      flatRest = _require(_dependencyMap[1], './_flatRest');
+
+  var pick = flatRest(function (object, paths) {
+    return object == null ? {} : basePick(object, paths);
+  });
+  module.exports = pick;
+},691,[692,689],"node_modules\\lodash\\pick.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var basePickBy = _require(_dependencyMap[0], './_basePickBy'),
+      hasIn = _require(_dependencyMap[1], './hasIn');
+
+  function basePick(object, paths) {
+    return basePickBy(object, paths, function (value, path) {
+      return hasIn(object, path);
+    });
+  }
+
+  module.exports = basePick;
+},692,[693,292],"node_modules\\lodash\\_basePick.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+    var baseGet = _require(_dependencyMap[0], './_baseGet'),
+        baseSet = _require(_dependencyMap[1], './_baseSet'),
+        castPath = _require(_dependencyMap[2], './_castPath');
+
+    function basePickBy(object, paths, predicate) {
+        var index = -1,
+            length = paths.length,
+            result = {};
+
+        while (++index < length) {
+            var path = paths[index],
+                value = baseGet(object, path);
+
+            if (predicate(value, path)) {
+                baseSet(result, castPath(path, object), value);
+            }
+        }
+
+        return result;
+    }
+
+    module.exports = basePickBy;
+},693,[281,694,282],"node_modules\\lodash\\_basePickBy.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var assignValue = _require(_dependencyMap[0], './_assignValue'),
+      castPath = _require(_dependencyMap[1], './_castPath'),
+      isIndex = _require(_dependencyMap[2], './_isIndex'),
+      isObject = _require(_dependencyMap[3], './isObject'),
+      toKey = _require(_dependencyMap[4], './_toKey');
+
+  function baseSet(object, path, value, customizer) {
+    if (!isObject(object)) {
+      return object;
+    }
+
+    path = castPath(path, object);
+    var index = -1,
+        length = path.length,
+        lastIndex = length - 1,
+        nested = object;
+
+    while (nested != null && ++index < length) {
+      var key = toKey(path[index]),
+          newValue = value;
+
+      if (index != lastIndex) {
+        var objValue = nested[key];
+        newValue = customizer ? customizer(objValue, key, nested) : undefined;
+
+        if (newValue === undefined) {
+          newValue = isObject(objValue) ? objValue : isIndex(path[index + 1]) ? [] : {};
+        }
+      }
+
+      assignValue(nested, key, newValue);
+      nested = nested[key];
+    }
+
+    return object;
+  }
+
+  module.exports = baseSet;
+},694,[306,282,260,212,291],"node_modules\\lodash\\_baseSet.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\node_modules\\react-native-vector-icons\\lib\\tab-bar-item-ios.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  exports.default = createTabBarItemIOSComponent;
+
+  var _isEqual = _require(_dependencyMap[2], "lodash/isEqual");
+
+  var _isEqual2 = _interopRequireDefault(_isEqual);
+
+  var _pick = _require(_dependencyMap[3], "lodash/pick");
+
+  var _pick2 = _interopRequireDefault(_pick);
+
+  var _propTypes = _require(_dependencyMap[4], "prop-types");
+
+  var _propTypes2 = _interopRequireDefault(_propTypes);
+
+  var _reactNative = _require(_dependencyMap[5], "./react-native");
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    TabBarItemIOS: {
+      displayName: "TabBarItemIOS",
+      isInFunction: true
+    }
+  };
+
+  var _reactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/node_modules/react-native-vector-icons/lib/tab-bar-item-ios.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _reactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  function createTabBarItemIOSComponent(IconNamePropType, getImageSource) {
+    var _class, _temp;
+
+    return _wrapComponent("TabBarItemIOS")((_temp = _class = function (_PureComponent) {
+      _inherits(TabBarItemIOS, _PureComponent);
+
+      function TabBarItemIOS() {
+        _classCallCheck(this, TabBarItemIOS);
+
+        return _possibleConstructorReturn(this, (TabBarItemIOS.__proto__ || Object.getPrototypeOf(TabBarItemIOS)).apply(this, arguments));
+      }
+
+      _createClass(TabBarItemIOS, [{
+        key: "componentWillMount",
+        value: function componentWillMount() {
+          this.updateIconSources(this.props);
+        }
+      }, {
+        key: "componentWillReceiveProps",
+        value: function componentWillReceiveProps(nextProps) {
+          var keys = Object.keys(TabBarItemIOS.propTypes);
+
+          if (!(0, _isEqual2.default)((0, _pick2.default)(nextProps, keys), (0, _pick2.default)(this.props, keys))) {
+            this.updateIconSources(nextProps);
+          }
+        }
+      }, {
+        key: "updateIconSources",
+        value: function updateIconSources(props) {
+          var _this2 = this;
+
+          if (props.iconName) {
+            getImageSource(props.iconName, props.iconSize, props.iconColor).then(function (icon) {
+              return _this2.setState({
+                icon: icon
+              });
+            });
+          }
+
+          if (props.selectedIconName || props.selectedIconColor) {
+            var selectedIconName = props.selectedIconName || props.iconName;
+            var selectedIconColor = props.selectedIconColor || props.iconColor;
+            getImageSource(selectedIconName, props.iconSize, selectedIconColor).then(function (selectedIcon) {
+              return _this2.setState({
+                selectedIcon: selectedIcon
+              });
+            });
+          }
+        }
+      }, {
+        key: "render",
+        value: function render() {
+          return _react3.default.createElement(_reactNative.TabBarIOS.Item, _extends({}, this.props, this.state, {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 59
+            }
+          }));
+        }
+      }]);
+
+      return TabBarItemIOS;
+    }(_react2.PureComponent), _class.propTypes = {
+      iconName: IconNamePropType.isRequired,
+      selectedIconName: IconNamePropType,
+      iconSize: _propTypes2.default.number,
+      iconColor: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+      selectedIconColor: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number])
+    }, _class.defaultProps = {
+      iconSize: 30
+    }, _temp));
+  }
+},695,[111,179,696,691,130,654],"node_modules\\react-native-vector-icons\\lib\\tab-bar-item-ios.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  var baseIsEqual = _require(_dependencyMap[0], './_baseIsEqual');
+
+  function isEqual(value, other) {
+    return baseIsEqual(value, other);
+  }
+
+  module.exports = isEqual;
+},696,[232],"node_modules\\lodash\\isEqual.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\node_modules\\react-native-vector-icons\\lib\\toolbar-android.js";
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  exports.default = createToolbarAndroidComponent;
+
+  var _isEqual = _require(_dependencyMap[2], "lodash/isEqual");
+
+  var _isEqual2 = _interopRequireDefault(_isEqual);
+
+  var _pick = _require(_dependencyMap[3], "lodash/pick");
+
+  var _pick2 = _interopRequireDefault(_pick);
+
+  var _propTypes = _require(_dependencyMap[4], "prop-types");
+
+  var _propTypes2 = _interopRequireDefault(_propTypes);
+
+  var _reactNative = _require(_dependencyMap[5], "./react-native");
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    IconToolbarAndroid: {
+      displayName: "IconToolbarAndroid",
+      isInFunction: true
+    }
+  };
+
+  var _reactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/node_modules/react-native-vector-icons/lib/toolbar-android.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _reactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  function createToolbarAndroidComponent(IconNamePropType, getImageSource) {
+    var _class, _temp;
+
+    return _wrapComponent("IconToolbarAndroid")((_temp = _class = function (_PureComponent) {
+      _inherits(IconToolbarAndroid, _PureComponent);
+
+      function IconToolbarAndroid() {
+        _classCallCheck(this, IconToolbarAndroid);
+
+        return _possibleConstructorReturn(this, (IconToolbarAndroid.__proto__ || Object.getPrototypeOf(IconToolbarAndroid)).apply(this, arguments));
+      }
+
+      _createClass(IconToolbarAndroid, [{
+        key: "componentWillMount",
+        value: function componentWillMount() {
+          this.updateIconSources(this.props);
+        }
+      }, {
+        key: "componentWillReceiveProps",
+        value: function componentWillReceiveProps(nextProps) {
+          var _this2 = this;
+
+          var keys = Object.keys(IconToolbarAndroid.propTypes);
+
+          if (!(0, _isEqual2.default)((0, _pick2.default)(nextProps, keys), (0, _pick2.default)(this.props, keys))) {
+            var stateToEvict = {};
+
+            if (!nextProps.logoName) {
+              stateToEvict.logo = undefined;
+            }
+
+            if (!nextProps.navIconName) {
+              stateToEvict.navIcon = undefined;
+            }
+
+            if (!nextProps.overflowIconName) {
+              stateToEvict.overflowIcon = undefined;
+            }
+
+            if (this.state && Object.keys(stateToEvict).length) {
+              this.setState(stateToEvict, function () {
+                return _this2.updateIconSources(nextProps);
+              });
+            } else {
+              this.updateIconSources(nextProps);
+            }
+          }
+        }
+      }, {
+        key: "updateIconSources",
+        value: function updateIconSources(props) {
+          var _this3 = this;
+
+          var size = props.iconSize;
+          var color = props.iconColor || props.titleColor;
+
+          if (props.logoName) {
+            getImageSource(props.logoName, size, color).then(function (logo) {
+              return _this3.setState({
+                logo: logo
+              });
+            });
+          }
+
+          if (props.navIconName) {
+            getImageSource(props.navIconName, size, color).then(function (navIcon) {
+              return _this3.setState({
+                navIcon: navIcon
+              });
+            });
+          }
+
+          if (props.overflowIconName) {
+            getImageSource(props.overflowIconName, size, color).then(function (overflowIcon) {
+              return _this3.setState({
+                overflowIcon: overflowIcon
+              });
+            });
+          }
+
+          Promise.all((props.actions || []).map(function (action) {
+            if (action.iconName) {
+              return getImageSource(action.iconName, action.iconSize || size, action.iconColor || color).then(function (icon) {
+                return _extends({}, action, {
+                  icon: icon
+                });
+              });
+            }
+
+            return Promise.resolve(action);
+          })).then(function (actions) {
+            return _this3.setState({
+              actions: actions
+            });
+          });
+        }
+      }, {
+        key: "render",
+        value: function render() {
+          return _react3.default.createElement(_reactNative.ToolbarAndroid, _extends({}, this.props, this.state, {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 94
+            }
+          }));
+        }
+      }]);
+
+      return IconToolbarAndroid;
+    }(_react2.PureComponent), _class.propTypes = {
+      logoName: IconNamePropType,
+      navIconName: IconNamePropType,
+      overflowIconName: IconNamePropType,
+      actions: _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        title: _propTypes2.default.string.isRequired,
+        iconName: IconNamePropType,
+        iconSize: _propTypes2.default.number,
+        iconColor: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+        show: _propTypes2.default.oneOf(['always', 'ifRoom', 'never']),
+        showWithText: _propTypes2.default.bool
+      })),
+      iconSize: _propTypes2.default.number,
+      iconColor: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number])
+    }, _class.defaultProps = {
+      iconSize: 24
+    }, _temp));
+  }
+},697,[111,179,696,691,130,654],"node_modules\\react-native-vector-icons\\lib\\toolbar-android.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  module.exports = {
+    "3d-rotation": 59469,
+    "ac-unit": 60219,
+    "access-alarm": 57744,
+    "access-alarms": 57745,
+    "access-time": 57746,
+    "accessibility": 59470,
+    "accessible": 59668,
+    "account-balance": 59471,
+    "account-balance-wallet": 59472,
+    "account-box": 59473,
+    "account-circle": 59475,
+    "adb": 58894,
+    "add": 57669,
+    "add-a-photo": 58425,
+    "add-alarm": 57747,
+    "add-alert": 57347,
+    "add-box": 57670,
+    "add-circle": 57671,
+    "add-circle-outline": 57672,
+    "add-location": 58727,
+    "add-shopping-cart": 59476,
+    "add-to-photos": 58269,
+    "add-to-queue": 57436,
+    "adjust": 58270,
+    "airline-seat-flat": 58928,
+    "airline-seat-flat-angled": 58929,
+    "airline-seat-individual-suite": 58930,
+    "airline-seat-legroom-extra": 58931,
+    "airline-seat-legroom-normal": 58932,
+    "airline-seat-legroom-reduced": 58933,
+    "airline-seat-recline-extra": 58934,
+    "airline-seat-recline-normal": 58935,
+    "airplanemode-active": 57749,
+    "airplanemode-inactive": 57748,
+    "airplay": 57429,
+    "airport-shuttle": 60220,
+    "alarm": 59477,
+    "alarm-add": 59478,
+    "alarm-off": 59479,
+    "alarm-on": 59480,
+    "album": 57369,
+    "all-inclusive": 60221,
+    "all-out": 59659,
+    "android": 59481,
+    "announcement": 59482,
+    "apps": 58819,
+    "archive": 57673,
+    "arrow-back": 58820,
+    "arrow-downward": 58843,
+    "arrow-drop-down": 58821,
+    "arrow-drop-down-circle": 58822,
+    "arrow-drop-up": 58823,
+    "arrow-forward": 58824,
+    "arrow-upward": 58840,
+    "art-track": 57440,
+    "aspect-ratio": 59483,
+    "assessment": 59484,
+    "assignment": 59485,
+    "assignment-ind": 59486,
+    "assignment-late": 59487,
+    "assignment-return": 59488,
+    "assignment-returned": 59489,
+    "assignment-turned-in": 59490,
+    "assistant": 58271,
+    "assistant-photo": 58272,
+    "attach-file": 57894,
+    "attach-money": 57895,
+    "attachment": 58044,
+    "audiotrack": 58273,
+    "autorenew": 59491,
+    "av-timer": 57371,
+    "backspace": 57674,
+    "backup": 59492,
+    "battery-alert": 57756,
+    "battery-charging-full": 57763,
+    "battery-full": 57764,
+    "battery-std": 57765,
+    "battery-unknown": 57766,
+    "beach-access": 60222,
+    "beenhere": 58669,
+    "block": 57675,
+    "bluetooth": 57767,
+    "bluetooth-audio": 58895,
+    "bluetooth-connected": 57768,
+    "bluetooth-disabled": 57769,
+    "bluetooth-searching": 57770,
+    "blur-circular": 58274,
+    "blur-linear": 58275,
+    "blur-off": 58276,
+    "blur-on": 58277,
+    "book": 59493,
+    "bookmark": 59494,
+    "bookmark-border": 59495,
+    "border-all": 57896,
+    "border-bottom": 57897,
+    "border-clear": 57898,
+    "border-color": 57899,
+    "border-horizontal": 57900,
+    "border-inner": 57901,
+    "border-left": 57902,
+    "border-outer": 57903,
+    "border-right": 57904,
+    "border-style": 57905,
+    "border-top": 57906,
+    "border-vertical": 57907,
+    "branding-watermark": 57451,
+    "brightness-1": 58278,
+    "brightness-2": 58279,
+    "brightness-3": 58280,
+    "brightness-4": 58281,
+    "brightness-5": 58282,
+    "brightness-6": 58283,
+    "brightness-7": 58284,
+    "brightness-auto": 57771,
+    "brightness-high": 57772,
+    "brightness-low": 57773,
+    "brightness-medium": 57774,
+    "broken-image": 58285,
+    "brush": 58286,
+    "bubble-chart": 59101,
+    "bug-report": 59496,
+    "build": 59497,
+    "burst-mode": 58428,
+    "business": 57519,
+    "business-center": 60223,
+    "cached": 59498,
+    "cake": 59369,
+    "call": 57520,
+    "call-end": 57521,
+    "call-made": 57522,
+    "call-merge": 57523,
+    "call-missed": 57524,
+    "call-missed-outgoing": 57572,
+    "call-received": 57525,
+    "call-split": 57526,
+    "call-to-action": 57452,
+    "camera": 58287,
+    "camera-alt": 58288,
+    "camera-enhance": 59644,
+    "camera-front": 58289,
+    "camera-rear": 58290,
+    "camera-roll": 58291,
+    "cancel": 58825,
+    "card-giftcard": 59638,
+    "card-membership": 59639,
+    "card-travel": 59640,
+    "casino": 60224,
+    "cast": 58119,
+    "cast-connected": 58120,
+    "center-focus-strong": 58292,
+    "center-focus-weak": 58293,
+    "change-history": 59499,
+    "chat": 57527,
+    "chat-bubble": 57546,
+    "chat-bubble-outline": 57547,
+    "check": 58826,
+    "check-box": 59444,
+    "check-box-outline-blank": 59445,
+    "check-circle": 59500,
+    "chevron-left": 58827,
+    "chevron-right": 58828,
+    "child-care": 60225,
+    "child-friendly": 60226,
+    "chrome-reader-mode": 59501,
+    "class": 59502,
+    "clear": 57676,
+    "clear-all": 57528,
+    "close": 58829,
+    "closed-caption": 57372,
+    "cloud": 58045,
+    "cloud-circle": 58046,
+    "cloud-done": 58047,
+    "cloud-download": 58048,
+    "cloud-off": 58049,
+    "cloud-queue": 58050,
+    "cloud-upload": 58051,
+    "code": 59503,
+    "collections": 58294,
+    "collections-bookmark": 58417,
+    "color-lens": 58295,
+    "colorize": 58296,
+    "comment": 57529,
+    "compare": 58297,
+    "compare-arrows": 59669,
+    "computer": 58122,
+    "confirmation-number": 58936,
+    "contact-mail": 57552,
+    "contact-phone": 57551,
+    "contacts": 57530,
+    "content-copy": 57677,
+    "content-cut": 57678,
+    "content-paste": 57679,
+    "control-point": 58298,
+    "control-point-duplicate": 58299,
+    "copyright": 59660,
+    "create": 57680,
+    "create-new-folder": 58060,
+    "credit-card": 59504,
+    "crop": 58302,
+    "crop-16-9": 58300,
+    "crop-3-2": 58301,
+    "crop-5-4": 58303,
+    "crop-7-5": 58304,
+    "crop-din": 58305,
+    "crop-free": 58306,
+    "crop-landscape": 58307,
+    "crop-original": 58308,
+    "crop-portrait": 58309,
+    "crop-rotate": 58423,
+    "crop-square": 58310,
+    "dashboard": 59505,
+    "data-usage": 57775,
+    "date-range": 59670,
+    "dehaze": 58311,
+    "delete": 59506,
+    "delete-forever": 59691,
+    "delete-sweep": 57708,
+    "description": 59507,
+    "desktop-mac": 58123,
+    "desktop-windows": 58124,
+    "details": 58312,
+    "developer-board": 58125,
+    "developer-mode": 57776,
+    "device-hub": 58165,
+    "devices": 57777,
+    "devices-other": 58167,
+    "dialer-sip": 57531,
+    "dialpad": 57532,
+    "directions": 58670,
+    "directions-bike": 58671,
+    "directions-boat": 58674,
+    "directions-bus": 58672,
+    "directions-car": 58673,
+    "directions-railway": 58676,
+    "directions-run": 58726,
+    "directions-subway": 58675,
+    "directions-transit": 58677,
+    "directions-walk": 58678,
+    "disc-full": 58896,
+    "dns": 59509,
+    "do-not-disturb": 58898,
+    "do-not-disturb-alt": 58897,
+    "do-not-disturb-off": 58947,
+    "do-not-disturb-on": 58948,
+    "dock": 58126,
+    "domain": 59374,
+    "done": 59510,
+    "done-all": 59511,
+    "donut-large": 59671,
+    "donut-small": 59672,
+    "drafts": 57681,
+    "drag-handle": 57949,
+    "drive-eta": 58899,
+    "dvr": 57778,
+    "edit": 58313,
+    "edit-location": 58728,
+    "eject": 59643,
+    "email": 57534,
+    "enhanced-encryption": 58943,
+    "equalizer": 57373,
+    "error": 57344,
+    "error-outline": 57345,
+    "euro-symbol": 59686,
+    "ev-station": 58733,
+    "event": 59512,
+    "event-available": 58900,
+    "event-busy": 58901,
+    "event-note": 58902,
+    "event-seat": 59651,
+    "exit-to-app": 59513,
+    "expand-less": 58830,
+    "expand-more": 58831,
+    "explicit": 57374,
+    "explore": 59514,
+    "exposure": 58314,
+    "exposure-neg-1": 58315,
+    "exposure-neg-2": 58316,
+    "exposure-plus-1": 58317,
+    "exposure-plus-2": 58318,
+    "exposure-zero": 58319,
+    "extension": 59515,
+    "face": 59516,
+    "fast-forward": 57375,
+    "fast-rewind": 57376,
+    "favorite": 59517,
+    "favorite-border": 59518,
+    "featured-play-list": 57453,
+    "featured-video": 57454,
+    "feedback": 59519,
+    "fiber-dvr": 57437,
+    "fiber-manual-record": 57441,
+    "fiber-new": 57438,
+    "fiber-pin": 57450,
+    "fiber-smart-record": 57442,
+    "file-download": 58052,
+    "file-upload": 58054,
+    "filter": 58323,
+    "filter-1": 58320,
+    "filter-2": 58321,
+    "filter-3": 58322,
+    "filter-4": 58324,
+    "filter-5": 58325,
+    "filter-6": 58326,
+    "filter-7": 58327,
+    "filter-8": 58328,
+    "filter-9": 58329,
+    "filter-9-plus": 58330,
+    "filter-b-and-w": 58331,
+    "filter-center-focus": 58332,
+    "filter-drama": 58333,
+    "filter-frames": 58334,
+    "filter-hdr": 58335,
+    "filter-list": 57682,
+    "filter-none": 58336,
+    "filter-tilt-shift": 58338,
+    "filter-vintage": 58339,
+    "find-in-page": 59520,
+    "find-replace": 59521,
+    "fingerprint": 59661,
+    "first-page": 58844,
+    "fitness-center": 60227,
+    "flag": 57683,
+    "flare": 58340,
+    "flash-auto": 58341,
+    "flash-off": 58342,
+    "flash-on": 58343,
+    "flight": 58681,
+    "flight-land": 59652,
+    "flight-takeoff": 59653,
+    "flip": 58344,
+    "flip-to-back": 59522,
+    "flip-to-front": 59523,
+    "folder": 58055,
+    "folder-open": 58056,
+    "folder-shared": 58057,
+    "folder-special": 58903,
+    "font-download": 57703,
+    "format-align-center": 57908,
+    "format-align-justify": 57909,
+    "format-align-left": 57910,
+    "format-align-right": 57911,
+    "format-bold": 57912,
+    "format-clear": 57913,
+    "format-color-fill": 57914,
+    "format-color-reset": 57915,
+    "format-color-text": 57916,
+    "format-indent-decrease": 57917,
+    "format-indent-increase": 57918,
+    "format-italic": 57919,
+    "format-line-spacing": 57920,
+    "format-list-bulleted": 57921,
+    "format-list-numbered": 57922,
+    "format-paint": 57923,
+    "format-quote": 57924,
+    "format-shapes": 57950,
+    "format-size": 57925,
+    "format-strikethrough": 57926,
+    "format-textdirection-l-to-r": 57927,
+    "format-textdirection-r-to-l": 57928,
+    "format-underlined": 57929,
+    "forum": 57535,
+    "forward": 57684,
+    "forward-10": 57430,
+    "forward-30": 57431,
+    "forward-5": 57432,
+    "free-breakfast": 60228,
+    "fullscreen": 58832,
+    "fullscreen-exit": 58833,
+    "functions": 57930,
+    "g-translate": 59687,
+    "gamepad": 58127,
+    "games": 57377,
+    "gavel": 59662,
+    "gesture": 57685,
+    "get-app": 59524,
+    "gif": 59656,
+    "golf-course": 60229,
+    "gps-fixed": 57779,
+    "gps-not-fixed": 57780,
+    "gps-off": 57781,
+    "grade": 59525,
+    "gradient": 58345,
+    "grain": 58346,
+    "graphic-eq": 57784,
+    "grid-off": 58347,
+    "grid-on": 58348,
+    "group": 59375,
+    "group-add": 59376,
+    "group-work": 59526,
+    "hd": 57426,
+    "hdr-off": 58349,
+    "hdr-on": 58350,
+    "hdr-strong": 58353,
+    "hdr-weak": 58354,
+    "headset": 58128,
+    "headset-mic": 58129,
+    "healing": 58355,
+    "hearing": 57379,
+    "help": 59527,
+    "help-outline": 59645,
+    "high-quality": 57380,
+    "highlight": 57951,
+    "highlight-off": 59528,
+    "history": 59529,
+    "home": 59530,
+    "hot-tub": 60230,
+    "hotel": 58682,
+    "hourglass-empty": 59531,
+    "hourglass-full": 59532,
+    "http": 59650,
+    "https": 59533,
+    "image": 58356,
+    "image-aspect-ratio": 58357,
+    "import-contacts": 57568,
+    "import-export": 57539,
+    "important-devices": 59666,
+    "inbox": 57686,
+    "indeterminate-check-box": 59657,
+    "info": 59534,
+    "info-outline": 59535,
+    "input": 59536,
+    "insert-chart": 57931,
+    "insert-comment": 57932,
+    "insert-drive-file": 57933,
+    "insert-emoticon": 57934,
+    "insert-invitation": 57935,
+    "insert-link": 57936,
+    "insert-photo": 57937,
+    "invert-colors": 59537,
+    "invert-colors-off": 57540,
+    "iso": 58358,
+    "keyboard": 58130,
+    "keyboard-arrow-down": 58131,
+    "keyboard-arrow-left": 58132,
+    "keyboard-arrow-right": 58133,
+    "keyboard-arrow-up": 58134,
+    "keyboard-backspace": 58135,
+    "keyboard-capslock": 58136,
+    "keyboard-hide": 58138,
+    "keyboard-return": 58139,
+    "keyboard-tab": 58140,
+    "keyboard-voice": 58141,
+    "kitchen": 60231,
+    "label": 59538,
+    "label-outline": 59539,
+    "landscape": 58359,
+    "language": 59540,
+    "laptop": 58142,
+    "laptop-chromebook": 58143,
+    "laptop-mac": 58144,
+    "laptop-windows": 58145,
+    "last-page": 58845,
+    "launch": 59541,
+    "layers": 58683,
+    "layers-clear": 58684,
+    "leak-add": 58360,
+    "leak-remove": 58361,
+    "lens": 58362,
+    "library-add": 57390,
+    "library-books": 57391,
+    "library-music": 57392,
+    "lightbulb-outline": 59663,
+    "line-style": 59673,
+    "line-weight": 59674,
+    "linear-scale": 57952,
+    "link": 57687,
+    "linked-camera": 58424,
+    "list": 59542,
+    "live-help": 57542,
+    "live-tv": 58937,
+    "local-activity": 58687,
+    "local-airport": 58685,
+    "local-atm": 58686,
+    "local-bar": 58688,
+    "local-cafe": 58689,
+    "local-car-wash": 58690,
+    "local-convenience-store": 58691,
+    "local-dining": 58710,
+    "local-drink": 58692,
+    "local-florist": 58693,
+    "local-gas-station": 58694,
+    "local-grocery-store": 58695,
+    "local-hospital": 58696,
+    "local-hotel": 58697,
+    "local-laundry-service": 58698,
+    "local-library": 58699,
+    "local-mall": 58700,
+    "local-movies": 58701,
+    "local-offer": 58702,
+    "local-parking": 58703,
+    "local-pharmacy": 58704,
+    "local-phone": 58705,
+    "local-pizza": 58706,
+    "local-play": 58707,
+    "local-post-office": 58708,
+    "local-printshop": 58709,
+    "local-see": 58711,
+    "local-shipping": 58712,
+    "local-taxi": 58713,
+    "location-city": 59377,
+    "location-disabled": 57782,
+    "location-off": 57543,
+    "location-on": 57544,
+    "location-searching": 57783,
+    "lock": 59543,
+    "lock-open": 59544,
+    "lock-outline": 59545,
+    "looks": 58364,
+    "looks-3": 58363,
+    "looks-4": 58365,
+    "looks-5": 58366,
+    "looks-6": 58367,
+    "looks-one": 58368,
+    "looks-two": 58369,
+    "loop": 57384,
+    "loupe": 58370,
+    "low-priority": 57709,
+    "loyalty": 59546,
+    "mail": 57688,
+    "mail-outline": 57569,
+    "map": 58715,
+    "markunread": 57689,
+    "markunread-mailbox": 59547,
+    "memory": 58146,
+    "menu": 58834,
+    "merge-type": 57938,
+    "message": 57545,
+    "mic": 57385,
+    "mic-none": 57386,
+    "mic-off": 57387,
+    "mms": 58904,
+    "mode-comment": 57939,
+    "mode-edit": 57940,
+    "monetization-on": 57955,
+    "money-off": 57948,
+    "monochrome-photos": 58371,
+    "mood": 59378,
+    "mood-bad": 59379,
+    "more": 58905,
+    "more-horiz": 58835,
+    "more-vert": 58836,
+    "motorcycle": 59675,
+    "mouse": 58147,
+    "move-to-inbox": 57704,
+    "movie": 57388,
+    "movie-creation": 58372,
+    "movie-filter": 58426,
+    "multiline-chart": 59103,
+    "music-note": 58373,
+    "music-video": 57443,
+    "my-location": 58716,
+    "nature": 58374,
+    "nature-people": 58375,
+    "navigate-before": 58376,
+    "navigate-next": 58377,
+    "navigation": 58717,
+    "near-me": 58729,
+    "network-cell": 57785,
+    "network-check": 58944,
+    "network-locked": 58906,
+    "network-wifi": 57786,
+    "new-releases": 57393,
+    "next-week": 57706,
+    "nfc": 57787,
+    "no-encryption": 58945,
+    "no-sim": 57548,
+    "not-interested": 57395,
+    "note": 57455,
+    "note-add": 59548,
+    "notifications": 59380,
+    "notifications-active": 59383,
+    "notifications-none": 59381,
+    "notifications-off": 59382,
+    "notifications-paused": 59384,
+    "offline-pin": 59658,
+    "ondemand-video": 58938,
+    "opacity": 59676,
+    "open-in-browser": 59549,
+    "open-in-new": 59550,
+    "open-with": 59551,
+    "pages": 59385,
+    "pageview": 59552,
+    "palette": 58378,
+    "pan-tool": 59685,
+    "panorama": 58379,
+    "panorama-fish-eye": 58380,
+    "panorama-horizontal": 58381,
+    "panorama-vertical": 58382,
+    "panorama-wide-angle": 58383,
+    "party-mode": 59386,
+    "pause": 57396,
+    "pause-circle-filled": 57397,
+    "pause-circle-outline": 57398,
+    "payment": 59553,
+    "people": 59387,
+    "people-outline": 59388,
+    "perm-camera-mic": 59554,
+    "perm-contact-calendar": 59555,
+    "perm-data-setting": 59556,
+    "perm-device-information": 59557,
+    "perm-identity": 59558,
+    "perm-media": 59559,
+    "perm-phone-msg": 59560,
+    "perm-scan-wifi": 59561,
+    "person": 59389,
+    "person-add": 59390,
+    "person-outline": 59391,
+    "person-pin": 58714,
+    "person-pin-circle": 58730,
+    "personal-video": 58939,
+    "pets": 59677,
+    "phone": 57549,
+    "phone-android": 58148,
+    "phone-bluetooth-speaker": 58907,
+    "phone-forwarded": 58908,
+    "phone-in-talk": 58909,
+    "phone-iphone": 58149,
+    "phone-locked": 58910,
+    "phone-missed": 58911,
+    "phone-paused": 58912,
+    "phonelink": 58150,
+    "phonelink-erase": 57563,
+    "phonelink-lock": 57564,
+    "phonelink-off": 58151,
+    "phonelink-ring": 57565,
+    "phonelink-setup": 57566,
+    "photo": 58384,
+    "photo-album": 58385,
+    "photo-camera": 58386,
+    "photo-filter": 58427,
+    "photo-library": 58387,
+    "photo-size-select-actual": 58418,
+    "photo-size-select-large": 58419,
+    "photo-size-select-small": 58420,
+    "picture-as-pdf": 58389,
+    "picture-in-picture": 59562,
+    "picture-in-picture-alt": 59665,
+    "pie-chart": 59076,
+    "pie-chart-outlined": 59077,
+    "pin-drop": 58718,
+    "place": 58719,
+    "play-arrow": 57399,
+    "play-circle-filled": 57400,
+    "play-circle-outline": 57401,
+    "play-for-work": 59654,
+    "playlist-add": 57403,
+    "playlist-add-check": 57445,
+    "playlist-play": 57439,
+    "plus-one": 59392,
+    "poll": 59393,
+    "polymer": 59563,
+    "pool": 60232,
+    "portable-wifi-off": 57550,
+    "portrait": 58390,
+    "power": 58940,
+    "power-input": 58166,
+    "power-settings-new": 59564,
+    "pregnant-woman": 59678,
+    "present-to-all": 57567,
+    "print": 59565,
+    "priority-high": 58949,
+    "public": 59403,
+    "publish": 57941,
+    "query-builder": 59566,
+    "question-answer": 59567,
+    "queue": 57404,
+    "queue-music": 57405,
+    "queue-play-next": 57446,
+    "radio": 57406,
+    "radio-button-checked": 59447,
+    "radio-button-unchecked": 59446,
+    "rate-review": 58720,
+    "receipt": 59568,
+    "recent-actors": 57407,
+    "record-voice-over": 59679,
+    "redeem": 59569,
+    "redo": 57690,
+    "refresh": 58837,
+    "remove": 57691,
+    "remove-circle": 57692,
+    "remove-circle-outline": 57693,
+    "remove-from-queue": 57447,
+    "remove-red-eye": 58391,
+    "remove-shopping-cart": 59688,
+    "reorder": 59646,
+    "repeat": 57408,
+    "repeat-one": 57409,
+    "replay": 57410,
+    "replay-10": 57433,
+    "replay-30": 57434,
+    "replay-5": 57435,
+    "reply": 57694,
+    "reply-all": 57695,
+    "report": 57696,
+    "report-problem": 59570,
+    "restaurant": 58732,
+    "restaurant-menu": 58721,
+    "restore": 59571,
+    "restore-page": 59689,
+    "ring-volume": 57553,
+    "room": 59572,
+    "room-service": 60233,
+    "rotate-90-degrees-ccw": 58392,
+    "rotate-left": 58393,
+    "rotate-right": 58394,
+    "rounded-corner": 59680,
+    "router": 58152,
+    "rowing": 59681,
+    "rss-feed": 57573,
+    "rv-hookup": 58946,
+    "satellite": 58722,
+    "save": 57697,
+    "scanner": 58153,
+    "schedule": 59573,
+    "school": 59404,
+    "screen-lock-landscape": 57790,
+    "screen-lock-portrait": 57791,
+    "screen-lock-rotation": 57792,
+    "screen-rotation": 57793,
+    "screen-share": 57570,
+    "sd-card": 58915,
+    "sd-storage": 57794,
+    "search": 59574,
+    "security": 58154,
+    "select-all": 57698,
+    "send": 57699,
+    "sentiment-dissatisfied": 59409,
+    "sentiment-neutral": 59410,
+    "sentiment-satisfied": 59411,
+    "sentiment-very-dissatisfied": 59412,
+    "sentiment-very-satisfied": 59413,
+    "settings": 59576,
+    "settings-applications": 59577,
+    "settings-backup-restore": 59578,
+    "settings-bluetooth": 59579,
+    "settings-brightness": 59581,
+    "settings-cell": 59580,
+    "settings-ethernet": 59582,
+    "settings-input-antenna": 59583,
+    "settings-input-component": 59584,
+    "settings-input-composite": 59585,
+    "settings-input-hdmi": 59586,
+    "settings-input-svideo": 59587,
+    "settings-overscan": 59588,
+    "settings-phone": 59589,
+    "settings-power": 59590,
+    "settings-remote": 59591,
+    "settings-system-daydream": 57795,
+    "settings-voice": 59592,
+    "share": 59405,
+    "shop": 59593,
+    "shop-two": 59594,
+    "shopping-basket": 59595,
+    "shopping-cart": 59596,
+    "short-text": 57953,
+    "show-chart": 59105,
+    "shuffle": 57411,
+    "signal-cellular-4-bar": 57800,
+    "signal-cellular-connected-no-internet-4-bar": 57805,
+    "signal-cellular-no-sim": 57806,
+    "signal-cellular-null": 57807,
+    "signal-cellular-off": 57808,
+    "signal-wifi-4-bar": 57816,
+    "signal-wifi-4-bar-lock": 57817,
+    "signal-wifi-off": 57818,
+    "sim-card": 58155,
+    "sim-card-alert": 58916,
+    "skip-next": 57412,
+    "skip-previous": 57413,
+    "slideshow": 58395,
+    "slow-motion-video": 57448,
+    "smartphone": 58156,
+    "smoke-free": 60234,
+    "smoking-rooms": 60235,
+    "sms": 58917,
+    "sms-failed": 58918,
+    "snooze": 57414,
+    "sort": 57700,
+    "sort-by-alpha": 57427,
+    "spa": 60236,
+    "space-bar": 57942,
+    "speaker": 58157,
+    "speaker-group": 58158,
+    "speaker-notes": 59597,
+    "speaker-notes-off": 59690,
+    "speaker-phone": 57554,
+    "spellcheck": 59598,
+    "star": 59448,
+    "star-border": 59450,
+    "star-half": 59449,
+    "stars": 59600,
+    "stay-current-landscape": 57555,
+    "stay-current-portrait": 57556,
+    "stay-primary-landscape": 57557,
+    "stay-primary-portrait": 57558,
+    "stop": 57415,
+    "stop-screen-share": 57571,
+    "storage": 57819,
+    "store": 59601,
+    "store-mall-directory": 58723,
+    "straighten": 58396,
+    "streetview": 58734,
+    "strikethrough-s": 57943,
+    "style": 58397,
+    "subdirectory-arrow-left": 58841,
+    "subdirectory-arrow-right": 58842,
+    "subject": 59602,
+    "subscriptions": 57444,
+    "subtitles": 57416,
+    "subway": 58735,
+    "supervisor-account": 59603,
+    "surround-sound": 57417,
+    "swap-calls": 57559,
+    "swap-horiz": 59604,
+    "swap-vert": 59605,
+    "swap-vertical-circle": 59606,
+    "switch-camera": 58398,
+    "switch-video": 58399,
+    "sync": 58919,
+    "sync-disabled": 58920,
+    "sync-problem": 58921,
+    "system-update": 58922,
+    "system-update-alt": 59607,
+    "tab": 59608,
+    "tab-unselected": 59609,
+    "tablet": 58159,
+    "tablet-android": 58160,
+    "tablet-mac": 58161,
+    "tag-faces": 58400,
+    "tap-and-play": 58923,
+    "terrain": 58724,
+    "text-fields": 57954,
+    "text-format": 57701,
+    "textsms": 57560,
+    "texture": 58401,
+    "theaters": 59610,
+    "thumb-down": 59611,
+    "thumb-up": 59612,
+    "thumbs-up-down": 59613,
+    "time-to-leave": 58924,
+    "timelapse": 58402,
+    "timeline": 59682,
+    "timer": 58405,
+    "timer-10": 58403,
+    "timer-3": 58404,
+    "timer-off": 58406,
+    "title": 57956,
+    "toc": 59614,
+    "today": 59615,
+    "toll": 59616,
+    "tonality": 58407,
+    "touch-app": 59667,
+    "toys": 58162,
+    "track-changes": 59617,
+    "traffic": 58725,
+    "train": 58736,
+    "tram": 58737,
+    "transfer-within-a-station": 58738,
+    "transform": 58408,
+    "translate": 59618,
+    "trending-down": 59619,
+    "trending-flat": 59620,
+    "trending-up": 59621,
+    "tune": 58409,
+    "turned-in": 59622,
+    "turned-in-not": 59623,
+    "tv": 58163,
+    "unarchive": 57705,
+    "undo": 57702,
+    "unfold-less": 58838,
+    "unfold-more": 58839,
+    "update": 59683,
+    "usb": 57824,
+    "verified-user": 59624,
+    "vertical-align-bottom": 57944,
+    "vertical-align-center": 57945,
+    "vertical-align-top": 57946,
+    "vibration": 58925,
+    "video-call": 57456,
+    "video-label": 57457,
+    "video-library": 57418,
+    "videocam": 57419,
+    "videocam-off": 57420,
+    "videogame-asset": 58168,
+    "view-agenda": 59625,
+    "view-array": 59626,
+    "view-carousel": 59627,
+    "view-column": 59628,
+    "view-comfy": 58410,
+    "view-compact": 58411,
+    "view-day": 59629,
+    "view-headline": 59630,
+    "view-list": 59631,
+    "view-module": 59632,
+    "view-quilt": 59633,
+    "view-stream": 59634,
+    "view-week": 59635,
+    "vignette": 58421,
+    "visibility": 59636,
+    "visibility-off": 59637,
+    "voice-chat": 58926,
+    "voicemail": 57561,
+    "volume-down": 57421,
+    "volume-mute": 57422,
+    "volume-off": 57423,
+    "volume-up": 57424,
+    "vpn-key": 57562,
+    "vpn-lock": 58927,
+    "wallpaper": 57788,
+    "warning": 57346,
+    "watch": 58164,
+    "watch-later": 59684,
+    "wb-auto": 58412,
+    "wb-cloudy": 58413,
+    "wb-incandescent": 58414,
+    "wb-iridescent": 58422,
+    "wb-sunny": 58416,
+    "wc": 58941,
+    "web": 57425,
+    "web-asset": 57449,
+    "weekend": 57707,
+    "whatshot": 59406,
+    "widgets": 57789,
+    "wifi": 58942,
+    "wifi-lock": 57825,
+    "wifi-tethering": 57826,
+    "work": 59641,
+    "wrap-text": 57947,
+    "youtube-searched-for": 59642,
+    "zoom-in": 59647,
+    "zoom-out": 59648,
+    "zoom-out-map": 58731
+  };
+},698,[],"node_modules\\react-native-vector-icons\\glyphmaps\\MaterialIcons.json");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
 
   var _react2 = _require(_dependencyMap[0], "react");
 
@@ -80830,7 +83416,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     horizontal: false
   };
   exports.default = SuperGrid;
-},652,[111,179,130,12,653],"node_modules\\react-native-super-grid\\index.js");
+},699,[111,179,130,12,700],"node_modules\\react-native-super-grid\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -80851,7 +83437,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return acc;
     }, []);
   }
-},653,[],"node_modules\\react-native-super-grid\\utils.js");
+},700,[],"node_modules\\react-native-super-grid\\utils.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -81003,7 +83589,228 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = ProductThumbnail;
-},654,[111,179,12,621],"app\\components\\ProductThumbnail.js");
+},701,[111,179,12,621],"app\\components\\ProductThumbnail.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.OverviewButton = undefined;
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\components\\HeaderButtons.js";
+
+  var _react = _require(_dependencyMap[0], "react");
+
+  var _react2 = _interopRequireDefault(_react);
+
+  var _reactNative = _require(_dependencyMap[1], "react-native");
+
+  var _MaterialIcons = _require(_dependencyMap[2], "react-native-vector-icons/MaterialIcons");
+
+  var _MaterialIcons2 = _interopRequireDefault(_MaterialIcons);
+
+  var _styles = _require(_dependencyMap[3], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[4], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var headerButtonSize = 40;
+
+  var OverviewButton = exports.OverviewButton = function OverviewButton(props) {
+    return _react2.default.createElement(
+      _reactNative.TouchableHighlight,
+      {
+        onPress: props.onPress,
+        underlayColor: _colors2.default.PRIMARY_COLOR,
+        activeOpacity: 0.5,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 13
+        }
+      },
+      _react2.default.createElement(_MaterialIcons2.default, {
+        name: "list",
+        size: headerButtonSize,
+        color: _colors2.default.TITLE_COLOR,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18
+        }
+      })
+    );
+  };
+},702,[111,12,652,621,622],"app\\components\\HeaderButtons.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../node_modules/react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\containers\\OverviewScreen.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  var _reactNative = _require(_dependencyMap[2], "react-native");
+
+  var _styles = _require(_dependencyMap[3], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[4], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  var _reactRedux = _require(_dependencyMap[5], "react-redux");
+
+  var _redux = _require(_dependencyMap[6], "redux");
+
+  var _constants = _require(_dependencyMap[7], "../actions/constants");
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    OverviewScreen: {
+      displayName: "OverviewScreen"
+    }
+  };
+
+  var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/app/containers/OverviewScreen.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  var OverviewScreen = _wrapComponent("OverviewScreen")(function (_Component) {
+    _inherits(OverviewScreen, _Component);
+
+    function OverviewScreen() {
+      _classCallCheck(this, OverviewScreen);
+
+      return _possibleConstructorReturn(this, (OverviewScreen.__proto__ || Object.getPrototypeOf(OverviewScreen)).apply(this, arguments));
+    }
+
+    _createClass(OverviewScreen, [{
+      key: "render",
+      value: function render() {
+        var _this2 = this;
+
+        var orderlines = Object.keys(this.props.order.orderlines).map(function (key) {
+          return {
+            key: key,
+            name: _this2.props.products.find(function (p) {
+              return p._id === key;
+            }).name,
+            quantity: _this2.props.order.orderlines[key]
+          };
+        });
+        return _react3.default.createElement(
+          _reactNative.View,
+          {
+            style: _styles2.default.container,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 29
+            }
+          },
+          _react3.default.createElement(_reactNative.FlatList, {
+            data: orderlines,
+            renderItem: function renderItem(_ref) {
+              var item = _ref.item;
+              return _this2.renderItem(item);
+            },
+            ItemSeparatorComponent: this.renderSeparator,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 30
+            }
+          })
+        );
+      }
+    }, {
+      key: "renderItem",
+      value: function renderItem(item) {
+        return _react3.default.createElement(
+          _reactNative.View,
+          {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 43
+            }
+          },
+          _react3.default.createElement(
+            _reactNative.Text,
+            {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 44
+              }
+            },
+            item.name
+          ),
+          _react3.default.createElement(
+            _reactNative.Text,
+            {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 45
+              }
+            },
+            item.quantity
+          )
+        );
+      }
+    }, {
+      key: "renderSeparator",
+      value: function renderSeparator() {
+        return _react3.default.createElement(_reactNative.View, {
+          style: _styles2.default.separator,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 51
+          }
+        });
+      }
+    }]);
+
+    return OverviewScreen;
+  }(_react2.Component));
+
+  var mapStateToProps = function mapStateToProps(state) {
+    return {
+      order: state.productReducer.order,
+      products: state.productReducer.products
+    };
+  };
+
+  var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return (0, _redux.bindActionCreators)({}, dispatch);
+  };
+
+  exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(OverviewScreen);
+},703,[111,179,12,621,622,491,502,521],"app\\containers\\OverviewScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -81102,6 +83909,6 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = Logotitle;
-},655,[111,179,12,621,625],"app\\components\\LogoTitle.js");
+},704,[111,179,12,621,625],"app\\components\\LogoTitle.js");
 require(23);
 require(11);//# sourceMappingURL=index.map

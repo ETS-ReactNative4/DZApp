@@ -12,14 +12,14 @@ import { PersistGate } from "redux-persist/integration/react";
 
 //containers
 import RootNavigator from "./components/RootNavigator";
-import LoadingScreen from "./containers/LoadingScreen"
+import LoadingScreen from "./containers/LoadingScreen";
 
 //remove deprecation warns in emulator
-import { YellowBox } from 'react-native';
+import { YellowBox } from "react-native";
 YellowBox.ignoreWarnings([
-  'Warning: componentWillMount is deprecated',
-  'Warning: componentWillReceiveProps is deprecated',
-  'Warning: componentWillUpdate is deprecated'
+  "Warning: componentWillMount is deprecated",
+  "Warning: componentWillReceiveProps is deprecated",
+  "Warning: componentWillUpdate is deprecated"
 ]);
 
 //persistor.purge();

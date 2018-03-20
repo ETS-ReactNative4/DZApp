@@ -1,10 +1,17 @@
 //@flow
 
 import React, { Component } from "react";
-import { View, Text, Button, Image, TouchableHighlight } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  TouchableHighlight,
+  Alert
+} from "react-native";
 import Slider from "react-native-slider";
 import Modal from "react-native-modal";
-// import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 //styles
 import styles from "../styles/styles";
@@ -13,6 +20,7 @@ import colors from "../styles/colors";
 //components
 import GridView from "react-native-super-grid";
 import ProductThumbnail from "../components/ProductThumbnail";
+import { OverviewButton } from "../components/HeaderButtons";
 
 //redux
 import { connect } from "react-redux";
@@ -31,6 +39,15 @@ type State = {
 };
 
 class OrderScreen extends Component<Props, State> {
+  static navigationOptions = ({ navigation }) => {
+    const params = navigation.state.params || {};
+
+    return {
+      title: "Bestellen",
+      headerRight: <OverviewButton onPress={params.navToOverview} />
+    };
+  };
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -44,6 +61,11 @@ class OrderScreen extends Component<Props, State> {
     );
     this.removeSelectedProduct = this.removeSelectedProduct.bind(this);
     this.toggleModalVisible = this.toggleModalVisible.bind(this);
+    this.navToOverview = this.navToOverview.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.navigation.setParams({ navToOverview: this.navToOverview });
   }
 
   render() {
@@ -69,13 +91,12 @@ class OrderScreen extends Component<Props, State> {
           horizontal={true}
           spacing={10}
         />
-
         <Modal
           isVisible={this.state.modalIsVisible}
           animationIn={"slideInUp"}
-          animationInTiming={500}
+          animationInTiming={200}
           animationOut={"slideOutDown"}
-          animationOutTiming={500}
+          animationOutTiming={200}
           backdropColor={colors.PRIMARY_COLOR}
           onBackButtonPress={() => this.toggleModalVisible()}
           onBackdropPress={() => this.toggleModalVisible()}
@@ -84,57 +105,40 @@ class OrderScreen extends Component<Props, State> {
         >
           {this.renderModalContent()}
         </Modal>
-
-        {/* {this.state.product != null && (
-          <View style={styles.quantityInputView}>
-            <View style={styles.row}>
-              <Text style={styles.quantityInputTitle}>
-                {this.state.product.name}:{" "}
-              </Text>
-              <Text style={styles.quantityValueLabel}>
-                {this.state.quantity}
-              </Text>
-              <TouchableHighlight
-                style={styles.quantityInputCloseButton}
-                onPress={this.removeSelectedProduct}
-              >
-                <Icon name="done" size={30} color={colors.SECONDARY_COLOR} />
-              </TouchableHighlight>
-            </View>
-
-            <Slider
-              value={this.state.quantity}
-              onValueChange={value => this.setState({ quantity: value })}
-              onSlidingComplete={value =>
-                this.props.setProductQuantity(this.state.product._id, value)
-              }
-              minimumValue={0}
-              maximumValue={100}
-              step={1}
-              trackStyle={styles.quantitySliderTrackStyle}
-              thumbStyle={styles.quantitySliderThumbStyle}
-              minimumTrackTintColor={colors.SECONDARY_COLOR}
-              maximumTrackTintColor={colors.PRIMARY_COLOR}
-            />
-          </View>
-        )} */}
       </View>
     );
   }
 
-  onProductThumbnailPress(productId: number) {
-    this.props.incrementProductQuantity(productId);
+  navToOverview() {
+    this.props.navigation.navigate("OverviewScreen");
   }
 
+  //checks the product's stock and increments
+  //product's orderline quantity by 1
+  onProductThumbnailPress(productId: number) {
+    let unitsInOrderline = this.props.order.orderlines[productId] || 0;
+    let unitsInStock = this.props.products.find(p => p._id === productId)
+      .inStock;
+    if (unitsInOrderline < unitsInStock)
+      this.props.incrementProductQuantity(productId);
+    else Alert.alert("Onvoldoende stock");
+  }
+
+  //sets the local state to the product that's been long pressed
+  //and the quantity to the amount of units in that product's orderline
   onProductThumbnailLongPress(productId: number) {
     let product = this.props.products.filter(p => p._id === productId)[0];
     this.setState({
       product: product,
-      //modalIsVisible: true
       quantity: this.props.order.orderlines[productId]
         ? this.props.order.orderlines[productId]
         : 0
     });
+    this.toggleModalVisible();
+  }
+
+  onModalTrashIconPress() {
+    this.props.setProductQuantity(this.state.product._id, 0);
     this.toggleModalVisible();
   }
 
@@ -154,12 +158,21 @@ class OrderScreen extends Component<Props, State> {
   renderModalContent() {
     return (
       <View style={styles.quantityModalContent}>
-        <View style={styles.row} />
-        <Text style={styles.quantityInputTitle}>
-          {this.state.product ? this.state.product.name : ""}:{" "}
-          <Text style={styles.quantityValueLabel}>{this.state.quantity}</Text>
-        </Text>
-        {/* <Icon name="delete" size={30} color={colors.SECONDARY_COLOR} /> */}
+        <View style={styles.row}>
+          <Text style={styles.quantityInputTitle}>
+            {this.state.product ? this.state.product.name : ""}:{" "}
+            <Text style={styles.quantityValueLabel}>{this.state.quantity}</Text>
+          </Text>
+          {/* only show trash icon when product units added to order */}
+          {this.state.quantity != 0 && (
+            <TouchableHighlight
+              onPress={() => this.onModalTrashIconPress()}
+              underlayColor={colors.TITLE_COLOR}
+            >
+              <Icon name="delete" size={30} color={colors.SECONDARY_COLOR} />
+            </TouchableHighlight>
+          )}
+        </View>
         <Slider
           value={this.state.quantity}
           onValueChange={value => this.setState({ quantity: value })}
@@ -167,7 +180,7 @@ class OrderScreen extends Component<Props, State> {
             this.props.setProductQuantity(this.state.product._id, value)
           }
           minimumValue={0}
-          maximumValue={50}
+          maximumValue={this.state.product ? this.state.product.inStock : 0}
           step={1}
           trackStyle={styles.quantitySliderTrackStyle}
           thumbStyle={styles.quantitySliderThumbStyle}

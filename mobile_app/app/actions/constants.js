@@ -1,5 +1,5 @@
 //get customerlist
-export const URL = "http://10.0.2.2:8000";
+export const URL = "http://192.168.0.132:8000";
 
 //customers
 export const REQUEST_CUSTOMERS = "REQUEST_CUSTOMERS";

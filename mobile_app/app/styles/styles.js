@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   row: {
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   column: {
     flexDirection: "column",
@@ -130,9 +131,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   quantityValueLabel: {
-    color: colors.SECONDARY_COLOR,
-    fontSize: 20,
-    marginBottom: 5
+    color: colors.SECONDARY_COLOR
   },
   quantitySliderTrackStyle: {
     height: 2,
@@ -158,6 +157,13 @@ const styles = StyleSheet.create({
     borderColor: colors.PRIMARY_COLOR,
     borderRadius: 10,
     justifyContent: "center"
+  },
+  /***** Order Overview ****/
+  listItemContainer: {},
+  separator: {
+    height: 2,
+    width: "100%",
+    backgroundColor: colors.SECONDARY_COLOR
   }
 });
 

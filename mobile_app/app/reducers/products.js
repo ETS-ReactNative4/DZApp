@@ -13,7 +13,7 @@ const initialState = {
     amountPayedFromCredit: null,
     amountPayedFromSubscriptionFee: null,
     orderlines: {}
-  },
+  }
 };
 
 const reducer = (state: any = initialState, action: any) => {
@@ -51,14 +51,14 @@ const reducer = (state: any = initialState, action: any) => {
     }
     case ActionConstants.SET_PRODUCT_QUANTITY: {
       let newOrder = Object.assign({}, state.order);
-      let newOrderLines = Object.assign({}, state.order.orderlines);      
+      let newOrderLines = Object.assign({}, state.order.orderlines);
       let quantity = action.data.quantity;
       newOrderLines[action.data.productId] = quantity;
       newOrder.orderlines = newOrderLines;
 
-      return Object.assign({},state,{
+      return Object.assign({}, state, {
         order: newOrder
-      })
+      });
     }
     default:
       return state;

@@ -31,24 +31,24 @@ export const fetchProductsFailed = (error: {}): {} => {
 //add one unit of the given productid to the active order
 //corresponds to one short press on a product thumbnail in
 //the orders screen
-export const incrementProductQuantity = (productId:number):{} => {
+export const incrementProductQuantity = (productId: number): {} => {
   return {
     type: ActionConstants.INCREMENT_PRODUCT_QUANTITY,
     data: productId
-  }
-}
+  };
+};
 
-//set the quantity of the given productId in the active order 
-//to the given amount. 
-export const setProductQuantity = (productId:number,quantity:number):{} => {
-  return{
+//set the quantity of the given productId in the active order
+//to the given amount.
+export const setProductQuantity = (productId: number, quantity: number): {} => {
+  return {
     type: ActionConstants.SET_PRODUCT_QUANTITY,
     data: {
       productId: productId,
       quantity: quantity
     }
-  }
-}
+  };
+};
 
 // //sets the active productId to the given productId
 // export const setProduct = (productId:number):{} => {
@@ -64,7 +64,7 @@ export const setProductQuantity = (productId:number,quantity:number):{} => {
 export const fetchProducts = () => {
   return function(dispatch) {
     dispatch(requestProducts());
-    return fetchWrapper(2000, fetch(ActionConstants.URL + "/products"))
+    return fetchWrapper(5000, fetch(ActionConstants.URL + "/products"))
       .then(response => response.json())
       .then(json => dispatch(receiveProducts(json)))
       .catch(error => dispatch(fetchProductsFailed(error)));

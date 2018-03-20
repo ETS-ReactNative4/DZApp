@@ -15,7 +15,12 @@ const rootPersistConfig = {
   key: "root",
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
-  blacklist: ["cashierReducer", "customerReducer", "eventReducer"]
+  blacklist: [
+    "cashierReducer",
+    "customerReducer",
+    "eventReducer",
+    "productReducer"
+  ]
 };
 
 const customerReducerPersistConfig = {
@@ -44,7 +49,7 @@ const productReducerPersistConfig = {
   storage: AsyncStorage,
   whitelist: ["products"],
   stateReconciler: autoMergeLevel2
-}
+};
 
 //create root reducer with persist configs
 const reducer = combineReducers({
@@ -54,7 +59,7 @@ const reducer = combineReducers({
   ),
   eventReducer: persistReducer(eventReducerPersistConfig, eventReducer),
   cashierReducer: persistReducer(cashierReducerPersistConfig, cashierReducer),
-  productReducer: persistReducer(productReducerPersistConfig,productReducer)
+  productReducer: persistReducer(productReducerPersistConfig, productReducer)
 });
 
 export default persistReducer(rootPersistConfig, reducer);

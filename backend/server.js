@@ -15,7 +15,7 @@ MongoClient.connect(db.url, (err, database) => {
 
   require("./app/routes")(app, database);
 
-  var server = app.listen(port, "localhost", () => {
+  var server = app.listen(port, "192.168.0.132", () => {
     var host = server.address().address;
     var port = server.address().port;
     console.log("running at http://" + host + ":" + port);

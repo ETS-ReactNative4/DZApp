@@ -39,7 +39,7 @@ export const fetchCustomersFailed = (error: {}): {} => {
 export const fetchCustomers = () => {
   return function(dispatch) {
     dispatch(requestCustomers());
-    return fetchWrapper(2000, fetch(ActionConstants.URL + "/customers"))
+    return fetchWrapper(5000, fetch(ActionConstants.URL + "/customers"))
       .then(response => response.json())
       .then(json => dispatch(receiveCustomers(json)))
       .catch(error => dispatch(fetchCustomersFailed(error)));

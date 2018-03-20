@@ -22,7 +22,6 @@ import colors from "../styles/colors";
 
 type Props = {};
 type State = {};
- 
 
 class LoadingScreen extends Component<Props, State> {
   constructor(props) {
@@ -50,17 +49,21 @@ class LoadingScreen extends Component<Props, State> {
     );
   }
 
-  componentDidUpdate() {    
-    if (this.props.navigation && !this.props.isFetchingCustomers && !this.props.isFetchingEvents) {
+  componentDidMount() {
+    if (
+      this.props.navigation &&
+      !this.props.isFetchingCustomers &&
+      !this.props.isFetchingEvents
+    ) {
       setTimeout(() => {
         this.props.navigation.navigate(
-          !this.props.cashierId ? 'LoginScreen' :
-          !this.props.eventId ? 'EventScreen' : ''
+          !this.props.cashierId
+            ? "LoginScreen"
+            : !this.props.eventId ? "EventScreen" : ""
         );
       }, 3000);
     }
   }
-
 }
 
 const mapStateToProps = state => {

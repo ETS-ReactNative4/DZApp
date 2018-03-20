@@ -2,20 +2,29 @@
 import React, { Component } from "react";
 import { StackNavigator, SwitchNavigator } from "react-navigation";
 
+//container components
 import LoginScreen from "../containers/LoginScreen";
 import EventScreen from "../containers/EventScreen";
 import LoadingScreen from "../containers/LoadingScreen";
 import OrderScreen from "../containers/OrderScreen";
+import OverviewScreen from "../containers/OverviewScreen";
 
+//components
 import LogoTitle from "../components/LogoTitle";
+import { OverviewButton } from "../components/HeaderButtons";
+
+//style
 import colors from "../styles/colors";
 
 const flowNavigator = StackNavigator(
   {
     OrderScreen: {
-      screen: OrderScreen,
+      screen: OrderScreen
+    },
+    OverviewScreen: {
+      screen: OverviewScreen,
       navigationOptions: {
-        title: "Bestellen"
+        title: "Overzicht"
       }
     }
   },
@@ -28,8 +37,8 @@ const flowNavigator = StackNavigator(
       headerTintColor: colors.TITLE_COLOR,
       headerTitleStyle: {
         fontWeight: "bold"
-      },
-      headerTitle: props => <LogoTitle title={props.children} />
+      }
+      //headerTitle: props => <LogoTitle title={props.children} />
     }
   }
 );
@@ -54,7 +63,7 @@ const RootNavigator = SwitchNavigator(
     MainFlow: flowNavigator
   },
   {
-    initialRouteName: "MainFlow",
+    initialRouteName: "LoadingScreen",
     navigationOptions: {
       headerStyle: {
         backgroundColor: colors.PRIMARY_COLOR
