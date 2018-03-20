@@ -1,13 +1,15 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "C:\\Users\\janmo\\Projects\\Mobile Apps\\backend"
-		}
-	],
-	"settings": {
-		"todohighlight.keywords": ["TODO"]
-	}
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path":
+        "C:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\backend"
+    }
+  ],
+  "settings": {
+    "todohighlight.keywords": ["TODO"],
+    "editor.formatOnSave": true
+  }
 }

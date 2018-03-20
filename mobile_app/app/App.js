@@ -22,6 +22,8 @@ YellowBox.ignoreWarnings([
   'Warning: componentWillUpdate is deprecated'
 ]);
 
+//persistor.purge();
+
 type Props = {};
 type State = {};
 

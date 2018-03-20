@@ -60228,7 +60228,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             store: _Store.store,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 31
+              lineNumber: 33
             }
           },
           _react3.default.createElement(
@@ -60237,19 +60237,19 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               loading: _react3.default.createElement(_LoadingScreen2.default, {
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 32
+                  lineNumber: 34
                 }
               }),
               persistor: _Store.persistor,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 32
+                lineNumber: 34
               }
             },
             _react3.default.createElement(_RootNavigator2.default, {
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 33
+                lineNumber: 35
               }
             })
           )
@@ -62177,6 +62177,8 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var REQUEST_PRODUCTS = exports.REQUEST_PRODUCTS = "REQUEST_PRODUCTS";
   var RECEIVE_PRODUCTS = exports.RECEIVE_PRODUCTS = "RECEIVE_PRODUCTS";
   var FETCH_PRODUCTS_FAILED = exports.FETCH_PRODUCTS_FAILED = "FETCH_PRODUCTS_FAILED";
+  var INCREMENT_PRODUCT_QUANTITY = exports.INCREMENT_PRODUCT_QUANTITY = "INCREMENT_PRODUCT_QUANTITY";
+  var SET_PRODUCT_QUANTITY = exports.SET_PRODUCT_QUANTITY = "SET_PRODUCT_QUANTITY";
 },521,[],"app\\actions\\constants.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
@@ -62255,7 +62257,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.fetchProducts = exports.fetchProductsFailed = exports.receiveProducts = exports.requestProducts = undefined;
+  exports.fetchProducts = exports.setProductQuantity = exports.incrementProductQuantity = exports.fetchProductsFailed = exports.receiveProducts = exports.requestProducts = undefined;
 
   var _constants = _require(_dependencyMap[0], "./constants");
 
@@ -62286,6 +62288,23 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     return {
       type: ActionConstants.FETCH_PRODUCTS_FAILED,
       data: error
+    };
+  };
+
+  var incrementProductQuantity = exports.incrementProductQuantity = function incrementProductQuantity(productId) {
+    return {
+      type: ActionConstants.INCREMENT_PRODUCT_QUANTITY,
+      data: productId
+    };
+  };
+
+  var setProductQuantity = exports.setProductQuantity = function setProductQuantity(productId, quantity) {
+    return {
+      type: ActionConstants.SET_PRODUCT_QUANTITY,
+      data: {
+        productId: productId,
+        quantity: quantity
+      }
     };
   };
 
@@ -64000,7 +64019,16 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var initialState = {
     isFetching: false,
     products: [],
-    error: null
+    error: null,
+    order: {
+      cashierId: null,
+      eventId: null,
+      customerId: null,
+      timestamp: null,
+      amountPayedFromCredit: null,
+      amountPayedFromSubscriptionFee: null,
+      orderlines: {}
+    }
   };
 
   var reducer = function reducer() {
@@ -64026,6 +64054,35 @@ __d(function (global, _require, module, exports, _dependencyMap) {
           return _extends({}, state, {
             isFetching: false,
             error: action.data
+          });
+        }
+
+      case ActionConstants.INCREMENT_PRODUCT_QUANTITY:
+        {
+          var newOrder = _extends({}, state.order);
+
+          var newOrderLines = _extends({}, state.order.orderlines);
+
+          var oldQuantity = newOrderLines[action.data];
+          var newQuantity = oldQuantity ? oldQuantity + 1 : 1;
+          newOrderLines[action.data] = newQuantity;
+          newOrder.orderlines = newOrderLines;
+          return _extends({}, state, {
+            order: newOrder
+          });
+        }
+
+      case ActionConstants.SET_PRODUCT_QUANTITY:
+        {
+          var _newOrder = _extends({}, state.order);
+
+          var _newOrderLines = _extends({}, state.order.orderlines);
+
+          var quantity = action.data.quantity;
+          _newOrderLines[action.data.productId] = quantity;
+          _newOrder.orderlines = _newOrderLines;
+          return _extends({}, state, {
+            order: _newOrder
           });
         }
 
@@ -64255,7 +64312,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     },
     MainFlow: flowNavigator
   }, {
-    initialRouteName: "LoadingScreen",
+    initialRouteName: "MainFlow",
     navigationOptions: {
       headerStyle: {
         backgroundColor: _colors2.default.PRIMARY_COLOR
@@ -64276,7 +64333,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
   });
   exports.default = RootNavigator;
-},545,[111,546,619,623,624,626,630,622],"app\\components\\RootNavigator.js");
+},545,[111,546,619,623,624,626,655,622],"app\\components\\RootNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = {
     get createNavigationContainer() {
@@ -76454,6 +76511,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       color: _colors2.default.PRIMARY_COLOR,
       marginBottom: 5
     },
+    header2: {
+      fontSize: 20,
+      color: _colors2.default.PRIMARY_COLOR,
+      marginBottom: 30,
+      alignSelf: "center"
+    },
     button: {},
     actionBarTitle: {
       color: _colors2.default.TITLE_COLOR,
@@ -76481,16 +76544,16 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       borderRadius: 10,
       padding: 5,
       marginBottom: 10,
-      flexDirection: 'row'
+      flexDirection: "row"
     },
     bold: {
-      fontWeight: 'bold'
+      fontWeight: "bold"
     },
     row: {
-      flexDirection: 'row'
+      flexDirection: "row"
     },
     column: {
-      flexDirection: 'column',
+      flexDirection: "column",
       marginRight: 15
     },
     primary: {
@@ -76498,7 +76561,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     },
     loadingContainer: {
       backgroundColor: _colors2.default.PRIMARY_COLOR,
-      flexDirection: 'column',
+      flexDirection: "column",
       alignItems: "center"
     },
     loadingLogo: {
@@ -76511,6 +76574,89 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     },
     loadingIndicator: {
       marginBottom: 20
+    },
+    thumbnail: {
+      flexDirection: "column",
+      width: 130,
+      height: 130,
+      borderWidth: 2,
+      borderColor: _colors2.default.PRIMARY_COLOR,
+      borderRadius: 10
+    },
+    thumbImageView: {
+      flex: 4
+    },
+    thumbImage: {
+      width: null,
+      height: null,
+      resizeMode: "contain",
+      flex: 1
+    },
+    thumbQuantityLabel: {
+      position: "absolute",
+      right: 5,
+      top: 5,
+      borderRadius: 100,
+      width: 30,
+      height: 30,
+      backgroundColor: _colors2.default.PRIMARY_COLOR,
+      textAlign: "center",
+      textAlignVertical: "center",
+      color: _colors2.default.TITLE_COLOR
+    },
+    thumbCaption: {
+      flex: 2,
+      flexDirection: "column",
+      padding: 5
+    },
+    thumbNameLabel: {
+      flex: 1,
+      fontWeight: "bold"
+    },
+    thumbPriceLabel: {
+      flex: 1
+    },
+    thumbIsSelected: {
+      borderColor: _colors2.default.SECONDARY_COLOR,
+      borderWidth: 4
+    },
+    productGrid: {
+      alignSelf: "center"
+    },
+    quantityInputTitle: {
+      color: _colors2.default.PRIMARY_COLOR,
+      fontSize: 20,
+      marginBottom: 5
+    },
+    quantityValueLabel: {
+      color: _colors2.default.SECONDARY_COLOR,
+      fontSize: 20,
+      marginBottom: 5
+    },
+    quantitySliderTrackStyle: {
+      height: 2,
+      borderRadius: 5,
+      backgroundColor: _colors2.default.PRIMARY_COLOR
+    },
+    quantitySliderThumbStyle: {
+      width: 10,
+      height: 10,
+      borderRadius: 10 / 2,
+      backgroundColor: _colors2.default.SECONDARY_COLOR
+    },
+    quantityModal: {
+      flex: 1,
+      justifyContent: "flex-end"
+    },
+    quantityModalContent: {
+      backgroundColor: _colors2.default.TITLE_COLOR,
+      padding: 20,
+      flex: 0.4,
+      flexDirection: "column",
+      borderWidth: 3,
+      borderColor: _colors2.default.PRIMARY_COLOR,
+      borderRadius: 10,
+      justifyContent: "center"
     }
   });
 
@@ -77027,19 +77173,35 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _reactNative = _require(_dependencyMap[2], "react-native");
 
-  var _styles = _require(_dependencyMap[3], "../styles/styles");
+  var _reactNativeSlider = _require(_dependencyMap[3], "react-native-slider");
+
+  var _reactNativeSlider2 = _interopRequireDefault(_reactNativeSlider);
+
+  var _reactNativeModal = _require(_dependencyMap[4], "react-native-modal");
+
+  var _reactNativeModal2 = _interopRequireDefault(_reactNativeModal);
+
+  var _styles = _require(_dependencyMap[5], "../styles/styles");
 
   var _styles2 = _interopRequireDefault(_styles);
 
-  var _reactNativeSuperGrid = _require(_dependencyMap[4], "react-native-super-grid");
+  var _colors = _require(_dependencyMap[6], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  var _reactNativeSuperGrid = _require(_dependencyMap[7], "react-native-super-grid");
 
   var _reactNativeSuperGrid2 = _interopRequireDefault(_reactNativeSuperGrid);
 
-  var _ProductThumbnail = _require(_dependencyMap[5], "../components/ProductThumbnail");
+  var _ProductThumbnail = _require(_dependencyMap[8], "../components/ProductThumbnail");
 
   var _ProductThumbnail2 = _interopRequireDefault(_ProductThumbnail);
 
-  var _reactRedux = _require(_dependencyMap[6], "react-redux");
+  var _reactRedux = _require(_dependencyMap[9], "react-redux");
+
+  var _redux = _require(_dependencyMap[10], "redux");
+
+  var _productActions = _require(_dependencyMap[11], "../actions/productActions");
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77077,51 +77239,196 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       var _this = _possibleConstructorReturn(this, (OrderScreen.__proto__ || Object.getPrototypeOf(OrderScreen)).call(this, props));
 
       _this.state = {
-        count: 0
+        product: null,
+        quantity: 0,
+        modalIsVisible: false
       };
-      _this.state = {};
+      _this.onProductThumbnailPress = _this.onProductThumbnailPress.bind(_this);
+      _this.onProductThumbnailLongPress = _this.onProductThumbnailLongPress.bind(_this);
+      _this.removeSelectedProduct = _this.removeSelectedProduct.bind(_this);
+      _this.toggleModalVisible = _this.toggleModalVisible.bind(_this);
       return _this;
     }
 
     _createClass(OrderScreen, [{
       key: "render",
       value: function render() {
-        console.log(this.props.products);
+        var _this2 = this;
+
         return _react3.default.createElement(
           _reactNative.View,
           {
             style: _styles2.default.container,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 38
+              lineNumber: 51
             }
           },
           _react3.default.createElement(_reactNativeSuperGrid2.default, {
+            style: _styles2.default.productGrid,
             itemDimension: 130,
             items: this.props.products,
             renderItem: function renderItem(product) {
               return _react3.default.createElement(_ProductThumbnail2.default, {
                 product: product,
-                quantity: 0,
+                quantity: _this2.props.order.orderlines[product._id],
+                onPress: function onPress() {
+                  return _this2.onProductThumbnailPress(product._id);
+                },
+                onLongPress: function onLongPress() {
+                  return _this2.onProductThumbnailLongPress(product._id);
+                },
+                isSelected: _this2.state.product === product,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 44
+                  lineNumber: 58
                 }
               });
             },
+            horizontal: true,
+            spacing: 10,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 39
+              lineNumber: 52
             }
-          })
+          }),
+          _react3.default.createElement(
+            _reactNativeModal2.default,
+            {
+              isVisible: this.state.modalIsVisible,
+              animationIn: "slideInUp",
+              animationInTiming: 500,
+              animationOut: "slideOutDown",
+              animationOutTiming: 500,
+              backdropColor: _colors2.default.PRIMARY_COLOR,
+              onBackButtonPress: function onBackButtonPress() {
+                return _this2.toggleModalVisible();
+              },
+              onBackdropPress: function onBackdropPress() {
+                return _this2.toggleModalVisible();
+              },
+              onModalHide: function onModalHide() {
+                return _this2.removeSelectedProduct();
+              },
+              style: _styles2.default.quantityModal,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 73
+              }
+            },
+            this.renderModalContent()
+          )
         );
       }
     }, {
-      key: "componentWillMount",
-      value: function componentWillMount() {
-        this.props.navigation.setParams({
-          increaseCount: this._increaseCount
+      key: "onProductThumbnailPress",
+      value: function onProductThumbnailPress(productId) {
+        this.props.incrementProductQuantity(productId);
+      }
+    }, {
+      key: "onProductThumbnailLongPress",
+      value: function onProductThumbnailLongPress(productId) {
+        var product = this.props.products.filter(function (p) {
+          return p._id === productId;
+        })[0];
+        this.setState({
+          product: product,
+          quantity: this.props.order.orderlines[productId] ? this.props.order.orderlines[productId] : 0
         });
+        this.toggleModalVisible();
+      }
+    }, {
+      key: "removeSelectedProduct",
+      value: function removeSelectedProduct() {
+        this.setState({
+          product: null,
+          quantity: 0
+        });
+      }
+    }, {
+      key: "toggleModalVisible",
+      value: function toggleModalVisible() {
+        this.setState({
+          modalIsVisible: !this.state.modalIsVisible
+        });
+      }
+    }, {
+      key: "renderModalContent",
+      value: function renderModalContent() {
+        var _this3 = this;
+
+        return _react3.default.createElement(
+          _reactNative.View,
+          {
+            style: _styles2.default.quantityModalContent,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 156
+            }
+          },
+          _react3.default.createElement(_reactNative.View, {
+            style: _styles2.default.row,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 157
+            }
+          }),
+          _react3.default.createElement(
+            _reactNative.Text,
+            {
+              style: _styles2.default.quantityInputTitle,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 158
+              }
+            },
+            this.state.product ? this.state.product.name : "",
+            ":",
+            " ",
+            _react3.default.createElement(
+              _reactNative.Text,
+              {
+                style: _styles2.default.quantityValueLabel,
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 160
+                }
+              },
+              this.state.quantity
+            )
+          ),
+          _react3.default.createElement(_reactNativeSlider2.default, {
+            value: this.state.quantity,
+            onValueChange: function onValueChange(value) {
+              return _this3.setState({
+                quantity: value
+              });
+            },
+            onSlidingComplete: function onSlidingComplete(value) {
+              return _this3.props.setProductQuantity(_this3.state.product._id, value);
+            },
+            minimumValue: 0,
+            maximumValue: 50,
+            step: 1,
+            trackStyle: _styles2.default.quantitySliderTrackStyle,
+            thumbStyle: _styles2.default.quantitySliderThumbStyle,
+            minimumTrackTintColor: _colors2.default.SECONDARY_COLOR,
+            maximumTrackTintColor: _colors2.default.PRIMARY_COLOR,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 163
+            }
+          }),
+          _react3.default.createElement(_reactNative.Button, {
+            title: "OK",
+            color: _colors2.default.PRIMARY_COLOR,
+            onPress: this.toggleModalVisible,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 177
+            }
+          })
+        );
       }
     }]);
 
@@ -77130,16 +77437,3072 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var mapStateToProps = function mapStateToProps(state) {
     return {
-      products: state.productReducer.products
+      products: state.productReducer.products,
+      order: state.productReducer.order
     };
   };
 
   var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {};
+    return (0, _redux.bindActionCreators)({
+      incrementProductQuantity: _productActions.incrementProductQuantity,
+      setProductQuantity: _productActions.setProductQuantity
+    }, dispatch);
   };
 
   exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(OrderScreen);
-},626,[111,179,12,621,627,629,491],"app\\containers\\OrderScreen.js");
+},626,[111,179,12,627,628,621,622,652,654,491,502,524],"app\\containers\\OrderScreen.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+     'use strict';
+
+     Object.defineProperty(exports, "__esModule", {
+          value: true
+     });
+     var _jsxFileName = "src/Slider.js";
+
+     var _extends = Object.assign || function (target) {
+          for (var i = 1; i < arguments.length; i++) {
+               var source = arguments[i];
+
+               for (var key in source) {
+                    if (Object.prototype.hasOwnProperty.call(source, key)) {
+                         target[key] = source[key];
+                    }
+               }
+          }
+
+          return target;
+     };
+
+     var _createClass = function () {
+          function defineProperties(target, props) {
+               for (var i = 0; i < props.length; i++) {
+                    var descriptor = props[i];
+                    descriptor.enumerable = descriptor.enumerable || false;
+                    descriptor.configurable = true;
+                    if ("value" in descriptor) descriptor.writable = true;
+                    Object.defineProperty(target, descriptor.key, descriptor);
+               }
+          }
+
+          return function (Constructor, protoProps, staticProps) {
+               if (protoProps) defineProperties(Constructor.prototype, protoProps);
+               if (staticProps) defineProperties(Constructor, staticProps);
+               return Constructor;
+          };
+     }();
+
+     var _react = _require(_dependencyMap[0], "react");
+
+     var _react2 = _interopRequireDefault(_react);
+
+     var _reactNative = _require(_dependencyMap[1], "react-native");
+
+     var _propTypes = _require(_dependencyMap[2], "prop-types");
+
+     var _propTypes2 = _interopRequireDefault(_propTypes);
+
+     function _interopRequireDefault(obj) {
+          return obj && obj.__esModule ? obj : {
+               default: obj
+          };
+     }
+
+     function _objectWithoutProperties(obj, keys) {
+          var target = {};
+
+          for (var i in obj) {
+               if (keys.indexOf(i) >= 0) continue;
+               if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+               target[i] = obj[i];
+          }
+
+          return target;
+     }
+
+     function _classCallCheck(instance, Constructor) {
+          if (!(instance instanceof Constructor)) {
+               throw new TypeError("Cannot call a class as a function");
+          }
+     }
+
+     function _possibleConstructorReturn(self, call) {
+          if (!self) {
+               throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+          }
+
+          return call && (typeof call === "object" || typeof call === "function") ? call : self;
+     }
+
+     function _inherits(subClass, superClass) {
+          if (typeof superClass !== "function" && superClass !== null) {
+               throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+          }
+
+          subClass.prototype = Object.create(superClass && superClass.prototype, {
+               constructor: {
+                    value: subClass,
+                    enumerable: false,
+                    writable: true,
+                    configurable: true
+               }
+          });
+          if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+     }
+
+     var TRACK_SIZE = 4;
+     var THUMB_SIZE = 20;
+
+     function Rect(x, y, width, height) {
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+     }
+
+     Rect.prototype.containsPoint = function (x, y) {
+          return x >= this.x && y >= this.y && x <= this.x + this.width && y <= this.y + this.height;
+     };
+
+     var DEFAULT_ANIMATION_CONFIGS = {
+          spring: {
+               friction: 7,
+               tension: 100
+          },
+          timing: {
+               duration: 150,
+               easing: _reactNative.Easing.inOut(_reactNative.Easing.ease),
+               delay: 0
+          }
+     };
+
+     var Slider = function (_PureComponent) {
+          _inherits(Slider, _PureComponent);
+
+          function Slider() {
+               var _Object$getPrototypeO;
+
+               var _temp, _this, _ret;
+
+               _classCallCheck(this, Slider);
+
+               for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+               }
+
+               return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Slider)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+                    containerSize: {
+                         width: 0,
+                         height: 0
+                    },
+                    trackSize: {
+                         width: 0,
+                         height: 0
+                    },
+                    thumbSize: {
+                         width: 0,
+                         height: 0
+                    },
+                    allMeasured: false,
+                    value: new _reactNative.Animated.Value(_this.props.value)
+               }, _this._handleStartShouldSetPanResponder = function (e) {
+                    return _this._thumbHitTest(e);
+               }, _this._handlePanResponderGrant = function () {
+                    _this._previousLeft = _this._getThumbLeft(_this._getCurrentValue());
+
+                    _this._fireChangeEvent('onSlidingStart');
+               }, _this._handlePanResponderMove = function (e, gestureState) {
+                    if (_this.props.disabled) {
+                         return;
+                    }
+
+                    _this._setCurrentValue(_this._getValue(gestureState));
+
+                    _this._fireChangeEvent('onValueChange');
+               }, _this._handlePanResponderEnd = function (e, gestureState) {
+                    if (_this.props.disabled) {
+                         return;
+                    }
+
+                    _this._setCurrentValue(_this._getValue(gestureState));
+
+                    _this._fireChangeEvent('onSlidingComplete');
+               }, _this._measureContainer = function (x) {
+                    _this._handleMeasure('containerSize', x);
+               }, _this._measureTrack = function (x) {
+                    _this._handleMeasure('trackSize', x);
+               }, _this._measureThumb = function (x) {
+                    _this._handleMeasure('thumbSize', x);
+               }, _this._handleMeasure = function (name, x) {
+                    var _x$nativeEvent$layout = x.nativeEvent.layout;
+                    var width = _x$nativeEvent$layout.width;
+                    var height = _x$nativeEvent$layout.height;
+                    var size = {
+                         width: width,
+                         height: height
+                    };
+                    var storeName = "_" + name;
+                    var currentSize = _this[storeName];
+
+                    if (currentSize && width === currentSize.width && height === currentSize.height) {
+                         return;
+                    }
+
+                    _this[storeName] = size;
+
+                    if (_this._containerSize && _this._trackSize && _this._thumbSize) {
+                         _this.setState({
+                              containerSize: _this._containerSize,
+                              trackSize: _this._trackSize,
+                              thumbSize: _this._thumbSize,
+                              allMeasured: true
+                         });
+                    }
+               }, _this._getRatio = function (value) {
+                    return (value - _this.props.minimumValue) / (_this.props.maximumValue - _this.props.minimumValue);
+               }, _this._getThumbLeft = function (value) {
+                    var ratio = _this._getRatio(value);
+
+                    return ratio * (_this.state.containerSize.width - _this.state.thumbSize.width);
+               }, _this._getValue = function (gestureState) {
+                    var length = _this.state.containerSize.width - _this.state.thumbSize.width;
+                    var thumbLeft = _this._previousLeft + gestureState.dx;
+                    var ratio = thumbLeft / length;
+
+                    if (_this.props.step) {
+                         return Math.max(_this.props.minimumValue, Math.min(_this.props.maximumValue, _this.props.minimumValue + Math.round(ratio * (_this.props.maximumValue - _this.props.minimumValue) / _this.props.step) * _this.props.step));
+                    } else {
+                         return Math.max(_this.props.minimumValue, Math.min(_this.props.maximumValue, ratio * (_this.props.maximumValue - _this.props.minimumValue) + _this.props.minimumValue));
+                    }
+               }, _this._getCurrentValue = function () {
+                    return _this.state.value.__getValue();
+               }, _this._setCurrentValue = function (value) {
+                    _this.state.value.setValue(value);
+               }, _this._setCurrentValueAnimated = function (value) {
+                    var animationType = _this.props.animationType;
+
+                    var animationConfig = _extends({}, DEFAULT_ANIMATION_CONFIGS[animationType], _this.props.animationConfig, {
+                         toValue: value
+                    });
+
+                    _reactNative.Animated[animationType](_this.state.value, animationConfig).start();
+               }, _this._fireChangeEvent = function (event) {
+                    if (_this.props[event]) {
+                         _this.props[event](_this._getCurrentValue());
+                    }
+               }, _this._getTouchOverflowSize = function () {
+                    var state = _this.state;
+                    var props = _this.props;
+                    var size = {};
+
+                    if (state.allMeasured === true) {
+                         size.width = Math.max(0, props.thumbTouchSize.width - state.thumbSize.width);
+                         size.height = Math.max(0, props.thumbTouchSize.height - state.containerSize.height);
+                    }
+
+                    return size;
+               }, _this._getTouchOverflowStyle = function () {
+                    var _this$_getTouchOverfl = _this._getTouchOverflowSize();
+
+                    var width = _this$_getTouchOverfl.width;
+                    var height = _this$_getTouchOverfl.height;
+                    var touchOverflowStyle = {};
+
+                    if (width !== undefined && height !== undefined) {
+                         var verticalMargin = -height / 2;
+                         touchOverflowStyle.marginTop = verticalMargin;
+                         touchOverflowStyle.marginBottom = verticalMargin;
+                         var horizontalMargin = -width / 2;
+                         touchOverflowStyle.marginLeft = horizontalMargin;
+                         touchOverflowStyle.marginRight = horizontalMargin;
+                    }
+
+                    if (_this.props.debugTouchArea === true) {
+                         touchOverflowStyle.backgroundColor = 'orange';
+                         touchOverflowStyle.opacity = 0.5;
+                    }
+
+                    return touchOverflowStyle;
+               }, _this._thumbHitTest = function (e) {
+                    var nativeEvent = e.nativeEvent;
+
+                    var thumbTouchRect = _this._getThumbTouchRect();
+
+                    return thumbTouchRect.containsPoint(nativeEvent.locationX, nativeEvent.locationY);
+               }, _this._getThumbTouchRect = function () {
+                    var state = _this.state;
+                    var props = _this.props;
+
+                    var touchOverflowSize = _this._getTouchOverflowSize();
+
+                    return new Rect(touchOverflowSize.width / 2 + _this._getThumbLeft(_this._getCurrentValue()) + (state.thumbSize.width - props.thumbTouchSize.width) / 2, touchOverflowSize.height / 2 + (state.containerSize.height - props.thumbTouchSize.height) / 2, props.thumbTouchSize.width, props.thumbTouchSize.height);
+               }, _this._renderDebugThumbTouchRect = function (thumbLeft) {
+                    var thumbTouchRect = _this._getThumbTouchRect();
+
+                    var positionStyle = {
+                         left: thumbLeft,
+                         top: thumbTouchRect.y,
+                         width: thumbTouchRect.width,
+                         height: thumbTouchRect.height
+                    };
+                    return _react2.default.createElement(_reactNative.Animated.View, {
+                         style: [defaultStyles.debugThumbTouchArea, positionStyle],
+                         pointerEvents: "none",
+                         __source: {
+                              fileName: _jsxFileName,
+                              lineNumber: 496
+                         }
+                    });
+               }, _this._renderThumbImage = function () {
+                    var thumbImage = _this.props.thumbImage;
+                    if (!thumbImage) return;
+                    return _react2.default.createElement(_reactNative.Image, {
+                         source: thumbImage,
+                         __source: {
+                              fileName: _jsxFileName,
+                              lineNumber: 508
+                         }
+                    });
+               }, _temp), _possibleConstructorReturn(_this, _ret);
+          }
+
+          _createClass(Slider, [{
+               key: "componentWillMount",
+               value: function componentWillMount() {
+                    this._panResponder = _reactNative.PanResponder.create({
+                         onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
+                         onMoveShouldSetPanResponder: this._handleMoveShouldSetPanResponder,
+                         onPanResponderGrant: this._handlePanResponderGrant,
+                         onPanResponderMove: this._handlePanResponderMove,
+                         onPanResponderRelease: this._handlePanResponderEnd,
+                         onPanResponderTerminationRequest: this._handlePanResponderRequestEnd,
+                         onPanResponderTerminate: this._handlePanResponderEnd
+                    });
+               }
+          }, {
+               key: "componentWillReceiveProps",
+               value: function componentWillReceiveProps(nextProps) {
+                    var newValue = nextProps.value;
+
+                    if (this.props.value !== newValue) {
+                         if (this.props.animateTransitions) {
+                              this._setCurrentValueAnimated(newValue);
+                         } else {
+                              this._setCurrentValue(newValue);
+                         }
+                    }
+               }
+          }, {
+               key: "render",
+               value: function render() {
+                    var _props = this.props;
+                    var minimumValue = _props.minimumValue;
+                    var maximumValue = _props.maximumValue;
+                    var minimumTrackTintColor = _props.minimumTrackTintColor;
+                    var maximumTrackTintColor = _props.maximumTrackTintColor;
+                    var thumbTintColor = _props.thumbTintColor;
+                    var thumbImage = _props.thumbImage;
+                    var styles = _props.styles;
+                    var style = _props.style;
+                    var trackStyle = _props.trackStyle;
+                    var thumbStyle = _props.thumbStyle;
+                    var debugTouchArea = _props.debugTouchArea;
+
+                    var other = _objectWithoutProperties(_props, ["minimumValue", "maximumValue", "minimumTrackTintColor", "maximumTrackTintColor", "thumbTintColor", "thumbImage", "styles", "style", "trackStyle", "thumbStyle", "debugTouchArea"]);
+
+                    var _state = this.state;
+                    var value = _state.value;
+                    var containerSize = _state.containerSize;
+                    var trackSize = _state.trackSize;
+                    var thumbSize = _state.thumbSize;
+                    var allMeasured = _state.allMeasured;
+                    var mainStyles = styles || defaultStyles;
+                    var thumbLeft = value.interpolate({
+                         inputRange: [minimumValue, maximumValue],
+                         outputRange: [0, containerSize.width - thumbSize.width]
+                    });
+                    var valueVisibleStyle = {};
+
+                    if (!allMeasured) {
+                         valueVisibleStyle.opacity = 0;
+                    }
+
+                    var minimumTrackStyle = _extends({
+                         position: 'absolute',
+                         width: _reactNative.Animated.add(thumbLeft, thumbSize.width / 2),
+                         backgroundColor: minimumTrackTintColor
+                    }, valueVisibleStyle);
+
+                    var touchOverflowStyle = this._getTouchOverflowStyle();
+
+                    return _react2.default.createElement(_reactNative.View, _extends({}, other, {
+                         style: [mainStyles.container, style],
+                         onLayout: this._measureContainer,
+                         __source: {
+                              fileName: _jsxFileName,
+                              lineNumber: 255
+                         }
+                    }), _react2.default.createElement(_reactNative.View, {
+                         style: [{
+                              backgroundColor: maximumTrackTintColor
+                         }, mainStyles.track, trackStyle],
+                         renderToHardwareTextureAndroid: true,
+                         onLayout: this._measureTrack,
+                         __source: {
+                              fileName: _jsxFileName,
+                              lineNumber: 256
+                         }
+                    }), _react2.default.createElement(_reactNative.Animated.View, {
+                         renderToHardwareTextureAndroid: true,
+                         style: [mainStyles.track, trackStyle, minimumTrackStyle],
+                         __source: {
+                              fileName: _jsxFileName,
+                              lineNumber: 260
+                         }
+                    }), _react2.default.createElement(_reactNative.Animated.View, {
+                         onLayout: this._measureThumb,
+                         renderToHardwareTextureAndroid: true,
+                         style: [{
+                              backgroundColor: thumbTintColor
+                         }, mainStyles.thumb, thumbStyle, _extends({
+                              transform: [{
+                                   translateX: thumbLeft
+                              }, {
+                                   translateY: 0
+                              }]
+                         }, valueVisibleStyle)],
+                         __source: {
+                              fileName: _jsxFileName,
+                              lineNumber: 263
+                         }
+                    }, this._renderThumbImage()), _react2.default.createElement(_reactNative.View, _extends({
+                         renderToHardwareTextureAndroid: true,
+                         style: [defaultStyles.touchArea, touchOverflowStyle]
+                    }, this._panResponder.panHandlers, {
+                         __source: {
+                              fileName: _jsxFileName,
+                              lineNumber: 280
+                         }
+                    }), debugTouchArea === true && this._renderDebugThumbTouchRect(thumbLeft)));
+               }
+          }, {
+               key: "_getPropsForComponentUpdate",
+               value: function _getPropsForComponentUpdate(props) {
+                    var value = props.value;
+                    var onValueChange = props.onValueChange;
+                    var onSlidingStart = props.onSlidingStart;
+                    var onSlidingComplete = props.onSlidingComplete;
+                    var style = props.style;
+                    var trackStyle = props.trackStyle;
+                    var thumbStyle = props.thumbStyle;
+
+                    var otherProps = _objectWithoutProperties(props, ["value", "onValueChange", "onSlidingStart", "onSlidingComplete", "style", "trackStyle", "thumbStyle"]);
+
+                    return otherProps;
+               }
+          }, {
+               key: "_handleMoveShouldSetPanResponder",
+               value: function _handleMoveShouldSetPanResponder() {
+                    return false;
+               }
+          }, {
+               key: "_handlePanResponderRequestEnd",
+               value: function _handlePanResponderRequestEnd(e, gestureState) {
+                    return false;
+               }
+          }]);
+
+          return Slider;
+     }(_react.PureComponent);
+
+     Slider.propTypes = {
+          value: _propTypes2.default.number,
+          disabled: _propTypes2.default.bool,
+          minimumValue: _propTypes2.default.number,
+          maximumValue: _propTypes2.default.number,
+          step: _propTypes2.default.number,
+          minimumTrackTintColor: _propTypes2.default.string,
+          maximumTrackTintColor: _propTypes2.default.string,
+          thumbTintColor: _propTypes2.default.string,
+          thumbTouchSize: _propTypes2.default.shape({
+               width: _propTypes2.default.number,
+               height: _propTypes2.default.number
+          }),
+          onValueChange: _propTypes2.default.func,
+          onSlidingStart: _propTypes2.default.func,
+          onSlidingComplete: _propTypes2.default.func,
+          style: _reactNative.ViewPropTypes.style,
+          trackStyle: _reactNative.ViewPropTypes.style,
+          thumbStyle: _reactNative.ViewPropTypes.style,
+          thumbImage: _reactNative.Image.propTypes.source,
+          debugTouchArea: _propTypes2.default.bool,
+          animateTransitions: _propTypes2.default.bool,
+          animationType: _propTypes2.default.oneOf(['spring', 'timing']),
+          animationConfig: _propTypes2.default.object
+     };
+     Slider.defaultProps = {
+          value: 0,
+          minimumValue: 0,
+          maximumValue: 1,
+          step: 0,
+          minimumTrackTintColor: '#3f3f3f',
+          maximumTrackTintColor: '#b3b3b3',
+          thumbTintColor: '#343434',
+          thumbTouchSize: {
+               width: 40,
+               height: 40
+          },
+          debugTouchArea: false,
+          animationType: 'timing'
+     };
+     exports.default = Slider;
+
+     var defaultStyles = _reactNative.StyleSheet.create({
+          container: {
+               height: 40,
+               justifyContent: 'center'
+          },
+          track: {
+               height: TRACK_SIZE,
+               borderRadius: TRACK_SIZE / 2
+          },
+          thumb: {
+               position: 'absolute',
+               width: THUMB_SIZE,
+               height: THUMB_SIZE,
+               borderRadius: THUMB_SIZE / 2
+          },
+          touchArea: {
+               position: 'absolute',
+               backgroundColor: 'transparent',
+               top: 0,
+               left: 0,
+               right: 0,
+               bottom: 0
+          },
+          debugThumbTouchArea: {
+               position: 'absolute',
+               backgroundColor: 'green',
+               opacity: 0.5
+          }
+     });
+},627,[111,12,130],"node_modules\\react-native-slider\\lib\\Slider.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.ReactNativeModal = undefined;
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  var _class,
+      _temp,
+      _initialiseProps,
+      _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\node_modules\\react-native-modal\\src\\index.js";
+
+  var _reactNative = _require(_dependencyMap[2], "react-native");
+
+  var _propTypes = _require(_dependencyMap[3], "prop-types");
+
+  var _propTypes2 = _interopRequireDefault(_propTypes);
+
+  var _reactNativeAnimatable = _require(_dependencyMap[4], "react-native-animatable");
+
+  var _animations = _require(_dependencyMap[5], "./animations");
+
+  var ANIMATION_DEFINITIONS = _interopRequireWildcard(_animations);
+
+  var _indexStyle = _require(_dependencyMap[6], "./index.style.js");
+
+  var _indexStyle2 = _interopRequireDefault(_indexStyle);
+
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    ReactNativeModal: {
+      displayName: "ReactNativeModal"
+    }
+  };
+
+  var _reactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/node_modules/react-native-modal/src/index.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _reactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  (0, _reactNativeAnimatable.initializeRegistryWithDefinitions)(ANIMATION_DEFINITIONS);
+
+  var makeAnimation = function makeAnimation(name, obj) {
+    (0, _reactNativeAnimatable.registerAnimation)(name, (0, _reactNativeAnimatable.createAnimation)(obj));
+  };
+
+  var isObject = function isObject(obj) {
+    return obj !== null && typeof obj === "object";
+  };
+
+  var ReactNativeModal = _wrapComponent("ReactNativeModal")((_temp = _class = function (_Component) {
+    _inherits(ReactNativeModal, _Component);
+
+    function ReactNativeModal(props) {
+      _classCallCheck(this, ReactNativeModal);
+
+      var _this = _possibleConstructorReturn(this, (ReactNativeModal.__proto__ || Object.getPrototypeOf(ReactNativeModal)).call(this, props));
+
+      _initialiseProps.call(_this);
+
+      _this.buildAnimations(props);
+
+      if (_this.state.isSwipeable) {
+        _this.state = _extends({}, _this.state, {
+          pan: new _reactNative.Animated.ValueXY()
+        });
+
+        _this.buildPanResponder();
+      }
+
+      return _this;
+    }
+
+    _createClass(ReactNativeModal, [{
+      key: "componentWillReceiveProps",
+      value: function componentWillReceiveProps(nextProps) {
+        if (!this.state.isVisible && nextProps.isVisible) {
+          this.setState({
+            isVisible: true,
+            showContent: true
+          });
+        }
+
+        if (this.props.animationIn !== nextProps.animationIn || this.props.animationOut !== nextProps.animationOut) {
+          this.buildAnimations(nextProps);
+        }
+
+        if (this.props.backdropOpacity !== nextProps.backdropOpacity && this.backdropRef) {
+          this.backdropRef.transitionTo({
+            opacity: nextProps.backdropOpacity
+          }, this.props.backdropTransitionInTiming);
+        }
+      }
+    }, {
+      key: "componentWillMount",
+      value: function componentWillMount() {
+        if (this.props.isVisible) {
+          this.setState({
+            isVisible: true,
+            showContent: true
+          });
+        }
+      }
+    }, {
+      key: "componentDidMount",
+      value: function componentDidMount() {
+        if (this.state.isVisible) {
+          this.open();
+        }
+
+        _reactNative.DeviceEventEmitter.addListener("didUpdateDimensions", this.handleDimensionsUpdate);
+      }
+    }, {
+      key: "componentWillUnmount",
+      value: function componentWillUnmount() {
+        _reactNative.DeviceEventEmitter.removeListener("didUpdateDimensions", this.handleDimensionsUpdate);
+      }
+    }, {
+      key: "componentDidUpdate",
+      value: function componentDidUpdate(prevProps, prevState) {
+        if (this.props.isVisible && !prevProps.isVisible) {
+          this.open();
+        } else if (!this.props.isVisible && prevProps.isVisible) {
+          this._close();
+        }
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this2 = this;
+
+        var _props = this.props,
+            animationIn = _props.animationIn,
+            animationInTiming = _props.animationInTiming,
+            animationOut = _props.animationOut,
+            animationOutTiming = _props.animationOutTiming,
+            avoidKeyboard = _props.avoidKeyboard,
+            backdropColor = _props.backdropColor,
+            backdropOpacity = _props.backdropOpacity,
+            backdropTransitionInTiming = _props.backdropTransitionInTiming,
+            backdropTransitionOutTiming = _props.backdropTransitionOutTiming,
+            children = _props.children,
+            isVisible = _props.isVisible,
+            onModalShow = _props.onModalShow,
+            onBackdropPress = _props.onBackdropPress,
+            onBackButtonPress = _props.onBackButtonPress,
+            useNativeDriver = _props.useNativeDriver,
+            style = _props.style,
+            otherProps = _objectWithoutProperties(_props, ["animationIn", "animationInTiming", "animationOut", "animationOutTiming", "avoidKeyboard", "backdropColor", "backdropOpacity", "backdropTransitionInTiming", "backdropTransitionOutTiming", "children", "isVisible", "onModalShow", "onBackdropPress", "onBackButtonPress", "useNativeDriver", "style"]);
+
+        var _state = this.state,
+            deviceWidth = _state.deviceWidth,
+            deviceHeight = _state.deviceHeight;
+        var computedStyle = [{
+          margin: deviceWidth * 0.05,
+          transform: [{
+            translateY: 0
+          }]
+        }, _indexStyle2.default.content, style];
+        var panHandlers = {};
+        var panPosition = {};
+
+        if (this.state.isSwipeable) {
+          panHandlers = _extends({}, this.panResponder.panHandlers);
+          panPosition = this.state.pan.getLayout();
+        }
+
+        var _children = this.props.hideModalContentWhileAnimating && this.props.useNativeDriver && !this.state.showContent ? _react3.default.createElement(_reactNativeAnimatable.View, {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 387
+          }
+        }) : children;
+
+        var containerView = _react3.default.createElement(
+          _reactNativeAnimatable.View,
+          _extends({}, panHandlers, {
+            ref: function ref(_ref) {
+              return _this2.contentRef = _ref;
+            },
+            style: [panPosition, computedStyle],
+            pointerEvents: "box-none",
+            useNativeDriver: useNativeDriver
+          }, otherProps, {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 392
+            }
+          }),
+          _children
+        );
+
+        return _react3.default.createElement(
+          _reactNative.Modal,
+          _extends({
+            transparent: true,
+            animationType: "none",
+            visible: this.state.isVisible,
+            onRequestClose: onBackButtonPress
+          }, otherProps, {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 405
+            }
+          }),
+          _react3.default.createElement(
+            _reactNative.TouchableWithoutFeedback,
+            {
+              onPress: onBackdropPress,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 412
+              }
+            },
+            _react3.default.createElement(_reactNativeAnimatable.View, {
+              ref: function ref(_ref2) {
+                return _this2.backdropRef = _ref2;
+              },
+              useNativeDriver: useNativeDriver,
+              style: [_indexStyle2.default.backdrop, {
+                backgroundColor: this.state.showContent ? backdropColor : "transparent",
+                width: deviceWidth,
+                height: deviceHeight
+              }],
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 413
+              }
+            })
+          ),
+          avoidKeyboard && _react3.default.createElement(
+            _reactNative.KeyboardAvoidingView,
+            {
+              behavior: _reactNative.Platform.OS === "ios" ? "padding" : null,
+              pointerEvents: "box-none",
+              style: computedStyle.concat([{
+                margin: 0
+              }]),
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 430
+              }
+            },
+            containerView
+          ),
+          !avoidKeyboard && containerView
+        );
+      }
+    }]);
+
+    return ReactNativeModal;
+  }(_react2.Component), _class.propTypes = {
+    animationIn: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
+    animationInTiming: _propTypes2.default.number,
+    animationOut: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
+    animationOutTiming: _propTypes2.default.number,
+    avoidKeyboard: _propTypes2.default.bool,
+    backdropColor: _propTypes2.default.string,
+    backdropOpacity: _propTypes2.default.number,
+    backdropTransitionInTiming: _propTypes2.default.number,
+    backdropTransitionOutTiming: _propTypes2.default.number,
+    children: _propTypes2.default.node.isRequired,
+    isVisible: _propTypes2.default.bool.isRequired,
+    hideModalContentWhileAnimating: _propTypes2.default.bool,
+    onModalShow: _propTypes2.default.func,
+    onModalHide: _propTypes2.default.func,
+    onBackButtonPress: _propTypes2.default.func,
+    onBackdropPress: _propTypes2.default.func,
+    onSwipe: _propTypes2.default.func,
+    swipeThreshold: _propTypes2.default.number,
+    swipeDirection: _propTypes2.default.oneOf(["up", "down", "left", "right"]),
+    useNativeDriver: _propTypes2.default.bool,
+    style: _propTypes2.default.any
+  }, _class.defaultProps = {
+    animationIn: "slideInUp",
+    animationInTiming: 300,
+    animationOut: "slideOutDown",
+    animationOutTiming: 300,
+    avoidKeyboard: false,
+    backdropColor: "black",
+    backdropOpacity: 0.7,
+    backdropTransitionInTiming: 300,
+    backdropTransitionOutTiming: 300,
+    onModalShow: function onModalShow() {
+      return null;
+    },
+    onModalHide: function onModalHide() {
+      return null;
+    },
+    isVisible: false,
+    hideModalContentWhileAnimating: false,
+    onBackdropPress: function onBackdropPress() {
+      return null;
+    },
+    onBackButtonPress: function onBackButtonPress() {
+      return null;
+    },
+    swipeThreshold: 100,
+    useNativeDriver: false
+  }, _initialiseProps = function _initialiseProps() {
+    var _this3 = this;
+
+    this.state = {
+      showContent: true,
+      isVisible: false,
+      deviceWidth: _reactNative.Dimensions.get("window").width,
+      deviceHeight: _reactNative.Dimensions.get("window").height,
+      isSwipeable: this.props.swipeDirection ? true : false,
+      pan: null
+    };
+    this.transitionLock = null;
+    this.inSwipeClosingState = false;
+
+    this.buildPanResponder = function () {
+      var animEvt = null;
+
+      if (_this3.props.swipeDirection === "right" || _this3.props.swipeDirection === "left") {
+        animEvt = _reactNative.Animated.event([null, {
+          dx: _this3.state.pan.x
+        }]);
+      } else {
+        animEvt = _reactNative.Animated.event([null, {
+          dy: _this3.state.pan.y
+        }]);
+      }
+
+      _this3.panResponder = _reactNative.PanResponder.create({
+        onStartShouldSetPanResponder: function onStartShouldSetPanResponder() {
+          return true;
+        },
+        onPanResponderMove: function onPanResponderMove(evt, gestureState) {
+          var accDistance = _this3.getAccDistancePerDirection(gestureState);
+
+          var newOpacityFactor = 1 - accDistance / _this3.state.deviceWidth;
+
+          if (_this3.isSwipeDirectionAllowed(gestureState) && _this3.backdropRef) {
+            _this3.backdropRef.transitionTo({
+              opacity: _this3.props.backdropOpacity * newOpacityFactor
+            });
+
+            animEvt(evt, gestureState);
+          }
+        },
+        onPanResponderRelease: function onPanResponderRelease(evt, gestureState) {
+          var accDistance = _this3.getAccDistancePerDirection(gestureState);
+
+          if (accDistance > _this3.props.swipeThreshold) {
+            if (_this3.props.onSwipe) {
+              _this3.inSwipeClosingState = true;
+
+              _this3.props.onSwipe();
+
+              return;
+            }
+          }
+
+          if (_this3.backdropRef) {
+            _this3.backdropRef.transitionTo({
+              opacity: _this3.props.backdropOpacity
+            }, _this3.props.backdropTransitionInTiming);
+          }
+
+          _reactNative.Animated.spring(_this3.state.pan, {
+            toValue: {
+              x: 0,
+              y: 0
+            },
+            bounciness: 0
+          }).start();
+        }
+      });
+    };
+
+    this.getAccDistancePerDirection = function (gestureState) {
+      switch (_this3.props.swipeDirection) {
+        case "up":
+          return -gestureState.dy;
+
+        case "down":
+          return gestureState.dy;
+
+        case "right":
+          return gestureState.dx;
+
+        case "left":
+          return -gestureState.dx;
+
+        default:
+          return 0;
+      }
+    };
+
+    this.isSwipeDirectionAllowed = function (_ref3) {
+      var dy = _ref3.dy,
+          dx = _ref3.dx;
+      var draggedDown = dy > 0;
+      var draggedUp = dy < 0;
+      var draggedLeft = dx < 0;
+      var draggedRight = dx > 0;
+
+      if (_this3.props.swipeDirection === "up" && draggedUp) {
+        return true;
+      } else if (_this3.props.swipeDirection === "down" && draggedDown) {
+        return true;
+      } else if (_this3.props.swipeDirection === "right" && draggedRight) {
+        return true;
+      } else if (_this3.props.swipeDirection === "left" && draggedLeft) {
+        return true;
+      }
+
+      return false;
+    };
+
+    this.buildAnimations = function (props) {
+      var animationIn = props.animationIn;
+      var animationOut = props.animationOut;
+
+      if (isObject(animationIn)) {
+        var animationName = JSON.stringify(animationIn);
+        makeAnimation(animationName, animationIn);
+        animationIn = animationName;
+      }
+
+      if (isObject(animationOut)) {
+        var _animationName = JSON.stringify(animationOut);
+
+        makeAnimation(_animationName, animationOut);
+        animationOut = _animationName;
+      }
+
+      _this3.animationIn = animationIn;
+      _this3.animationOut = animationOut;
+    };
+
+    this.handleDimensionsUpdate = function (dimensionsUpdate) {
+      var deviceWidth = _reactNative.Dimensions.get("window").width;
+
+      var deviceHeight = _reactNative.Dimensions.get("window").height;
+
+      if (deviceWidth !== _this3.state.deviceWidth || deviceHeight !== _this3.state.deviceHeight) {
+        _this3.setState({
+          deviceWidth: deviceWidth,
+          deviceHeight: deviceHeight
+        });
+      }
+    };
+
+    this.open = function () {
+      if (_this3.transitionLock) return;
+      _this3.transitionLock = true;
+
+      if (_this3.backdropRef) {
+        _this3.backdropRef.transitionTo({
+          opacity: _this3.props.backdropOpacity
+        }, _this3.props.backdropTransitionInTiming);
+      }
+
+      if (_this3.state.isSwipeable) {
+        _this3.state.pan.setValue({
+          x: 0,
+          y: 0
+        });
+      }
+
+      _this3.contentRef[_this3.animationIn](_this3.props.animationInTiming).then(function () {
+        _this3.transitionLock = false;
+
+        if (!_this3.props.isVisible) {
+          _this3._close();
+        } else {
+          _this3.props.onModalShow();
+        }
+      });
+    };
+
+    this._close = function () {
+      if (_this3.transitionLock) return;
+      _this3.transitionLock = true;
+
+      if (_this3.backdropRef) {
+        _this3.backdropRef.transitionTo({
+          opacity: 0
+        }, _this3.props.backdropTransitionOutTiming);
+      }
+
+      var animationOut = _this3.animationOut;
+
+      if (_this3.inSwipeClosingState) {
+        _this3.inSwipeClosingState = false;
+
+        if (_this3.props.swipeDirection === "up") {
+          animationOut = "slideOutUp";
+        } else if (_this3.props.swipeDirection === "down") {
+          animationOut = "slideOutDown";
+        } else if (_this3.props.swipeDirection === "right") {
+          animationOut = "slideOutRight";
+        } else if (_this3.props.swipeDirection === "left") {
+          animationOut = "slideOutLeft";
+        }
+      }
+
+      _this3.contentRef[animationOut](_this3.props.animationOutTiming).then(function () {
+        _this3.transitionLock = false;
+
+        if (_this3.props.isVisible) {
+          _this3.open();
+        } else {
+          _this3.setState({
+            showContent: false
+          }, function () {
+            _this3.setState({
+              isVisible: false
+            });
+          });
+
+          _this3.props.onModalHide();
+        }
+      });
+    };
+  }, _temp));
+
+  exports.ReactNativeModal = ReactNativeModal;
+  exports.default = ReactNativeModal;
+},628,[111,179,12,130,629,650,651],"node_modules\\react-native-modal\\src\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.initializeRegistryWithDefinitions = exports.registerAnimation = exports.createAnimation = exports.Image = exports.Text = exports.View = exports.createAnimatableComponent = undefined;
+
+  var _createAnimation = _require(_dependencyMap[0], "./createAnimation");
+
+  Object.defineProperty(exports, "createAnimation", {
+    enumerable: true,
+    get: function get() {
+      return _interopRequireDefault(_createAnimation).default;
+    }
+  });
+
+  var _registry = _require(_dependencyMap[1], "./registry");
+
+  Object.defineProperty(exports, "registerAnimation", {
+    enumerable: true,
+    get: function get() {
+      return _registry.registerAnimation;
+    }
+  });
+  Object.defineProperty(exports, "initializeRegistryWithDefinitions", {
+    enumerable: true,
+    get: function get() {
+      return _registry.initializeRegistryWithDefinitions;
+    }
+  });
+
+  var _reactNative = _require(_dependencyMap[2], "react-native");
+
+  var _createAnimatableComponent = _require(_dependencyMap[3], "./createAnimatableComponent");
+
+  var _createAnimatableComponent2 = _interopRequireDefault(_createAnimatableComponent);
+
+  var _definitions = _require(_dependencyMap[4], "./definitions");
+
+  var ANIMATION_DEFINITIONS = _interopRequireWildcard(_definitions);
+
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  (0, _registry.initializeRegistryWithDefinitions)(ANIMATION_DEFINITIONS);
+  var createAnimatableComponent = exports.createAnimatableComponent = _createAnimatableComponent2.default;
+  var View = exports.View = (0, _createAnimatableComponent2.default)(_reactNative.View);
+  var Text = exports.Text = (0, _createAnimatableComponent2.default)(_reactNative.Text);
+  var Image = exports.Image = (0, _createAnimatableComponent2.default)(_reactNative.Image);
+},629,[630,632,12,633,638],"node_modules\\react-native-animatable\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = createAnimation;
+
+  var _flattenStyle = _require(_dependencyMap[0], "./flattenStyle");
+
+  var _flattenStyle2 = _interopRequireDefault(_flattenStyle);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function compareNumbers(a, b) {
+    return a - b;
+  }
+
+  function notNull(value) {
+    return value !== null;
+  }
+
+  function parsePosition(value) {
+    if (value === 'from') {
+      return 0;
+    } else if (value === 'to') {
+      return 1;
+    }
+
+    var parsed = parseFloat(value, 10);
+
+    if (isNaN(parsed) || parsed < 0 || parsed > 1) {
+      return null;
+    }
+
+    return parsed;
+  }
+
+  var cache = {};
+
+  function createAnimation(definition) {
+    var cacheKey = JSON.stringify(definition);
+
+    if (cache[cacheKey]) {
+      return cache[cacheKey];
+    }
+
+    var positions = Object.keys(definition).map(parsePosition).filter(notNull);
+    positions.sort(compareNumbers);
+
+    if (positions.length < 2) {
+      throw new Error('Animation definitions must have at least two values.');
+    }
+
+    var compiled = {};
+
+    if (definition.easing) {
+      compiled.easing = definition.easing;
+    }
+
+    if (definition.style) {
+      compiled.style = definition.style;
+    }
+
+    var _loop = function _loop(i) {
+      var position = positions[i];
+      var keyframe = definition[position];
+
+      if (!keyframe) {
+        if (position === 0) {
+          keyframe = definition.from;
+        } else if (position === 1) {
+          keyframe = definition.to;
+        }
+      }
+
+      if (!keyframe) {
+        throw new Error('Missing animation keyframe, this should not happen');
+      }
+
+      keyframe = (0, _flattenStyle2.default)(keyframe);
+      Object.keys(keyframe).forEach(function (key) {
+        if (!(key in compiled)) {
+          compiled[key] = {
+            inputRange: [],
+            outputRange: []
+          };
+        }
+
+        compiled[key].inputRange.push(position);
+        compiled[key].outputRange.push(keyframe[key]);
+      });
+    };
+
+    for (var i = 0; i < positions.length; i += 1) {
+      _loop(i);
+    }
+
+    cache[cacheKey] = compiled;
+    return compiled;
+  }
+},630,[631],"node_modules\\react-native-animatable\\createAnimation.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  exports.default = flattenStyle;
+
+  var _reactNative = _require(_dependencyMap[0], "react-native");
+
+  function flattenStyle(style) {
+    var flatStyle = _extends({}, _reactNative.StyleSheet.flatten(style));
+
+    if (flatStyle.transform) {
+      flatStyle.transform.forEach(function (transform) {
+        var key = Object.keys(transform)[0];
+        flatStyle[key] = transform[key];
+      });
+      delete flatStyle.transform;
+    }
+
+    return flatStyle;
+  }
+},631,[12],"node_modules\\react-native-animatable\\flattenStyle.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.registerAnimation = registerAnimation;
+  exports.getAnimationByName = getAnimationByName;
+  exports.getAnimationNames = getAnimationNames;
+  exports.initializeRegistryWithDefinitions = initializeRegistryWithDefinitions;
+
+  var _createAnimation = _require(_dependencyMap[0], "./createAnimation");
+
+  var _createAnimation2 = _interopRequireDefault(_createAnimation);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var animationRegistry = {};
+
+  function registerAnimation(animationName, animation) {
+    animationRegistry[animationName] = animation;
+  }
+
+  function getAnimationByName(animationName) {
+    return animationRegistry[animationName];
+  }
+
+  function getAnimationNames() {
+    return Object.keys(animationRegistry);
+  }
+
+  function initializeRegistryWithDefinitions(definitions) {
+    Object.keys(definitions).forEach(function (animationName) {
+      registerAnimation(animationName, (0, _createAnimation2.default)(definitions[animationName]));
+    });
+  }
+},632,[630],"node_modules\\react-native-animatable\\registry.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\node_modules\\react-native-animatable\\createAnimatableComponent.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+  exports.default = createAnimatableComponent;
+
+  var _propTypes = _require(_dependencyMap[2], "prop-types");
+
+  var _propTypes2 = _interopRequireDefault(_propTypes);
+
+  var _reactNative = _require(_dependencyMap[3], "react-native");
+
+  var _wrapStyleTransforms = _require(_dependencyMap[4], "./wrapStyleTransforms");
+
+  var _wrapStyleTransforms2 = _interopRequireDefault(_wrapStyleTransforms);
+
+  var _getStyleValues = _require(_dependencyMap[5], "./getStyleValues");
+
+  var _getStyleValues2 = _interopRequireDefault(_getStyleValues);
+
+  var _flattenStyle = _require(_dependencyMap[6], "./flattenStyle");
+
+  var _flattenStyle2 = _interopRequireDefault(_flattenStyle);
+
+  var _createAnimation = _require(_dependencyMap[7], "./createAnimation");
+
+  var _createAnimation2 = _interopRequireDefault(_createAnimation);
+
+  var _registry = _require(_dependencyMap[8], "./registry");
+
+  var _easing = _require(_dependencyMap[9], "./easing");
+
+  var _easing2 = _interopRequireDefault(_easing);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    AnimatableComponent: {
+      displayName: "AnimatableComponent",
+      isInFunction: true
+    }
+  };
+
+  var _reactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/node_modules/react-native-animatable/createAnimatableComponent.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _reactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  var INTERPOLATION_STYLE_PROPERTIES = ['rotate', 'rotateX', 'rotateY', 'rotateZ', 'skewX', 'skewY', 'transformMatrix', 'backgroundColor', 'borderColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor', 'shadowColor', 'color', 'textDecorationColor', 'tintColor'];
+  var ZERO_CLAMPED_STYLE_PROPERTIES = ['width', 'height'];
+
+  function omit(keys, source) {
+    var filtered = {};
+    Object.keys(source).forEach(function (key) {
+      if (keys.indexOf(key) === -1) {
+        filtered[key] = source[key];
+      }
+    });
+    return filtered;
+  }
+
+  function deepEquals(a, b) {
+    return a === b || JSON.stringify(a) === JSON.stringify(b);
+  }
+
+  function getAnimationTarget(iteration, direction) {
+    switch (direction) {
+      case 'reverse':
+        return 0;
+
+      case 'alternate':
+        return iteration % 2 ? 0 : 1;
+
+      case 'alternate-reverse':
+        return iteration % 2 ? 1 : 0;
+
+      case 'normal':
+      default:
+        return 1;
+    }
+  }
+
+  function getAnimationOrigin(iteration, direction) {
+    return getAnimationTarget(iteration, direction) ? 0 : 1;
+  }
+
+  function getCompiledAnimation(animation) {
+    if (typeof animation === 'string') {
+      var compiledAnimation = (0, _registry.getAnimationByName)(animation);
+
+      if (!compiledAnimation) {
+        throw new Error("No animation registred by the name of " + animation);
+      }
+
+      return compiledAnimation;
+    }
+
+    return (0, _createAnimation2.default)(animation);
+  }
+
+  function makeInterpolatedStyle(compiledAnimation, animationValue) {
+    var style = {};
+    Object.keys(compiledAnimation).forEach(function (key) {
+      if (key === 'style') {
+        _extends(style, compiledAnimation.style);
+      } else if (key !== 'easing') {
+        style[key] = animationValue.interpolate(compiledAnimation[key]);
+      }
+    });
+    return (0, _wrapStyleTransforms2.default)(style);
+  }
+
+  function transitionToValue(transitionValue, toValue, duration, easing) {
+    var useNativeDriver = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var delay = arguments[5];
+
+    if (duration || easing || delay) {
+      _reactNative.Animated.timing(transitionValue, {
+        toValue: toValue,
+        delay: delay,
+        duration: duration || 1000,
+        easing: typeof easing === 'function' ? easing : _easing2.default[easing || 'ease'],
+        useNativeDriver: useNativeDriver
+      }).start();
+    } else {
+      _reactNative.Animated.spring(transitionValue, {
+        toValue: toValue,
+        useNativeDriver: useNativeDriver
+      }).start();
+    }
+  }
+
+  function createAnimatableComponent(WrappedComponent) {
+    var _class, _temp, _initialiseProps;
+
+    var wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+
+    var Animatable = _reactNative.Animated.createAnimatedComponent(WrappedComponent);
+
+    return _wrapComponent("AnimatableComponent")((_temp = _class = function (_Component) {
+      _inherits(AnimatableComponent, _Component);
+
+      function AnimatableComponent(props) {
+        _classCallCheck(this, AnimatableComponent);
+
+        var _this = _possibleConstructorReturn(this, (AnimatableComponent.__proto__ || Object.getPrototypeOf(AnimatableComponent)).call(this, props));
+
+        _initialiseProps.call(_this);
+
+        var animationValue = new _reactNative.Animated.Value(getAnimationOrigin(0, _this.props.direction));
+        var animationStyle = {};
+        var compiledAnimation = {};
+
+        if (props.animation) {
+          compiledAnimation = getCompiledAnimation(props.animation);
+          animationStyle = makeInterpolatedStyle(compiledAnimation, animationValue);
+        }
+
+        _this.state = {
+          animationValue: animationValue,
+          animationStyle: animationStyle,
+          compiledAnimation: compiledAnimation,
+          transitionStyle: {},
+          transitionValues: {},
+          currentTransitionValues: {}
+        };
+
+        if (props.transition) {
+          _this.state = _extends({}, _this.state, _this.initializeTransitionState(props.transition));
+        }
+
+        _this.delayTimer = null;
+        (0, _registry.getAnimationNames)().forEach(function (animationName) {
+          if (!(animationName in _this)) {
+            _this[animationName] = _this.animate.bind(_this, animationName);
+          }
+        });
+        return _this;
+      }
+
+      _createClass(AnimatableComponent, [{
+        key: "initializeTransitionState",
+        value: function initializeTransitionState(transitionKeys) {
+          var transitionValues = {};
+          var styleValues = {};
+          var currentTransitionValues = (0, _getStyleValues2.default)(transitionKeys, this.props.style);
+          Object.keys(currentTransitionValues).forEach(function (key) {
+            var value = currentTransitionValues[key];
+
+            if (INTERPOLATION_STYLE_PROPERTIES.indexOf(key) !== -1) {
+              transitionValues[key] = new _reactNative.Animated.Value(0);
+              styleValues[key] = value;
+            } else {
+              var animationValue = new _reactNative.Animated.Value(value);
+              transitionValues[key] = animationValue;
+              styleValues[key] = animationValue;
+            }
+          });
+          return {
+            currentTransitionValues: currentTransitionValues,
+            transitionStyle: styleValues,
+            transitionValues: transitionValues
+          };
+        }
+      }, {
+        key: "getTransitionState",
+        value: function getTransitionState(keys) {
+          var _this2 = this;
+
+          var transitionKeys = typeof keys === 'string' ? [keys] : keys;
+          var _state = this.state,
+              transitionValues = _state.transitionValues,
+              currentTransitionValues = _state.currentTransitionValues,
+              transitionStyle = _state.transitionStyle;
+          var missingKeys = transitionKeys.filter(function (key) {
+            return !_this2.state.transitionValues[key];
+          });
+
+          if (missingKeys.length) {
+            var transitionState = this.initializeTransitionState(missingKeys);
+            transitionValues = _extends({}, transitionValues, transitionState.transitionValues);
+            currentTransitionValues = _extends({}, currentTransitionValues, transitionState.currentTransitionValues);
+            transitionStyle = _extends({}, transitionStyle, transitionState.transitionStyle);
+          }
+
+          return {
+            transitionValues: transitionValues,
+            currentTransitionValues: currentTransitionValues,
+            transitionStyle: transitionStyle
+          };
+        }
+      }, {
+        key: "setNativeProps",
+        value: function setNativeProps(nativeProps) {
+          if (this.ref) {
+            this.ref.setNativeProps(nativeProps);
+          }
+        }
+      }, {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+          var _this3 = this;
+
+          var _props = this.props,
+              animation = _props.animation,
+              duration = _props.duration,
+              delay = _props.delay,
+              onAnimationBegin = _props.onAnimationBegin,
+              onAnimationEnd = _props.onAnimationEnd;
+
+          if (animation) {
+            var startAnimation = function startAnimation() {
+              onAnimationBegin();
+
+              _this3.startAnimation(duration, 0, onAnimationEnd);
+
+              _this3.delayTimer = null;
+            };
+
+            if (delay) {
+              this.delayTimer = setTimeout(startAnimation, delay);
+            } else {
+              startAnimation();
+            }
+          }
+        }
+      }, {
+        key: "componentWillReceiveProps",
+        value: function componentWillReceiveProps(props) {
+          var animation = props.animation,
+              delay = props.delay,
+              duration = props.duration,
+              easing = props.easing,
+              transition = props.transition,
+              onAnimationBegin = props.onAnimationBegin,
+              onAnimationEnd = props.onAnimationEnd;
+
+          if (transition) {
+            var values = (0, _getStyleValues2.default)(transition, props.style);
+            this.transitionTo(values, duration, easing, delay);
+          } else if (!deepEquals(animation, this.props.animation)) {
+            if (animation) {
+              if (this.delayTimer) {
+                this.setAnimation(animation);
+              } else {
+                onAnimationBegin();
+                this.animate(animation, duration).then(onAnimationEnd);
+              }
+            } else {
+              this.stopAnimation();
+            }
+          }
+        }
+      }, {
+        key: "componentWillUnmount",
+        value: function componentWillUnmount() {
+          if (this.delayTimer) {
+            clearTimeout(this.delayTimer);
+          }
+        }
+      }, {
+        key: "setAnimation",
+        value: function setAnimation(animation, callback) {
+          var compiledAnimation = getCompiledAnimation(animation);
+          var animationStyle = makeInterpolatedStyle(compiledAnimation, this.state.animationValue);
+          this.setState({
+            animationStyle: animationStyle,
+            compiledAnimation: compiledAnimation
+          }, callback);
+        }
+      }, {
+        key: "animate",
+        value: function animate(animation, duration) {
+          var _this4 = this;
+
+          return new Promise(function (resolve) {
+            _this4.setAnimation(animation, function () {
+              _this4.startAnimation(duration, 0, resolve);
+            });
+          });
+        }
+      }, {
+        key: "stopAnimation",
+        value: function stopAnimation() {
+          this.setState({
+            scheduledAnimation: false,
+            animationStyle: {}
+          });
+          this.state.animationValue.stopAnimation();
+
+          if (this.delayTimer) {
+            clearTimeout(this.delayTimer);
+            this.delayTimer = null;
+          }
+        }
+      }, {
+        key: "startAnimation",
+        value: function startAnimation(duration, iteration, callback) {
+          var _this5 = this;
+
+          var _state2 = this.state,
+              animationValue = _state2.animationValue,
+              compiledAnimation = _state2.compiledAnimation;
+          var _props2 = this.props,
+              direction = _props2.direction,
+              iterationCount = _props2.iterationCount,
+              useNativeDriver = _props2.useNativeDriver;
+          var easing = this.props.easing || compiledAnimation.easing || 'ease';
+          var currentIteration = iteration || 0;
+          var fromValue = getAnimationOrigin(currentIteration, direction);
+          var toValue = getAnimationTarget(currentIteration, direction);
+          animationValue.setValue(fromValue);
+
+          if (typeof easing === 'string') {
+            easing = _easing2.default[easing];
+          }
+
+          var reversed = direction === 'reverse' || direction === 'alternate' && !toValue || direction === 'alternate-reverse' && !toValue;
+
+          if (reversed) {
+            easing = _reactNative.Easing.out(easing);
+          }
+
+          _reactNative.Animated.timing(animationValue, {
+            toValue: toValue,
+            easing: easing,
+            isInteraction: iterationCount <= 1,
+            duration: duration || this.props.duration || 1000,
+            useNativeDriver: useNativeDriver
+          }).start(function (endState) {
+            currentIteration += 1;
+
+            if (endState.finished && _this5.props.animation && (iterationCount === 'infinite' || currentIteration < iterationCount)) {
+              _this5.startAnimation(duration, currentIteration, callback);
+            } else if (callback) {
+              callback(endState);
+            }
+          });
+        }
+      }, {
+        key: "transition",
+        value: function transition(fromValues, toValues, duration, easing) {
+          var _this6 = this;
+
+          var fromValuesFlat = (0, _flattenStyle2.default)(fromValues);
+          var toValuesFlat = (0, _flattenStyle2.default)(toValues);
+          var transitionKeys = Object.keys(toValuesFlat);
+
+          var _getTransitionState = this.getTransitionState(transitionKeys),
+              transitionValues = _getTransitionState.transitionValues,
+              currentTransitionValues = _getTransitionState.currentTransitionValues,
+              transitionStyle = _getTransitionState.transitionStyle;
+
+          transitionKeys.forEach(function (property) {
+            var fromValue = fromValuesFlat[property];
+            var toValue = toValuesFlat[property];
+            var transitionValue = transitionValues[property];
+
+            if (!transitionValue) {
+              transitionValue = new _reactNative.Animated.Value(0);
+            }
+
+            var needsInterpolation = INTERPOLATION_STYLE_PROPERTIES.indexOf(property) !== -1;
+            var needsZeroClamping = ZERO_CLAMPED_STYLE_PROPERTIES.indexOf(property) !== -1;
+
+            if (needsInterpolation) {
+              transitionValue.setValue(0);
+              transitionStyle[property] = transitionValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [fromValue, toValue]
+              });
+              currentTransitionValues[property] = toValue;
+              toValuesFlat[property] = 1;
+            } else {
+              if (needsZeroClamping) {
+                transitionStyle[property] = transitionValue.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 1],
+                  extrapolateLeft: 'clamp'
+                });
+                currentTransitionValues[property] = toValue;
+              } else {
+                transitionStyle[property] = transitionValue;
+              }
+
+              transitionValue.setValue(fromValue);
+            }
+          });
+          this.setState({
+            transitionValues: transitionValues,
+            transitionStyle: transitionStyle,
+            currentTransitionValues: currentTransitionValues
+          }, function () {
+            _this6.transitionToValues(toValuesFlat, duration || _this6.props.duration, easing, _this6.props.delay);
+          });
+        }
+      }, {
+        key: "transitionTo",
+        value: function transitionTo(toValues, duration, easing, delay) {
+          var _this7 = this;
+
+          var currentTransitionValues = this.state.currentTransitionValues;
+          var toValuesFlat = (0, _flattenStyle2.default)(toValues);
+          var transitions = {
+            from: {},
+            to: {}
+          };
+          Object.keys(toValuesFlat).forEach(function (property) {
+            var toValue = toValuesFlat[property];
+            var needsInterpolation = INTERPOLATION_STYLE_PROPERTIES.indexOf(property) !== -1;
+            var needsZeroClamping = ZERO_CLAMPED_STYLE_PROPERTIES.indexOf(property) !== -1;
+            var transitionStyle = _this7.state.transitionStyle[property];
+            var transitionValue = _this7.state.transitionValues[property];
+
+            if (!needsInterpolation && !needsZeroClamping && transitionStyle && transitionStyle === transitionValue) {
+              transitionToValue(transitionValue, toValue, duration, easing, _this7.props.useNativeDriver, delay);
+            } else {
+              var currentTransitionValue = currentTransitionValues[property];
+
+              if (typeof currentTransitionValue === 'undefined' && _this7.props.style) {
+                var style = (0, _getStyleValues2.default)(property, _this7.props.style);
+                currentTransitionValue = style[property];
+              }
+
+              transitions.from[property] = currentTransitionValue;
+              transitions.to[property] = toValue;
+            }
+          });
+
+          if (Object.keys(transitions.from).length) {
+            this.transition(transitions.from, transitions.to, duration, easing);
+          }
+        }
+      }, {
+        key: "transitionToValues",
+        value: function transitionToValues(toValues, duration, easing, delay) {
+          var _this8 = this;
+
+          Object.keys(toValues).forEach(function (property) {
+            var transitionValue = _this8.state.transitionValues[property];
+            var toValue = toValues[property];
+            transitionToValue(transitionValue, toValue, duration, easing, _this8.props.useNativeDriver, delay);
+          });
+        }
+      }, {
+        key: "render",
+        value: function render() {
+          var _props3 = this.props,
+              style = _props3.style,
+              animation = _props3.animation,
+              transition = _props3.transition;
+
+          if (animation && transition) {
+            throw new Error('You cannot combine animation and transition props');
+          }
+
+          var restProps = omit(Object.keys(AnimatableComponent.propTypes), this.props);
+          return _react3.default.createElement(Animatable, _extends({
+            ref: this.handleRef,
+            style: [style, this.state.animationStyle, (0, _wrapStyleTransforms2.default)(this.state.transitionStyle)]
+          }, restProps, {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 544
+            }
+          }));
+        }
+      }]);
+
+      return AnimatableComponent;
+    }(_react2.Component), _class.displayName = "withAnimatable(" + wrappedComponentName + ")", _class.propTypes = {
+      animation: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
+      duration: _propTypes2.default.number,
+      direction: _propTypes2.default.oneOf(['normal', 'reverse', 'alternate', 'alternate-reverse']),
+      delay: _propTypes2.default.number,
+      easing: _propTypes2.default.oneOfType([_propTypes2.default.oneOf(Object.keys(_easing2.default)), _propTypes2.default.func]),
+      iterationCount: function iterationCount(props, propName) {
+        var val = props[propName];
+
+        if (val !== 'infinite' && !(typeof val === 'number' && val >= 1)) {
+          return new Error('iterationCount must be a positive number or "infinite"');
+        }
+
+        return null;
+      },
+      onAnimationBegin: _propTypes2.default.func,
+      onAnimationEnd: _propTypes2.default.func,
+      style: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.array, _propTypes2.default.object]),
+      transition: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.arrayOf(_propTypes2.default.string)]),
+      useNativeDriver: _propTypes2.default.bool
+    }, _class.defaultProps = {
+      animation: undefined,
+      delay: 0,
+      direction: 'normal',
+      duration: undefined,
+      easing: undefined,
+      iterationCount: 1,
+      onAnimationBegin: function onAnimationBegin() {},
+      onAnimationEnd: function onAnimationEnd() {},
+      style: undefined,
+      transition: undefined,
+      useNativeDriver: false
+    }, _initialiseProps = function _initialiseProps() {
+      var _this9 = this;
+
+      this.ref = null;
+
+      this.handleRef = function (ref) {
+        _this9.ref = ref;
+      };
+    }, _temp));
+  }
+},633,[111,179,130,12,634,635,631,630,632,637],"node_modules\\react-native-animatable\\createAnimatableComponent.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = wrapStyleTransforms;
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  var TRANSFORM_STYLE_PROPERTIES = ['perspective', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'skewX', 'skewY', 'translateX', 'translateY'];
+
+  function wrapStyleTransforms(style) {
+    var wrapped = {};
+    Object.keys(style).forEach(function (key) {
+      if (TRANSFORM_STYLE_PROPERTIES.indexOf(key) !== -1) {
+        if (!wrapped.transform) {
+          wrapped.transform = [];
+        }
+
+        wrapped.transform.push(_defineProperty({}, key, style[key]));
+      } else {
+        wrapped[key] = style[key];
+      }
+    });
+    return wrapped;
+  }
+},634,[],"node_modules\\react-native-animatable\\wrapStyleTransforms.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = getStyleValues;
+
+  var _flattenStyle = _require(_dependencyMap[0], "./flattenStyle");
+
+  var _flattenStyle2 = _interopRequireDefault(_flattenStyle);
+
+  var _getDefaultStyleValue = _require(_dependencyMap[1], "./getDefaultStyleValue");
+
+  var _getDefaultStyleValue2 = _interopRequireDefault(_getDefaultStyleValue);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function getStyleValues(keys, style) {
+    var values = {};
+    var flatStyle = (0, _flattenStyle2.default)(style);
+    (typeof keys === 'string' ? [keys] : keys).forEach(function (key) {
+      values[key] = key in flatStyle ? flatStyle[key] : (0, _getDefaultStyleValue2.default)(key, flatStyle);
+    });
+    return values;
+  }
+},635,[631,636],"node_modules\\react-native-animatable\\getStyleValues.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = getDefaultStyleValue;
+  var DIRECTIONAL_FALLBACKS = {
+    Top: ['Vertical', ''],
+    Bottom: ['Vertical', ''],
+    Vertical: [''],
+    Left: ['Horizontal', ''],
+    Right: ['Horizontal', ''],
+    Horizontal: ['']
+  };
+  var DIRECTIONAL_SUFFICES = Object.keys(DIRECTIONAL_FALLBACKS);
+
+  function getDefaultStyleValue(key, flatStyle) {
+    if (key === 'backgroundColor') {
+      return 'rgba(0,0,0,0)';
+    }
+
+    if (key === 'color' || key.indexOf('Color') !== -1) {
+      return 'rgba(0,0,0,1)';
+    }
+
+    if (key.indexOf('rotate') === 0 || key.indexOf('skew') === 0) {
+      return '0deg';
+    }
+
+    if (key === 'opacity' || key.indexOf('scale') === 0) {
+      return 1;
+    }
+
+    if (key === 'fontSize') {
+      return 14;
+    }
+
+    if (key.indexOf('margin') === 0 || key.indexOf('padding') === 0) {
+      for (var suffix, i = 0; i < DIRECTIONAL_SUFFICES.length; i++) {
+        suffix = DIRECTIONAL_SUFFICES[i];
+
+        if (key.substr(-suffix.length) === suffix) {
+          var prefix = key.substr(0, key.length - suffix.length);
+          var fallbacks = DIRECTIONAL_FALLBACKS[suffix];
+
+          for (var fallback, j = 0; j < fallbacks.length; j++) {
+            fallback = prefix + fallbacks[j];
+
+            if (fallback in flatStyle) {
+              return flatStyle[fallback];
+            }
+          }
+
+          break;
+        }
+      }
+    }
+
+    return 0;
+  }
+},636,[],"node_modules\\react-native-animatable\\getDefaultStyleValue.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _reactNative = _require(_dependencyMap[0], "react-native");
+
+  var EASING_FUNCTIONS = {
+    linear: _reactNative.Easing.linear,
+    ease: _reactNative.Easing.bezier(0.25, 0.1, 0.25, 1),
+    'ease-in': _reactNative.Easing.bezier(0.42, 0, 1, 1),
+    'ease-out': _reactNative.Easing.bezier(0, 0, 0.58, 1),
+    'ease-in-out': _reactNative.Easing.bezier(0.42, 0, 0.58, 1),
+    'ease-in-cubic': _reactNative.Easing.bezier(0.55, 0.055, 0.675, 0.19),
+    'ease-out-cubic': _reactNative.Easing.bezier(0.215, 0.61, 0.355, 1.0),
+    'ease-in-out-cubic': _reactNative.Easing.bezier(0.645, 0.045, 0.355, 1.0),
+    'ease-in-circ': _reactNative.Easing.bezier(0.6, 0.04, 0.98, 0.335),
+    'ease-out-circ': _reactNative.Easing.bezier(0.075, 0.82, 0.165, 1.0),
+    'ease-in-out-circ': _reactNative.Easing.bezier(0.785, 0.135, 0.15, 0.86),
+    'ease-in-expo': _reactNative.Easing.bezier(0.95, 0.05, 0.795, 0.035),
+    'ease-out-expo': _reactNative.Easing.bezier(0.19, 1.0, 0.22, 1.0),
+    'ease-in-out-expo': _reactNative.Easing.bezier(1.0, 0.0, 0.0, 1.0),
+    'ease-in-quad': _reactNative.Easing.bezier(0.55, 0.085, 0.68, 0.53),
+    'ease-out-quad': _reactNative.Easing.bezier(0.25, 0.46, 0.45, 0.94),
+    'ease-in-out-quad': _reactNative.Easing.bezier(0.455, 0.03, 0.515, 0.955),
+    'ease-in-quart': _reactNative.Easing.bezier(0.895, 0.03, 0.685, 0.22),
+    'ease-out-quart': _reactNative.Easing.bezier(0.165, 0.84, 0.44, 1.0),
+    'ease-in-out-quart': _reactNative.Easing.bezier(0.77, 0.0, 0.175, 1.0),
+    'ease-in-quint': _reactNative.Easing.bezier(0.755, 0.05, 0.855, 0.06),
+    'ease-out-quint': _reactNative.Easing.bezier(0.23, 1.0, 0.32, 1.0),
+    'ease-in-out-quint': _reactNative.Easing.bezier(0.86, 0.0, 0.07, 1.0),
+    'ease-in-sine': _reactNative.Easing.bezier(0.47, 0.0, 0.745, 0.715),
+    'ease-out-sine': _reactNative.Easing.bezier(0.39, 0.575, 0.565, 1.0),
+    'ease-in-out-sine': _reactNative.Easing.bezier(0.445, 0.05, 0.55, 0.95),
+    'ease-in-back': _reactNative.Easing.bezier(0.6, -0.28, 0.735, 0.045),
+    'ease-out-back': _reactNative.Easing.bezier(0.175, 0.885, 0.32, 1.275),
+    'ease-in-out-back': _reactNative.Easing.bezier(0.68, -0.55, 0.265, 1.55)
+  };
+  exports.default = EASING_FUNCTIONS;
+},637,[12],"node_modules\\react-native-animatable\\easing.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _attentionSeekers = _require(_dependencyMap[0], "./attention-seekers");
+
+  Object.keys(_attentionSeekers).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _attentionSeekers[key];
+      }
+    });
+  });
+
+  var _bouncingEntrances = _require(_dependencyMap[1], "./bouncing-entrances");
+
+  Object.keys(_bouncingEntrances).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _bouncingEntrances[key];
+      }
+    });
+  });
+
+  var _bouncingExits = _require(_dependencyMap[2], "./bouncing-exits");
+
+  Object.keys(_bouncingExits).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _bouncingExits[key];
+      }
+    });
+  });
+
+  var _fadingEntrances = _require(_dependencyMap[3], "./fading-entrances");
+
+  Object.keys(_fadingEntrances).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _fadingEntrances[key];
+      }
+    });
+  });
+
+  var _fadingExits = _require(_dependencyMap[4], "./fading-exits");
+
+  Object.keys(_fadingExits).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _fadingExits[key];
+      }
+    });
+  });
+
+  var _flippers = _require(_dependencyMap[5], "./flippers");
+
+  Object.keys(_flippers).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _flippers[key];
+      }
+    });
+  });
+
+  var _lightspeed = _require(_dependencyMap[6], "./lightspeed");
+
+  Object.keys(_lightspeed).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _lightspeed[key];
+      }
+    });
+  });
+
+  var _slidingEntrances = _require(_dependencyMap[7], "./sliding-entrances");
+
+  Object.keys(_slidingEntrances).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _slidingEntrances[key];
+      }
+    });
+  });
+
+  var _slidingExits = _require(_dependencyMap[8], "./sliding-exits");
+
+  Object.keys(_slidingExits).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _slidingExits[key];
+      }
+    });
+  });
+
+  var _zoomingEntrances = _require(_dependencyMap[9], "./zooming-entrances");
+
+  Object.keys(_zoomingEntrances).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _zoomingEntrances[key];
+      }
+    });
+  });
+
+  var _zoomingExits = _require(_dependencyMap[10], "./zooming-exits");
+
+  Object.keys(_zoomingExits).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function get() {
+        return _zoomingExits[key];
+      }
+    });
+  });
+},638,[639,640,641,642,643,644,645,646,647,648,649],"node_modules\\react-native-animatable\\definitions\\index.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var bounce = exports.bounce = {
+    0: {
+      translateY: 0
+    },
+    0.2: {
+      translateY: 0
+    },
+    0.4: {
+      translateY: -30
+    },
+    0.43: {
+      translateY: -30
+    },
+    0.53: {
+      translateY: 0
+    },
+    0.7: {
+      translateY: -15
+    },
+    0.8: {
+      translateY: 0
+    },
+    0.9: {
+      translateY: -4
+    },
+    1: {
+      translateY: 0
+    }
+  };
+  var flash = exports.flash = {
+    0: {
+      opacity: 1
+    },
+    0.25: {
+      opacity: 0
+    },
+    0.5: {
+      opacity: 1
+    },
+    0.75: {
+      opacity: 0
+    },
+    1: {
+      opacity: 1
+    }
+  };
+  var jello = exports.jello = {
+    0: {
+      skewX: '0deg',
+      skewY: '0deg'
+    },
+    0.111: {
+      skewX: '0deg',
+      skewY: '0deg'
+    },
+    0.222: {
+      skewX: '-12.5deg',
+      skewY: '-12.5deg'
+    },
+    0.333: {
+      skewX: '6.25deg',
+      skewY: '6.25deg'
+    },
+    0.444: {
+      skewX: '-3.125deg',
+      skewY: '-3.125deg'
+    },
+    0.555: {
+      skewX: '1.5625deg',
+      skewY: '1.5625deg'
+    },
+    0.666: {
+      skewX: '-0.78125deg',
+      skewY: '-0.78125deg'
+    },
+    0.777: {
+      skewX: '0.390625deg',
+      skewY: '0.390625deg'
+    },
+    0.888: {
+      skewX: '-0.1953125deg',
+      skewY: '-0.1953125deg'
+    },
+    1: {
+      skewX: '0deg',
+      skewY: '0deg'
+    }
+  };
+  var pulse = exports.pulse = {
+    0: {
+      scale: 1
+    },
+    0.5: {
+      scale: 1.05
+    },
+    1: {
+      scale: 1
+    }
+  };
+  var rotate = exports.rotate = {
+    0: {
+      rotate: '0deg'
+    },
+    0.25: {
+      rotate: '90deg'
+    },
+    0.5: {
+      rotate: '180deg'
+    },
+    0.75: {
+      rotate: '270deg'
+    },
+    1: {
+      rotate: '360deg'
+    }
+  };
+  var shake = exports.shake = {
+    0: {
+      translateX: 0
+    },
+    0.1: {
+      translateX: -10
+    },
+    0.2: {
+      translateX: 10
+    },
+    0.3: {
+      translateX: -10
+    },
+    0.4: {
+      translateX: 10
+    },
+    0.5: {
+      translateX: -10
+    },
+    0.6: {
+      translateX: 10
+    },
+    0.7: {
+      translateX: -10
+    },
+    0.8: {
+      translateX: 10
+    },
+    0.9: {
+      translateX: -10
+    },
+    1: {
+      translateX: 0
+    }
+  };
+  var swing = exports.swing = {
+    0: {
+      rotate: '0deg'
+    },
+    0.2: {
+      rotate: '15deg'
+    },
+    0.4: {
+      rotate: '-10deg'
+    },
+    0.6: {
+      rotate: '5deg'
+    },
+    0.8: {
+      rotate: '-5deg'
+    },
+    1: {
+      rotate: '0deg'
+    }
+  };
+  var rubberBand = exports.rubberBand = {
+    0: {
+      scaleX: 1,
+      scaleY: 1
+    },
+    0.3: {
+      scaleX: 1.25,
+      scaleY: 0.75
+    },
+    0.4: {
+      scaleX: 0.75,
+      scaleY: 1.25
+    },
+    0.5: {
+      scaleX: 1.15,
+      scaleY: 0.85
+    },
+    0.65: {
+      scaleX: 0.95,
+      scaleY: 1.05
+    },
+    0.75: {
+      scaleX: 1.05,
+      scaleY: 0.95
+    },
+    1: {
+      scaleX: 1,
+      scaleY: 1
+    }
+  };
+  var tada = exports.tada = {
+    0: {
+      scale: 1,
+      rotate: '0deg'
+    },
+    0.1: {
+      scale: 0.9,
+      rotate: '-3deg'
+    },
+    0.2: {
+      scale: 0.9,
+      rotate: '-3deg'
+    },
+    0.3: {
+      scale: 1.1,
+      rotate: '-3deg'
+    },
+    0.4: {
+      rotate: '3deg'
+    },
+    0.5: {
+      rotate: '-3deg'
+    },
+    0.6: {
+      rotate: '3deg'
+    },
+    0.7: {
+      rotate: '-3deg'
+    },
+    0.8: {
+      rotate: '3deg'
+    },
+    0.9: {
+      scale: 1.1,
+      rotate: '3deg'
+    },
+    1: {
+      scale: 1,
+      rotate: '0deg'
+    }
+  };
+  var wobble = exports.wobble = {
+    0: {
+      translateX: 0,
+      rotate: '0deg'
+    },
+    0.15: {
+      translateX: -25,
+      rotate: '-5deg'
+    },
+    0.3: {
+      translateX: 20,
+      rotate: '3deg'
+    },
+    0.45: {
+      translateX: -15,
+      rotate: '-3deg'
+    },
+    0.6: {
+      translateX: 10,
+      rotate: '2deg'
+    },
+    0.75: {
+      translateX: -5,
+      rotate: '-1deg'
+    },
+    1: {
+      translateX: 0,
+      rotate: '0deg'
+    }
+  };
+},639,[],"node_modules\\react-native-animatable\\definitions\\attention-seekers.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var bounceIn = exports.bounceIn = {
+    0: {
+      opacity: 0,
+      scale: 0.3
+    },
+    0.2: {
+      scale: 1.1
+    },
+    0.4: {
+      scale: 0.9
+    },
+    0.6: {
+      opacity: 1,
+      scale: 1.03
+    },
+    0.8: {
+      scale: 0.97
+    },
+    1: {
+      opacity: 1,
+      scale: 1
+    }
+  };
+  var bounceInUp = exports.bounceInUp = {
+    0: {
+      opacity: 0,
+      translateY: 800
+    },
+    0.6: {
+      opacity: 1,
+      translateY: -25
+    },
+    0.75: {
+      translateY: 10
+    },
+    0.9: {
+      translateY: -5
+    },
+    1: {
+      translateY: 0
+    }
+  };
+  var bounceInDown = exports.bounceInDown = {
+    0: {
+      opacity: 0,
+      translateY: -800
+    },
+    0.6: {
+      opacity: 1,
+      translateY: 25
+    },
+    0.75: {
+      translateY: -10
+    },
+    0.9: {
+      translateY: 5
+    },
+    1: {
+      translateY: 0
+    }
+  };
+  var bounceInRight = exports.bounceInRight = {
+    0: {
+      opacity: 0,
+      translateX: 600
+    },
+    0.6: {
+      opacity: 1,
+      translateX: -20
+    },
+    0.75: {
+      translateX: 8
+    },
+    0.9: {
+      translateX: -4
+    },
+    1: {
+      translateX: 0
+    }
+  };
+  var bounceInLeft = exports.bounceInLeft = {
+    0: {
+      opacity: 0,
+      translateX: -600
+    },
+    0.6: {
+      opacity: 1,
+      translateX: 20
+    },
+    0.75: {
+      translateX: -8
+    },
+    0.9: {
+      translateX: 4
+    },
+    1: {
+      translateX: 0
+    }
+  };
+},640,[],"node_modules\\react-native-animatable\\definitions\\bouncing-entrances.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var bounceOut = exports.bounceOut = {
+    0: {
+      opacity: 1,
+      scale: 1
+    },
+    0.2: {
+      scale: 0.9
+    },
+    0.5: {
+      opacity: 1,
+      scale: 1.11
+    },
+    0.55: {
+      scale: 1.11
+    },
+    1: {
+      opacity: 0,
+      scale: 0.3
+    }
+  };
+  var bounceOutUp = exports.bounceOutUp = {
+    0: {
+      opacity: 1,
+      translateY: 0
+    },
+    0.2: {
+      opacity: 1,
+      translateY: -10
+    },
+    0.4: {
+      translateY: 20
+    },
+    0.45: {
+      translateY: 20
+    },
+    0.55: {
+      opacity: 1
+    },
+    1: {
+      opacity: 0,
+      translateY: -800
+    }
+  };
+  var bounceOutDown = exports.bounceOutDown = {
+    0: {
+      opacity: 1,
+      translateY: 0
+    },
+    0.2: {
+      opacity: 1,
+      translateY: 10
+    },
+    0.4: {
+      translateY: -20
+    },
+    0.45: {
+      translateY: -20
+    },
+    0.55: {
+      opacity: 1
+    },
+    1: {
+      opacity: 0,
+      translateY: 800
+    }
+  };
+  var bounceOutRight = exports.bounceOutRight = {
+    0: {
+      opacity: 1,
+      translateX: 0
+    },
+    0.2: {
+      opacity: 1,
+      translateX: 10
+    },
+    0.4: {
+      translateX: -20
+    },
+    0.45: {
+      translateX: -20
+    },
+    0.55: {
+      opacity: 1
+    },
+    1: {
+      opacity: 0,
+      translateX: 600
+    }
+  };
+  var bounceOutLeft = exports.bounceOutLeft = {
+    0: {
+      opacity: 1,
+      translateX: 0
+    },
+    0.2: {
+      opacity: 1,
+      translateX: -10
+    },
+    0.4: {
+      translateX: 20
+    },
+    0.45: {
+      translateX: 20
+    },
+    0.55: {
+      opacity: 1
+    },
+    1: {
+      opacity: 0,
+      translateX: -600
+    }
+  };
+},641,[],"node_modules\\react-native-animatable\\definitions\\bouncing-exits.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function makeFadeInTranslation(translationType, fromValue) {
+    return {
+      from: _defineProperty({
+        opacity: 0
+      }, translationType, fromValue),
+      to: _defineProperty({
+        opacity: 1
+      }, translationType, 0)
+    };
+  }
+
+  var fadeIn = exports.fadeIn = {
+    from: {
+      opacity: 0
+    },
+    to: {
+      opacity: 1
+    }
+  };
+  var fadeInDown = exports.fadeInDown = makeFadeInTranslation('translateY', -100);
+  var fadeInUp = exports.fadeInUp = makeFadeInTranslation('translateY', 100);
+  var fadeInLeft = exports.fadeInLeft = makeFadeInTranslation('translateX', -100);
+  var fadeInRight = exports.fadeInRight = makeFadeInTranslation('translateX', 100);
+  var fadeInDownBig = exports.fadeInDownBig = makeFadeInTranslation('translateY', -500);
+  var fadeInUpBig = exports.fadeInUpBig = makeFadeInTranslation('translateY', 500);
+  var fadeInLeftBig = exports.fadeInLeftBig = makeFadeInTranslation('translateX', -500);
+  var fadeInRightBig = exports.fadeInRightBig = makeFadeInTranslation('translateX', 500);
+},642,[],"node_modules\\react-native-animatable\\definitions\\fading-entrances.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function makeFadeOutTranslation(translationType, toValue) {
+    return {
+      from: _defineProperty({
+        opacity: 1
+      }, translationType, 0),
+      to: _defineProperty({
+        opacity: 0
+      }, translationType, toValue)
+    };
+  }
+
+  var fadeOut = exports.fadeOut = {
+    from: {
+      opacity: 1
+    },
+    to: {
+      opacity: 0
+    }
+  };
+  var fadeOutDown = exports.fadeOutDown = makeFadeOutTranslation('translateY', 100);
+  var fadeOutUp = exports.fadeOutUp = makeFadeOutTranslation('translateY', -100);
+  var fadeOutLeft = exports.fadeOutLeft = makeFadeOutTranslation('translateX', -100);
+  var fadeOutRight = exports.fadeOutRight = makeFadeOutTranslation('translateX', 100);
+  var fadeOutDownBig = exports.fadeOutDownBig = makeFadeOutTranslation('translateY', 500);
+  var fadeOutUpBig = exports.fadeOutUpBig = makeFadeOutTranslation('translateY', -500);
+  var fadeOutLeftBig = exports.fadeOutLeftBig = makeFadeOutTranslation('translateX', -500);
+  var fadeOutRightBig = exports.fadeOutRightBig = makeFadeOutTranslation('translateX', 500);
+},643,[],"node_modules\\react-native-animatable\\definitions\\fading-exits.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var flipInX = exports.flipInX = {
+    easing: 'ease-in',
+    style: {
+      backfaceVisibility: 'visible',
+      perspective: 400
+    },
+    0: {
+      opacity: 0,
+      rotateX: '90deg'
+    },
+    0.4: {
+      rotateX: '-20deg'
+    },
+    0.6: {
+      opacity: 1,
+      rotateX: '10deg'
+    },
+    0.8: {
+      rotateX: '-5deg'
+    },
+    1: {
+      opacity: 1,
+      rotateX: '0deg'
+    }
+  };
+  var flipInY = exports.flipInY = {
+    easing: 'ease-in',
+    style: {
+      backfaceVisibility: 'visible',
+      perspective: 400
+    },
+    0: {
+      opacity: 0,
+      rotateY: '90deg'
+    },
+    0.4: {
+      rotateY: '-20deg'
+    },
+    0.6: {
+      opacity: 1,
+      rotateY: '10deg'
+    },
+    0.8: {
+      rotateY: '-5deg'
+    },
+    1: {
+      opacity: 1,
+      rotateY: '0deg'
+    }
+  };
+  var flipOutX = exports.flipOutX = {
+    style: {
+      backfaceVisibility: 'visible',
+      perspective: 400
+    },
+    0: {
+      opacity: 1,
+      rotateX: '0deg'
+    },
+    0.3: {
+      opacity: 1,
+      rotateX: '-20deg'
+    },
+    1: {
+      opacity: 0,
+      rotateX: '90deg'
+    }
+  };
+  var flipOutY = exports.flipOutY = {
+    style: {
+      backfaceVisibility: 'visible',
+      perspective: 400
+    },
+    0: {
+      opacity: 1,
+      rotateY: '0deg'
+    },
+    0.3: {
+      opacity: 1,
+      rotateY: '-20deg'
+    },
+    1: {
+      opacity: 0,
+      rotateY: '90deg'
+    }
+  };
+},644,[],"node_modules\\react-native-animatable\\definitions\\flippers.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var lightSpeedIn = exports.lightSpeedIn = {
+    easing: 'ease-out',
+    0: {
+      opacity: 0,
+      translateX: 200,
+      skewX: '-30deg'
+    },
+    0.6: {
+      opacity: 1,
+      translateX: 0,
+      skewX: '20deg'
+    },
+    0.8: {
+      skewX: '-5deg'
+    },
+    1: {
+      opacity: 1,
+      translateX: 0,
+      skewX: '0deg'
+    }
+  };
+  var lightSpeedOut = exports.lightSpeedOut = {
+    easing: 'ease-in',
+    0: {
+      opacity: 1,
+      translateX: 0,
+      skewX: '0deg'
+    },
+    1: {
+      opacity: 0,
+      translateX: 200,
+      skewX: '30deg'
+    }
+  };
+},645,[],"node_modules\\react-native-animatable\\definitions\\lightspeed.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function makeSlideInTranslation(translationType, fromValue) {
+    return {
+      from: _defineProperty({}, translationType, fromValue),
+      to: _defineProperty({}, translationType, 0)
+    };
+  }
+
+  var slideInDown = exports.slideInDown = makeSlideInTranslation('translateY', -100);
+  var slideInUp = exports.slideInUp = makeSlideInTranslation('translateY', 100);
+  var slideInLeft = exports.slideInLeft = makeSlideInTranslation('translateX', -100);
+  var slideInRight = exports.slideInRight = makeSlideInTranslation('translateX', 100);
+},646,[],"node_modules\\react-native-animatable\\definitions\\sliding-entrances.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function makeSlideOutTranslation(translationType, fromValue) {
+    return {
+      from: _defineProperty({}, translationType, 0),
+      to: _defineProperty({}, translationType, fromValue)
+    };
+  }
+
+  var slideOutDown = exports.slideOutDown = makeSlideOutTranslation('translateY', 100);
+  var slideOutUp = exports.slideOutUp = makeSlideOutTranslation('translateY', -100);
+  var slideOutLeft = exports.slideOutLeft = makeSlideOutTranslation('translateX', -100);
+  var slideOutRight = exports.slideOutRight = makeSlideOutTranslation('translateX', 100);
+},647,[],"node_modules\\react-native-animatable\\definitions\\sliding-exits.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.zoomInRight = exports.zoomInLeft = exports.zoomInUp = exports.zoomInDown = exports.zoomIn = undefined;
+
+  var _reactNative = _require(_dependencyMap[0], "react-native");
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function makeZoomInTranslation(translationType, pivotPoint) {
+    var modifier = Math.min(1, Math.max(-1, pivotPoint));
+    return {
+      easing: _reactNative.Easing.bezier(0.175, 0.885, 0.32, 1),
+      0: _defineProperty({
+        opacity: 0,
+        scale: 0.1
+      }, translationType, modifier * -1000),
+      0.6: _defineProperty({
+        opacity: 1,
+        scale: 0.457
+      }, translationType, pivotPoint),
+      1: _defineProperty({
+        scale: 1
+      }, translationType, 0)
+    };
+  }
+
+  var zoomIn = exports.zoomIn = {
+    from: {
+      opacity: 0,
+      scale: 0.3
+    },
+    0.5: {
+      opacity: 1
+    },
+    to: {
+      opacity: 1,
+      scale: 1
+    }
+  };
+  var zoomInDown = exports.zoomInDown = makeZoomInTranslation('translateY', 60);
+  var zoomInUp = exports.zoomInUp = makeZoomInTranslation('translateY', -60);
+  var zoomInLeft = exports.zoomInLeft = makeZoomInTranslation('translateX', 10);
+  var zoomInRight = exports.zoomInRight = makeZoomInTranslation('translateX', -10);
+},648,[12],"node_modules\\react-native-animatable\\definitions\\zooming-entrances.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.zoomOutRight = exports.zoomOutLeft = exports.zoomOutUp = exports.zoomOutDown = exports.zoomOut = undefined;
+
+  var _reactNative = _require(_dependencyMap[0], "react-native");
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function makeZoomOutTranslation(translationType, pivotPoint) {
+    var modifier = Math.min(1, Math.max(-1, pivotPoint));
+    return {
+      easing: _reactNative.Easing.bezier(0.175, 0.885, 0.32, 1),
+      0: _defineProperty({
+        opacity: 1,
+        scale: 1
+      }, translationType, 0),
+      0.4: _defineProperty({
+        opacity: 1,
+        scale: 0.457
+      }, translationType, pivotPoint),
+      1: _defineProperty({
+        opacity: 0,
+        scale: 0.1
+      }, translationType, modifier * -1000)
+    };
+  }
+
+  var zoomOut = exports.zoomOut = {
+    from: {
+      opacity: 1,
+      scale: 1
+    },
+    0.5: {
+      opacity: 1,
+      scale: 0.3
+    },
+    to: {
+      opacity: 0,
+      scale: 0
+    }
+  };
+  var zoomOutDown = exports.zoomOutDown = makeZoomOutTranslation('translateY', 60);
+  var zoomOutUp = exports.zoomOutUp = makeZoomOutTranslation('translateY', -60);
+  var zoomOutLeft = exports.zoomOutLeft = makeZoomOutTranslation('translateX', 10);
+  var zoomOutRight = exports.zoomOutRight = makeZoomOutTranslation('translateX', -10);
+},649,[12],"node_modules\\react-native-animatable\\definitions\\zooming-exits.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.slideOutRight = exports.slideOutLeft = exports.slideOutUp = exports.slideOutDown = exports.slideInRight = exports.slideInLeft = exports.slideInUp = exports.slideInDown = undefined;
+
+  var _reactNative = _require(_dependencyMap[0], "react-native");
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  var _Dimensions$get = _reactNative.Dimensions.get("window"),
+      height = _Dimensions$get.height,
+      width = _Dimensions$get.width;
+
+  var makeSlideTranslation = function makeSlideTranslation(translationType, fromValue, toValue) {
+    return {
+      from: _defineProperty({}, translationType, fromValue),
+      to: _defineProperty({}, translationType, toValue)
+    };
+  };
+
+  var slideInDown = exports.slideInDown = makeSlideTranslation("translateY", -height, 0);
+  var slideInUp = exports.slideInUp = makeSlideTranslation("translateY", height, 0);
+  var slideInLeft = exports.slideInLeft = makeSlideTranslation("translateX", -width, 0);
+  var slideInRight = exports.slideInRight = makeSlideTranslation("translateX", width, 0);
+  var slideOutDown = exports.slideOutDown = makeSlideTranslation("translateY", 0, height);
+  var slideOutUp = exports.slideOutUp = makeSlideTranslation("translateY", 0, -height);
+  var slideOutLeft = exports.slideOutLeft = makeSlideTranslation("translateX", 0, -width);
+  var slideOutRight = exports.slideOutRight = makeSlideTranslation("translateX", 0, width);
+},650,[12],"node_modules\\react-native-modal\\src\\animations.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _reactNative = _require(_dependencyMap[0], "react-native");
+
+  exports.default = _reactNative.StyleSheet.create({
+    backdrop: {
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      opacity: 0,
+      backgroundColor: "black"
+    },
+    content: {
+      flex: 1,
+      justifyContent: "center"
+    }
+  });
+},651,[12],"node_modules\\react-native-modal\\src\\index.style.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -77467,7 +80830,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     horizontal: false
   };
   exports.default = SuperGrid;
-},627,[111,179,130,12,628],"node_modules\\react-native-super-grid\\index.js");
+},652,[111,179,130,12,653],"node_modules\\react-native-super-grid\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -77488,7 +80851,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return acc;
     }, []);
   }
-},628,[],"node_modules\\react-native-super-grid\\utils.js");
+},653,[],"node_modules\\react-native-super-grid\\utils.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -77507,6 +80870,10 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
   var _reactNative = _require(_dependencyMap[2], "react-native");
+
+  var _styles = _require(_dependencyMap[3], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77553,7 +80920,9 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         return _react3.default.createElement(
           _reactNative.TouchableOpacity,
           {
-            style: styles.button,
+            style: [_styles2.default.thumbnail, this.props.isSelected ? _styles2.default.thumbIsSelected : null],
+            onPress: this.props.onPress,
+            onLongPress: this.props.onLongPress,
             __source: {
               fileName: _jsxFileName,
               lineNumber: 22
@@ -77562,14 +80931,14 @@ __d(function (global, _require, module, exports, _dependencyMap) {
           _react3.default.createElement(
             _reactNative.View,
             {
-              style: styles.imageView,
+              style: _styles2.default.thumbImageView,
               __source: {
                 fileName: _jsxFileName,
                 lineNumber: 27
               }
             },
             _react3.default.createElement(_reactNative.Image, {
-              style: styles.image,
+              style: _styles2.default.thumbImage,
               source: {
                 uri: this.props.product.imageUrl
               },
@@ -77578,13 +80947,13 @@ __d(function (global, _require, module, exports, _dependencyMap) {
                 lineNumber: 28
               }
             }),
-            _react3.default.createElement(
+            this.props.quantity > 0 && _react3.default.createElement(
               _reactNative.Text,
               {
-                style: styles.quantityLabel,
+                style: _styles2.default.thumbQuantityLabel,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 32
+                  lineNumber: 34
                 }
               },
               this.props.quantity
@@ -77593,19 +80962,19 @@ __d(function (global, _require, module, exports, _dependencyMap) {
           _react3.default.createElement(
             _reactNative.View,
             {
-              style: styles.caption,
+              style: _styles2.default.thumbCaption,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 34
+                lineNumber: 37
               }
             },
             _react3.default.createElement(
               _reactNative.Text,
               {
-                style: styles.nameLabel,
+                style: _styles2.default.thumbNameLabel,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 35
+                  lineNumber: 38
                 }
               },
               this.props.product.name
@@ -77613,10 +80982,10 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             _react3.default.createElement(
               _reactNative.Text,
               {
-                style: styles.priceLabel,
+                style: _styles2.default.thumbPriceLabel,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 36
+                  lineNumber: 39
                 }
               },
               this.props.product.price.toLocaleString(undefined, {
@@ -77634,52 +81003,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = ProductThumbnail;
-
-  var styles = _reactNative.StyleSheet.create({
-    button: {
-      flexDirection: "column",
-      width: 150,
-      height: 150,
-      borderWidth: 3,
-      borderColor: "#398a59",
-      borderRadius: 10
-    },
-    imageView: {
-      flex: 4
-    },
-    image: {
-      width: null,
-      height: null,
-      resizeMode: "contain",
-      padding: 10,
-      flex: 1
-    },
-    quantityLabel: {
-      position: "absolute",
-      right: 5,
-      top: 5,
-      borderRadius: 100,
-      width: 30,
-      height: 30,
-      backgroundColor: "#398958",
-      textAlign: "center",
-      textAlignVertical: "center",
-      color: "#ffffff"
-    },
-    caption: {
-      flex: 2,
-      flexDirection: "column",
-      padding: 5
-    },
-    nameLabel: {
-      flex: 1,
-      fontWeight: "bold"
-    },
-    priceLabel: {
-      flex: 1
-    }
-  });
-},629,[111,179,12],"app\\components\\ProductThumbnail.js");
+},654,[111,179,12,621],"app\\components\\ProductThumbnail.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -77778,6 +81102,6 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = Logotitle;
-},630,[111,179,12,621,625],"app\\components\\LogoTitle.js");
+},655,[111,179,12,621,625],"app\\components\\LogoTitle.js");
 require(23);
 require(11);//# sourceMappingURL=index.map

@@ -1,3 +1,5 @@
+//@flow
+
 import * as ActionConstants from "./constants";
 import fetchWrapper from "./fetchWrapper";
 
@@ -25,6 +27,36 @@ export const fetchProductsFailed = (error: {}): {} => {
     data: error
   };
 };
+
+//add one unit of the given productid to the active order
+//corresponds to one short press on a product thumbnail in
+//the orders screen
+export const incrementProductQuantity = (productId:number):{} => {
+  return {
+    type: ActionConstants.INCREMENT_PRODUCT_QUANTITY,
+    data: productId
+  }
+}
+
+//set the quantity of the given productId in the active order 
+//to the given amount. 
+export const setProductQuantity = (productId:number,quantity:number):{} => {
+  return{
+    type: ActionConstants.SET_PRODUCT_QUANTITY,
+    data: {
+      productId: productId,
+      quantity: quantity
+    }
+  }
+}
+
+// //sets the active productId to the given productId
+// export const setProduct = (productId:number):{} => {
+//   return{
+//     type: ActionConstants.SET_PRODUCT,
+//     data: productId
+//   }
+// }
 
 /************ Asynchronous Actions ***************/
 
