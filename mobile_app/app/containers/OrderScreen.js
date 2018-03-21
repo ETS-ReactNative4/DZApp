@@ -12,6 +12,7 @@ import {
 import Slider from "react-native-slider";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import QuantityControlModal from "../components/QuantityControlModal";
 
 //styles
 import styles from "../styles/styles";
@@ -32,11 +33,7 @@ import {
 
 type Props = {};
 
-type State = {
-  product: {},
-  quantity: number,
-  modalIsVisible: boolean
-};
+type State = {};
 
 class OrderScreen extends Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -50,22 +47,18 @@ class OrderScreen extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = {
-      product: null,
-      quantity: 0,
-      modalIsVisible: false
-    };
-    this.onProductThumbnailPress = this.onProductThumbnailPress.bind(this);
-    this.onProductThumbnailLongPress = this.onProductThumbnailLongPress.bind(
+    this._onProductThumbnailPress = this._onProductThumbnailPress.bind(this);
+    this._onProductThumbnailLongPress = this._onProductThumbnailLongPress.bind(
       this
     );
-    this.removeSelectedProduct = this.removeSelectedProduct.bind(this);
-    this.toggleModalVisible = this.toggleModalVisible.bind(this);
-    this.navToOverview = this.navToOverview.bind(this);
+    this._toggleModalVisible = this._toggleModalVisible.bind(this);
+    this._navToOverview = this._navToOverview.bind(this);
+    this._onModalSlidingComplete = this._onModalSlidingComplete.bind(this);
+    this._onModalTrashIconPress = this._onModalTrashIconPress.bind(this);
   }
 
   componentWillMount() {
-    this.props.navigation.setParams({ navToOverview: this.navToOverview });
+    this.props.navigation.setParams({ navToOverview: this._navToOverview });
   }
 
   render() {
@@ -75,125 +68,77 @@ class OrderScreen extends Component<Props, State> {
           style={styles.productGrid}
           itemDimension={130}
           items={this.props.products}
-          renderItem={product => {
+          renderItem={p => {
             return (
               <ProductThumbnail
-                product={product}
-                quantity={this.props.order.orderlines[product._id]}
-                onPress={() => this.onProductThumbnailPress(product._id)}
-                onLongPress={() =>
-                  this.onProductThumbnailLongPress(product._id)
-                }
-                isSelected={this.state.product === product}
+                product={p}
+                quantity={this.props.order.orderlines[p._id]}
+                onPress={() => this._onProductThumbnailPress(p._id)}
+                onLongPress={() => this._onProductThumbnailLongPress(p._id)}
               />
             );
           }}
           horizontal={true}
           spacing={10}
         />
-        <Modal
-          isVisible={this.state.modalIsVisible}
-          animationIn={"slideInUp"}
-          animationInTiming={200}
-          animationOut={"slideOutDown"}
-          animationOutTiming={200}
+        <QuantityControlModal
+          ref="modal"
           backdropColor={colors.PRIMARY_COLOR}
-          onBackButtonPress={() => this.toggleModalVisible()}
-          onBackdropPress={() => this.toggleModalVisible()}
-          onModalHide={() => this.removeSelectedProduct()}
-          style={styles.quantityModal}
-        >
-          {this.renderModalContent()}
-        </Modal>
+          onTrashIconPress={this._onModalTrashIconPress}
+          onSliderValueChanged={this._onModalSliderValueChanged}
+          onSlidingComplete={this._onModalSlidingComplete}
+        />
       </View>
     );
   }
 
-  navToOverview() {
+  _navToOverview() {
     this.props.navigation.navigate("OverviewScreen");
   }
 
   //checks the product's stock and increments
   //product's orderline quantity by 1
-  onProductThumbnailPress(productId: number) {
+  _onProductThumbnailPress(productId: number) {
     let unitsInOrderline = this.props.order.orderlines[productId] || 0;
     let unitsInStock = this.props.products.find(p => p._id === productId)
       .inStock;
     if (unitsInOrderline < unitsInStock)
       this.props.incrementProductQuantity(productId);
-    else Alert.alert("Onvoldoende stock");
+    else
+      Alert.alert(
+        "Onvoldoende voorraad",
+        "Te weinig eenheden van dit product in stock, gelieve een andere keuze te maken."
+      );
   }
 
   //sets the local state to the product that's been long pressed
   //and the quantity to the amount of units in that product's orderline
-  onProductThumbnailLongPress(productId: number) {
-    let product = this.props.products.filter(p => p._id === productId)[0];
-    this.setState({
+  _onProductThumbnailLongPress(productId: number) {
+    let product = this.props.products.find(p => p._id === productId);
+    let modal = this.refs.modal;
+    modal.setState({
       product: product,
       quantity: this.props.order.orderlines[productId]
         ? this.props.order.orderlines[productId]
         : 0
     });
-    this.toggleModalVisible();
+    this._toggleModalVisible();
   }
 
-  onModalTrashIconPress() {
-    this.props.setProductQuantity(this.state.product._id, 0);
-    this.toggleModalVisible();
+  _onModalTrashIconPress() {
+    this._onModalSlidingComplete(0);
+    this._toggleModalVisible();
   }
 
-  removeSelectedProduct() {
-    this.setState({
-      product: null,
-      quantity: 0
-    });
+  _toggleModalVisible() {
+    let modal = this.refs.modal;
+    modal.setState({ isVisible: !modal.state.isVisible });
   }
 
-  toggleModalVisible() {
-    this.setState({
-      modalIsVisible: !this.state.modalIsVisible
-    });
-  }
-
-  renderModalContent() {
-    return (
-      <View style={styles.quantityModalContent}>
-        <View style={styles.row}>
-          <Text style={styles.quantityInputTitle}>
-            {this.state.product ? this.state.product.name : ""}:{" "}
-            <Text style={styles.quantityValueLabel}>{this.state.quantity}</Text>
-          </Text>
-          {/* only show trash icon when product units added to order */}
-          {this.state.quantity != 0 && (
-            <TouchableHighlight
-              onPress={() => this.onModalTrashIconPress()}
-              underlayColor={colors.TITLE_COLOR}
-            >
-              <Icon name="delete" size={30} color={colors.SECONDARY_COLOR} />
-            </TouchableHighlight>
-          )}
-        </View>
-        <Slider
-          value={this.state.quantity}
-          onValueChange={value => this.setState({ quantity: value })}
-          onSlidingComplete={value =>
-            this.props.setProductQuantity(this.state.product._id, value)
-          }
-          minimumValue={0}
-          maximumValue={this.state.product ? this.state.product.inStock : 0}
-          step={1}
-          trackStyle={styles.quantitySliderTrackStyle}
-          thumbStyle={styles.quantitySliderThumbStyle}
-          minimumTrackTintColor={colors.SECONDARY_COLOR}
-          maximumTrackTintColor={colors.PRIMARY_COLOR}
-        />
-        <Button
-          title="OK"
-          color={colors.PRIMARY_COLOR}
-          onPress={this.toggleModalVisible}
-        />
-      </View>
-    );
+  _onModalSlidingComplete(value: number) {
+    let modal = this.refs.modal;
+    let product = modal.state.product;
+    this.props.setProductQuantity(product._id, value);
   }
 }
 

@@ -64333,7 +64333,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     }
   });
   exports.default = RootNavigator;
-},545,[111,546,619,623,624,626,703,704,702,622],"app\\components\\RootNavigator.js");
+},545,[111,546,619,623,624,626,704,710,703,622],"app\\components\\RootNavigator.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   module.exports = {
     get createNavigationContainer() {
@@ -76505,7 +76505,43 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+  var normalFontSize = 18;
+  var bigFontSize = 22;
+
   var styles = _reactNative.StyleSheet.create({
+    box: {
+      borderColor: _colors2.default.SECONDARY_COLOR,
+      borderWidth: 2,
+      borderRadius: 10
+    },
+    textNormal: {
+      fontSize: normalFontSize
+    },
+    textBig: {
+      fontSize: bigFontSize
+    },
+    labelNormal: {
+      fontSize: normalFontSize,
+      color: _colors2.default.SECONDARY_COLOR,
+      marginRight: 5
+    },
+    labelBig: {
+      fontSize: bigFontSize,
+      color: _colors2.default.SECONDARY_COLOR,
+      marginRight: 5
+    },
+    rowAlignStart: {
+      flexDirection: "row",
+      justifyContent: "flex-start"
+    },
+    overviewListHolder: {
+      flex: 0.5
+    },
+    overviewSummary: {
+      marginTop: 5,
+      padding: 5,
+      flex: 0.5
+    },
     header1: {
       fontSize: 27,
       color: _colors2.default.PRIMARY_COLOR,
@@ -76617,10 +76653,6 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     thumbPriceLabel: {
       flex: 1
     },
-    thumbIsSelected: {
-      borderColor: _colors2.default.SECONDARY_COLOR,
-      borderWidth: 4
-    },
     productGrid: {
       alignSelf: "center"
     },
@@ -76652,16 +76684,32 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       padding: 20,
       flex: 0.4,
       flexDirection: "column",
-      borderWidth: 3,
-      borderColor: _colors2.default.PRIMARY_COLOR,
+      borderWidth: 2,
+      borderColor: _colors2.default.SECONDARY_COLOR,
       borderRadius: 10,
       justifyContent: "center"
     },
-    listItemContainer: {},
+    listItemContainer: {
+      flex: 1,
+      padding: 5,
+      flexDirection: "column"
+    },
+    listItemText: {
+      fontSize: normalFontSize,
+      textAlignVertical: "center"
+    },
     separator: {
       height: 2,
       width: "100%",
-      backgroundColor: _colors2.default.SECONDARY_COLOR
+      backgroundColor: _colors2.default.SECONDARY_COLOR,
+      marginBottom: 5
+    },
+    iconContainerSmall: {
+      alignItems: "center",
+      justifyContent: "center",
+      height: 30,
+      width: 30,
+      borderRadius: 30 / 2
     }
   });
 
@@ -77192,29 +77240,33 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _MaterialIcons2 = _interopRequireDefault(_MaterialIcons);
 
-  var _styles = _require(_dependencyMap[6], "../styles/styles");
+  var _QuantityControlModal = _require(_dependencyMap[6], "../components/QuantityControlModal");
+
+  var _QuantityControlModal2 = _interopRequireDefault(_QuantityControlModal);
+
+  var _styles = _require(_dependencyMap[7], "../styles/styles");
 
   var _styles2 = _interopRequireDefault(_styles);
 
-  var _colors = _require(_dependencyMap[7], "../styles/colors");
+  var _colors = _require(_dependencyMap[8], "../styles/colors");
 
   var _colors2 = _interopRequireDefault(_colors);
 
-  var _reactNativeSuperGrid = _require(_dependencyMap[8], "react-native-super-grid");
+  var _reactNativeSuperGrid = _require(_dependencyMap[9], "react-native-super-grid");
 
   var _reactNativeSuperGrid2 = _interopRequireDefault(_reactNativeSuperGrid);
 
-  var _ProductThumbnail = _require(_dependencyMap[9], "../components/ProductThumbnail");
+  var _ProductThumbnail = _require(_dependencyMap[10], "../components/ProductThumbnail");
 
   var _ProductThumbnail2 = _interopRequireDefault(_ProductThumbnail);
 
-  var _HeaderButtons = _require(_dependencyMap[10], "../components/HeaderButtons");
+  var _HeaderButtons = _require(_dependencyMap[11], "../components/HeaderButtons");
 
-  var _reactRedux = _require(_dependencyMap[11], "react-redux");
+  var _reactRedux = _require(_dependencyMap[12], "react-redux");
 
-  var _redux = _require(_dependencyMap[12], "redux");
+  var _redux = _require(_dependencyMap[13], "redux");
 
-  var _productActions = _require(_dependencyMap[13], "../actions/productActions");
+  var _productActions = _require(_dependencyMap[14], "../actions/productActions");
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -77251,16 +77303,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
       var _this = _possibleConstructorReturn(this, (OrderScreen.__proto__ || Object.getPrototypeOf(OrderScreen)).call(this, props));
 
-      _this.state = {
-        product: null,
-        quantity: 0,
-        modalIsVisible: false
-      };
-      _this.onProductThumbnailPress = _this.onProductThumbnailPress.bind(_this);
-      _this.onProductThumbnailLongPress = _this.onProductThumbnailLongPress.bind(_this);
-      _this.removeSelectedProduct = _this.removeSelectedProduct.bind(_this);
-      _this.toggleModalVisible = _this.toggleModalVisible.bind(_this);
-      _this.navToOverview = _this.navToOverview.bind(_this);
+      _this._onProductThumbnailPress = _this._onProductThumbnailPress.bind(_this);
+      _this._onProductThumbnailLongPress = _this._onProductThumbnailLongPress.bind(_this);
+      _this._toggleModalVisible = _this._toggleModalVisible.bind(_this);
+      _this._navToOverview = _this._navToOverview.bind(_this);
+      _this._onModalSlidingComplete = _this._onModalSlidingComplete.bind(_this);
+      _this._onModalTrashIconPress = _this._onModalTrashIconPress.bind(_this);
       return _this;
     }
 
@@ -77268,7 +77316,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       key: "componentWillMount",
       value: function componentWillMount() {
         this.props.navigation.setParams({
-          navToOverview: this.navToOverview
+          navToOverview: this._navToOverview
         });
       }
     }, {
@@ -77282,27 +77330,26 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             style: _styles2.default.container,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 73
+              lineNumber: 66
             }
           },
           _react3.default.createElement(_reactNativeSuperGrid2.default, {
             style: _styles2.default.productGrid,
             itemDimension: 130,
             items: this.props.products,
-            renderItem: function renderItem(product) {
+            renderItem: function renderItem(p) {
               return _react3.default.createElement(_ProductThumbnail2.default, {
-                product: product,
-                quantity: _this2.props.order.orderlines[product._id],
+                product: p,
+                quantity: _this2.props.order.orderlines[p._id],
                 onPress: function onPress() {
-                  return _this2.onProductThumbnailPress(product._id);
+                  return _this2._onProductThumbnailPress(p._id);
                 },
                 onLongPress: function onLongPress() {
-                  return _this2.onProductThumbnailLongPress(product._id);
+                  return _this2._onProductThumbnailLongPress(p._id);
                 },
-                isSelected: _this2.state.product === product,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 80
+                  lineNumber: 73
                 }
               });
             },
@@ -77310,186 +77357,71 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             spacing: 10,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 74
+              lineNumber: 67
             }
           }),
-          _react3.default.createElement(
-            _reactNativeModal2.default,
-            {
-              isVisible: this.state.modalIsVisible,
-              animationIn: "slideInUp",
-              animationInTiming: 200,
-              animationOut: "slideOutDown",
-              animationOutTiming: 200,
-              backdropColor: _colors2.default.PRIMARY_COLOR,
-              onBackButtonPress: function onBackButtonPress() {
-                return _this2.toggleModalVisible();
-              },
-              onBackdropPress: function onBackdropPress() {
-                return _this2.toggleModalVisible();
-              },
-              onModalHide: function onModalHide() {
-                return _this2.removeSelectedProduct();
-              },
-              style: _styles2.default.quantityModal,
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 94
-              }
-            },
-            this.renderModalContent()
-          )
+          _react3.default.createElement(_QuantityControlModal2.default, {
+            ref: "modal",
+            backdropColor: _colors2.default.PRIMARY_COLOR,
+            onTrashIconPress: this._onModalTrashIconPress,
+            onSliderValueChanged: this._onModalSliderValueChanged,
+            onSlidingComplete: this._onModalSlidingComplete,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 84
+            }
+          })
         );
       }
     }, {
-      key: "navToOverview",
-      value: function navToOverview() {
+      key: "_navToOverview",
+      value: function _navToOverview() {
         this.props.navigation.navigate("OverviewScreen");
       }
     }, {
-      key: "onProductThumbnailPress",
-      value: function onProductThumbnailPress(productId) {
+      key: "_onProductThumbnailPress",
+      value: function _onProductThumbnailPress(productId) {
         var unitsInOrderline = this.props.order.orderlines[productId] || 0;
         var unitsInStock = this.props.products.find(function (p) {
           return p._id === productId;
         }).inStock;
-        if (unitsInOrderline < unitsInStock) this.props.incrementProductQuantity(productId);else _reactNative.Alert.alert("Onvoldoende stock");
+        if (unitsInOrderline < unitsInStock) this.props.incrementProductQuantity(productId);else _reactNative.Alert.alert("Onvoldoende voorraad", "Te weinig eenheden van dit product in stock, gelieve een andere keuze te maken.");
       }
     }, {
-      key: "onProductThumbnailLongPress",
-      value: function onProductThumbnailLongPress(productId) {
-        var product = this.props.products.filter(function (p) {
+      key: "_onProductThumbnailLongPress",
+      value: function _onProductThumbnailLongPress(productId) {
+        var product = this.props.products.find(function (p) {
           return p._id === productId;
-        })[0];
-        this.setState({
+        });
+        var modal = this.refs.modal;
+        modal.setState({
           product: product,
           quantity: this.props.order.orderlines[productId] ? this.props.order.orderlines[productId] : 0
         });
-        this.toggleModalVisible();
-      }
-    }, {
-      key: "onModalTrashIconPress",
-      value: function onModalTrashIconPress() {
-        this.props.setProductQuantity(this.state.product._id, 0);
-        this.toggleModalVisible();
-      }
-    }, {
-      key: "removeSelectedProduct",
-      value: function removeSelectedProduct() {
-        this.setState({
-          product: null,
-          quantity: 0
-        });
-      }
-    }, {
-      key: "toggleModalVisible",
-      value: function toggleModalVisible() {
-        this.setState({
-          modalIsVisible: !this.state.modalIsVisible
-        });
-      }
-    }, {
-      key: "renderModalContent",
-      value: function renderModalContent() {
-        var _this3 = this;
 
-        return _react3.default.createElement(
-          _reactNative.View,
-          {
-            style: _styles2.default.quantityModalContent,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 160
-            }
-          },
-          _react3.default.createElement(
-            _reactNative.View,
-            {
-              style: _styles2.default.row,
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 161
-              }
-            },
-            _react3.default.createElement(
-              _reactNative.Text,
-              {
-                style: _styles2.default.quantityInputTitle,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 162
-                }
-              },
-              this.state.product ? this.state.product.name : "",
-              ":",
-              " ",
-              _react3.default.createElement(
-                _reactNative.Text,
-                {
-                  style: _styles2.default.quantityValueLabel,
-                  __source: {
-                    fileName: _jsxFileName,
-                    lineNumber: 164
-                  }
-                },
-                this.state.quantity
-              )
-            ),
-            this.state.quantity != 0 && _react3.default.createElement(
-              _reactNative.TouchableHighlight,
-              {
-                onPress: function onPress() {
-                  return _this3.onModalTrashIconPress();
-                },
-                underlayColor: _colors2.default.TITLE_COLOR,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 168
-                }
-              },
-              _react3.default.createElement(_MaterialIcons2.default, {
-                name: "delete",
-                size: 30,
-                color: _colors2.default.SECONDARY_COLOR,
-                __source: {
-                  fileName: _jsxFileName,
-                  lineNumber: 172
-                }
-              })
-            )
-          ),
-          _react3.default.createElement(_reactNativeSlider2.default, {
-            value: this.state.quantity,
-            onValueChange: function onValueChange(value) {
-              return _this3.setState({
-                quantity: value
-              });
-            },
-            onSlidingComplete: function onSlidingComplete(value) {
-              return _this3.props.setProductQuantity(_this3.state.product._id, value);
-            },
-            minimumValue: 0,
-            maximumValue: this.state.product ? this.state.product.inStock : 0,
-            step: 1,
-            trackStyle: _styles2.default.quantitySliderTrackStyle,
-            thumbStyle: _styles2.default.quantitySliderThumbStyle,
-            minimumTrackTintColor: _colors2.default.SECONDARY_COLOR,
-            maximumTrackTintColor: _colors2.default.PRIMARY_COLOR,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 176
-            }
-          }),
-          _react3.default.createElement(_reactNative.Button, {
-            title: "OK",
-            color: _colors2.default.PRIMARY_COLOR,
-            onPress: this.toggleModalVisible,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 190
-            }
-          })
-        );
+        this._toggleModalVisible();
+      }
+    }, {
+      key: "_onModalTrashIconPress",
+      value: function _onModalTrashIconPress() {
+        this._onModalSlidingComplete(0);
+
+        this._toggleModalVisible();
+      }
+    }, {
+      key: "_toggleModalVisible",
+      value: function _toggleModalVisible() {
+        var modal = this.refs.modal;
+        modal.setState({
+          isVisible: !modal.state.isVisible
+        });
+      }
+    }, {
+      key: "_onModalSlidingComplete",
+      value: function _onModalSlidingComplete(value) {
+        var modal = this.refs.modal;
+        var product = modal.state.product;
+        this.props.setProductQuantity(product._id, value);
       }
     }]);
 
@@ -77503,7 +77435,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         onPress: params.navToOverview,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 47
+          lineNumber: 44
         }
       })
     };
@@ -77524,7 +77456,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   };
 
   exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(OrderScreen);
-},626,[111,179,12,627,628,652,621,622,699,701,702,491,502,524],"app\\containers\\OrderScreen.js");
+},626,[111,179,12,627,628,652,699,621,622,700,702,703,491,502,524],"app\\containers\\OrderScreen.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
      'use strict';
 
@@ -83098,6 +83030,256 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _react3 = _interopRequireDefault(_react2);
 
+  var _index = _require(_dependencyMap[1], "./../../node_modules/react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\components\\QuantityControlModal.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  var _reactNative = _require(_dependencyMap[2], "react-native");
+
+  var _reactNativeSlider = _require(_dependencyMap[3], "react-native-slider");
+
+  var _reactNativeSlider2 = _interopRequireDefault(_reactNativeSlider);
+
+  var _reactNativeModal = _require(_dependencyMap[4], "react-native-modal");
+
+  var _reactNativeModal2 = _interopRequireDefault(_reactNativeModal);
+
+  var _MaterialIcons = _require(_dependencyMap[5], "react-native-vector-icons/MaterialIcons");
+
+  var _MaterialIcons2 = _interopRequireDefault(_MaterialIcons);
+
+  var _styles = _require(_dependencyMap[6], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[7], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    QuantityControlModal: {
+      displayName: "QuantityControlModal"
+    }
+  };
+
+  var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/app/components/QuantityControlModal.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  var QuantityControlModal = _wrapComponent("QuantityControlModal")(function (_Component) {
+    _inherits(QuantityControlModal, _Component);
+
+    function QuantityControlModal(props) {
+      _classCallCheck(this, QuantityControlModal);
+
+      var _this = _possibleConstructorReturn(this, (QuantityControlModal.__proto__ || Object.getPrototypeOf(QuantityControlModal)).call(this, props));
+
+      _this._renderModalContent = function () {
+        return _react3.default.createElement(
+          _reactNative.View,
+          {
+            style: _styles2.default.quantityModalContent,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 58
+            }
+          },
+          _react3.default.createElement(
+            _reactNative.View,
+            {
+              style: _styles2.default.row,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 59
+              }
+            },
+            _react3.default.createElement(
+              _reactNative.Text,
+              {
+                style: _styles2.default.quantityInputTitle,
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 60
+                }
+              },
+              _this.state.product ? _this.state.product.name : "",
+              ":",
+              " ",
+              _react3.default.createElement(
+                _reactNative.Text,
+                {
+                  style: _styles2.default.quantityValueLabel,
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 62
+                  }
+                },
+                _this.state.quantity
+              )
+            ),
+            _this.state.quantity != 0 && _react3.default.createElement(
+              _reactNative.TouchableHighlight,
+              {
+                style: [_styles2.default.iconContainerSmall, {
+                  alignSelf: "flex-end"
+                }],
+                onPress: _this._onTrashIconPress,
+                underlayColor: _colors2.default.TITLE_COLOR,
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 66
+                }
+              },
+              _react3.default.createElement(
+                _reactNative.View,
+                {
+                  style: _styles2.default.iconContainerSmall,
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 71
+                  }
+                },
+                _react3.default.createElement(_MaterialIcons2.default, {
+                  name: "delete",
+                  size: 30,
+                  color: _colors2.default.SECONDARY_COLOR,
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 72
+                  }
+                })
+              )
+            )
+          ),
+          _react3.default.createElement(_reactNativeSlider2.default, {
+            value: _this.state.quantity,
+            onValueChange: function onValueChange(value) {
+              return _this._onSliderValueChange(value);
+            },
+            onSlidingComplete: function onSlidingComplete(value) {
+              return _this.props.onSlidingComplete(value);
+            },
+            minimumValue: 0,
+            maximumValue: _this.state.product ? _this.state.product.inStock : 0,
+            step: 1,
+            disabled: _this.state.product ? _this.state.product.inStock === 0 : true,
+            trackStyle: _styles2.default.quantitySliderTrackStyle,
+            thumbStyle: _styles2.default.quantitySliderThumbStyle,
+            minimumTrackTintColor: _colors2.default.SECONDARY_COLOR,
+            maximumTrackTintColor: _colors2.default.PRIMARY_COLOR,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 77
+            }
+          }),
+          _react3.default.createElement(_reactNative.Button, {
+            title: "OK",
+            color: _colors2.default.PRIMARY_COLOR,
+            onPress: _this._toggleModalVisible,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 92
+            }
+          })
+        );
+      };
+
+      _this._toggleModalVisible = function () {
+        _this.setState({
+          isVisible: !_this.state.isVisible
+        });
+      };
+
+      _this._onSliderValueChange = function (value) {
+        _this.setState({
+          quantity: value
+        });
+      };
+
+      _this._onSlidingComplete = function (value) {
+        _this.props.onSlidingComplete(value);
+      };
+
+      _this._onTrashIconPress = function () {
+        _this.props.onTrashIconPress();
+      };
+
+      _this._onModalHide = function () {
+        _this.setState({
+          product: 0,
+          quantity: 0
+        });
+      };
+
+      _this.state = {
+        isVisible: false,
+        product: {},
+        quantity: 0
+      };
+      return _this;
+    }
+
+    _createClass(QuantityControlModal, [{
+      key: "render",
+      value: function render() {
+        return _react3.default.createElement(
+          _reactNativeModal2.default,
+          {
+            isVisible: this.state.isVisible,
+            animationIn: "slideInUp",
+            animationInTiming: 200,
+            animationOut: "slideOutDown",
+            animationOutTiming: 200,
+            backdropColor: this.props.backdropColor,
+            onBackButtonPress: this._toggleModalVisible,
+            onBackdropPress: this._toggleModalVisible,
+            onModalHide: this.props.onModalHide,
+            style: _styles2.default.quantityModal,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 39
+            }
+          },
+          this._renderModalContent()
+        );
+      }
+    }]);
+
+    return QuantityControlModal;
+  }(_react2.Component));
+
+  exports.default = QuantityControlModal;
+},699,[111,179,12,627,628,652,621,622],"app\\components\\QuantityControlModal.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
   var _index = _require(_dependencyMap[1], "./../react-transform-hmr/lib/index.js");
 
   var _index2 = _interopRequireDefault(_index);
@@ -83416,7 +83598,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
     horizontal: false
   };
   exports.default = SuperGrid;
-},699,[111,179,130,12,700],"node_modules\\react-native-super-grid\\index.js");
+},700,[111,179,130,12,701],"node_modules\\react-native-super-grid\\index.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -83437,7 +83619,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       return acc;
     }, []);
   }
-},700,[],"node_modules\\react-native-super-grid\\utils.js");
+},701,[],"node_modules\\react-native-super-grid\\utils.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -83506,12 +83688,12 @@ __d(function (global, _require, module, exports, _dependencyMap) {
         return _react3.default.createElement(
           _reactNative.TouchableOpacity,
           {
-            style: [_styles2.default.thumbnail, this.props.isSelected ? _styles2.default.thumbIsSelected : null],
+            style: _styles2.default.thumbnail,
             onPress: this.props.onPress,
             onLongPress: this.props.onLongPress,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 22
+              lineNumber: 21
             }
           },
           _react3.default.createElement(
@@ -83520,7 +83702,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               style: _styles2.default.thumbImageView,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 27
+                lineNumber: 26
               }
             },
             _react3.default.createElement(_reactNative.Image, {
@@ -83530,7 +83712,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               },
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 28
+                lineNumber: 27
               }
             }),
             this.props.quantity > 0 && _react3.default.createElement(
@@ -83539,7 +83721,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
                 style: _styles2.default.thumbQuantityLabel,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 34
+                  lineNumber: 32
                 }
               },
               this.props.quantity
@@ -83551,7 +83733,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
               style: _styles2.default.thumbCaption,
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 37
+                lineNumber: 35
               }
             },
             _react3.default.createElement(
@@ -83560,7 +83742,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
                 style: _styles2.default.thumbNameLabel,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 38
+                  lineNumber: 36
                 }
               },
               this.props.product.name
@@ -83571,7 +83753,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
                 style: _styles2.default.thumbPriceLabel,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 39
+                  lineNumber: 37
                 }
               },
               this.props.product.price.toLocaleString(undefined, {
@@ -83589,7 +83771,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = ProductThumbnail;
-},701,[111,179,12,621],"app\\components\\ProductThumbnail.js");
+},702,[111,179,12,621],"app\\components\\ProductThumbnail.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -83642,7 +83824,7 @@ __d(function (global, _require, module, exports, _dependencyMap) {
       })
     );
   };
-},702,[111,12,652,621,622],"app\\components\\HeaderButtons.js");
+},703,[111,12,652,621,622],"app\\components\\HeaderButtons.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -83662,19 +83844,45 @@ __d(function (global, _require, module, exports, _dependencyMap) {
 
   var _reactNative = _require(_dependencyMap[2], "react-native");
 
-  var _styles = _require(_dependencyMap[3], "../styles/styles");
+  var _MaterialIcons = _require(_dependencyMap[3], "react-native-vector-icons/MaterialIcons");
+
+  var _MaterialIcons2 = _interopRequireDefault(_MaterialIcons);
+
+  var _QuantityControlModal = _require(_dependencyMap[4], "../components/QuantityControlModal");
+
+  var _QuantityControlModal2 = _interopRequireDefault(_QuantityControlModal);
+
+  var _OverviewListItem = _require(_dependencyMap[5], "../components/OverviewListItem");
+
+  var _OverviewListItem2 = _interopRequireDefault(_OverviewListItem);
+
+  var _OverviewSummary = _require(_dependencyMap[6], "../components/OverviewSummary");
+
+  var _OverviewSummary2 = _interopRequireDefault(_OverviewSummary);
+
+  var _textcomponents = _require(_dependencyMap[7], "../components/textcomponents");
+
+  var texts = _interopRequireWildcard(_textcomponents);
+
+  var _viewcomponents = _require(_dependencyMap[8], "../components/viewcomponents");
+
+  var views = _interopRequireWildcard(_viewcomponents);
+
+  var _styles = _require(_dependencyMap[9], "../styles/styles");
 
   var _styles2 = _interopRequireDefault(_styles);
 
-  var _colors = _require(_dependencyMap[4], "../styles/colors");
+  var _colors = _require(_dependencyMap[10], "../styles/colors");
 
   var _colors2 = _interopRequireDefault(_colors);
 
-  var _reactRedux = _require(_dependencyMap[5], "react-redux");
+  var _reactRedux = _require(_dependencyMap[11], "react-redux");
 
-  var _redux = _require(_dependencyMap[6], "redux");
+  var _redux = _require(_dependencyMap[12], "redux");
 
-  var _constants = _require(_dependencyMap[7], "../actions/constants");
+  var _productActions = _require(_dependencyMap[13], "../actions/productActions");
+
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -83706,10 +83914,17 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var OverviewScreen = _wrapComponent("OverviewScreen")(function (_Component) {
     _inherits(OverviewScreen, _Component);
 
-    function OverviewScreen() {
+    function OverviewScreen(props) {
       _classCallCheck(this, OverviewScreen);
 
-      return _possibleConstructorReturn(this, (OverviewScreen.__proto__ || Object.getPrototypeOf(OverviewScreen)).apply(this, arguments));
+      var _this = _possibleConstructorReturn(this, (OverviewScreen.__proto__ || Object.getPrototypeOf(OverviewScreen)).call(this, props));
+
+      _this.state = {};
+      _this._onEditIconPress = _this._onEditIconPress.bind(_this);
+      _this._onModalTrashIconPress = _this._onModalTrashIconPress.bind(_this);
+      _this._toggleModalVisible = _this._toggleModalVisible.bind(_this);
+      _this._onModalSlidingComplete = _this._onModalSlidingComplete.bind(_this);
+      return _this;
     }
 
     _createClass(OverviewScreen, [{
@@ -83726,72 +83941,130 @@ __d(function (global, _require, module, exports, _dependencyMap) {
             quantity: _this2.props.order.orderlines[key]
           };
         });
+        orderlines = orderlines.filter(function (o) {
+          return o.quantity != 0;
+        });
+        var totalAmount = 0.0;
+        orderlines.forEach(function (o) {
+          totalAmount += o.quantity * _this2.props.products.find(function (p) {
+            return p._id === o.key;
+          }).price;
+        });
+        var totalAmountString = totalAmount.toLocaleString(undefined, {
+          minimumFractionDigits: 2
+        }) + " €";
+        var cashierName = this.props.cashier.firstName + " " + this.props.cashier.lastName;
+        var eventName = this.props.event.name;
         return _react3.default.createElement(
-          _reactNative.View,
+          views.Container,
           {
-            style: _styles2.default.container,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 29
+              lineNumber: 62
             }
           },
-          _react3.default.createElement(_reactNative.FlatList, {
-            data: orderlines,
-            renderItem: function renderItem(_ref) {
-              var item = _ref.item;
-              return _this2.renderItem(item);
+          _react3.default.createElement(
+            _reactNative.View,
+            {
+              style: _styles2.default.overviewListHolder,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 63
+              }
             },
-            ItemSeparatorComponent: this.renderSeparator,
+            _react3.default.createElement(_reactNative.FlatList, {
+              data: orderlines,
+              renderItem: function renderItem(_ref) {
+                var item = _ref.item;
+                return _react3.default.createElement(_OverviewListItem2.default, {
+                  item: item,
+                  onEditIconPress: function onEditIconPress() {
+                    return _this2._onEditIconPress(item.key);
+                  },
+                  products: _this2.props.products,
+                  order: _this2.props.order,
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 67
+                  }
+                });
+              },
+              ItemSeparatorComponent: this._renderSeparator,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 64
+              }
+            })
+          ),
+          this._renderSeparator(),
+          _react3.default.createElement(_OverviewSummary2.default, {
+            cashierName: this.props.cashier.firstName + " " + this.props.cashier.lastName,
+            eventName: this.props.event.name,
+            totalAmountString: totalAmountString,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 30
+              lineNumber: 78
+            }
+          }),
+          _react3.default.createElement(_QuantityControlModal2.default, {
+            ref: "modal",
+            backdropColor: _colors2.default.PRIMARY_COLOR,
+            onTrashIconPress: this._onModalTrashIconPress,
+            onSliderValueChanged: this._onModalSliderValueChanged,
+            onSlidingComplete: this._onModalSlidingComplete,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 85
             }
           })
         );
       }
     }, {
-      key: "renderItem",
-      value: function renderItem(item) {
-        return _react3.default.createElement(
-          _reactNative.View,
-          {
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 43
-            }
-          },
-          _react3.default.createElement(
-            _reactNative.Text,
-            {
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 44
-              }
-            },
-            item.name
-          ),
-          _react3.default.createElement(
-            _reactNative.Text,
-            {
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 45
-              }
-            },
-            item.quantity
-          )
-        );
-      }
-    }, {
-      key: "renderSeparator",
-      value: function renderSeparator() {
+      key: "_renderSeparator",
+      value: function _renderSeparator() {
         return _react3.default.createElement(_reactNative.View, {
           style: _styles2.default.separator,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 51
+            lineNumber: 97
           }
         });
+      }
+    }, {
+      key: "_onEditIconPress",
+      value: function _onEditIconPress(productId) {
+        var product = this.props.products.find(function (p) {
+          return p._id === productId;
+        });
+        var modal = this.refs.modal;
+        modal.setState({
+          product: product,
+          quantity: this.props.order.orderlines[productId] ? this.props.order.orderlines[productId] : 0
+        });
+
+        this._toggleModalVisible();
+      }
+    }, {
+      key: "_onModalTrashIconPress",
+      value: function _onModalTrashIconPress() {
+        this._onModalSlidingComplete(0);
+
+        this._toggleModalVisible();
+      }
+    }, {
+      key: "_toggleModalVisible",
+      value: function _toggleModalVisible() {
+        var modal = this.refs.modal;
+        modal.setState({
+          isVisible: !modal.state.isVisible
+        });
+      }
+    }, {
+      key: "_onModalSlidingComplete",
+      value: function _onModalSlidingComplete(value) {
+        var modal = this.refs.modal;
+        var product = modal.state.product;
+        this.props.setProductQuantity(product._id, value);
       }
     }]);
 
@@ -83801,16 +84074,581 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   var mapStateToProps = function mapStateToProps(state) {
     return {
       order: state.productReducer.order,
-      products: state.productReducer.products
+      products: state.productReducer.products,
+      cashier: state.customerReducer.customers.find(function (c) {
+        return c._id === state.cashierReducer.cashierId;
+      }),
+      event: state.eventReducer.events.find(function (e) {
+        return e._id === state.eventReducer.eventId;
+      })
     };
   };
 
   var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return (0, _redux.bindActionCreators)({}, dispatch);
+    return (0, _redux.bindActionCreators)({
+      setProductQuantity: _productActions.setProductQuantity
+    }, dispatch);
   };
 
   exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(OverviewScreen);
-},703,[111,179,12,621,622,491,502,521],"app\\containers\\OverviewScreen.js");
+},704,[111,179,12,652,699,705,708,706,707,621,622,491,502,524],"app\\containers\\OverviewScreen.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../node_modules/react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\components\\OverviewListItem.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  var _reactNative = _require(_dependencyMap[2], "react-native");
+
+  var _textcomponents = _require(_dependencyMap[3], "../components/textcomponents");
+
+  var texts = _interopRequireWildcard(_textcomponents);
+
+  var _viewcomponents = _require(_dependencyMap[4], "../components/viewcomponents");
+
+  var views = _interopRequireWildcard(_viewcomponents);
+
+  var _MaterialIcons = _require(_dependencyMap[5], "react-native-vector-icons/MaterialIcons");
+
+  var _MaterialIcons2 = _interopRequireDefault(_MaterialIcons);
+
+  var _styles = _require(_dependencyMap[6], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[7], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    OverviewListItem: {
+      displayName: "OverviewListItem"
+    }
+  };
+
+  var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/app/components/OverviewListItem.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  var OverviewListItem = _wrapComponent("OverviewListItem")(function (_Component) {
+    _inherits(OverviewListItem, _Component);
+
+    function OverviewListItem() {
+      _classCallCheck(this, OverviewListItem);
+
+      return _possibleConstructorReturn(this, (OverviewListItem.__proto__ || Object.getPrototypeOf(OverviewListItem)).apply(this, arguments));
+    }
+
+    _createClass(OverviewListItem, [{
+      key: "render",
+      value: function render() {
+        var item = this.props.item;
+        var price = item.quantity * this.props.products.find(function (p) {
+          return p._id === item.key;
+        }).price;
+        var priceString = price.toLocaleString(undefined, {
+          minimumFractionDigits: 2
+        }) + " €";
+        return _react3.default.createElement(
+          _reactNative.View,
+          {
+            style: _styles2.default.listItemContainer,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 31
+            }
+          },
+          _react3.default.createElement(
+            views.Row,
+            {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 32
+              }
+            },
+            _react3.default.createElement(
+              _reactNative.TouchableHighlight,
+              {
+                style: [_styles2.default.iconContainerSmall, {
+                  flex: 2,
+                  marginRight: 5
+                }],
+                onPress: this.props.onEditIconPress,
+                underlayColor: _colors2.default.TITLE_COLOR,
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 33
+                }
+              },
+              _react3.default.createElement(
+                _reactNative.View,
+                {
+                  style: _styles2.default.iconContainerSmall,
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 38
+                  }
+                },
+                _react3.default.createElement(_MaterialIcons2.default, {
+                  name: "mode-edit",
+                  size: 25,
+                  color: _colors2.default.SECONDARY_COLOR,
+                  __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 39
+                  }
+                })
+              )
+            ),
+            _react3.default.createElement(texts.TextListItem, {
+              style: {
+                flex: 8
+              },
+              text: item.name,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 42
+              }
+            }),
+            _react3.default.createElement(texts.TextListItem, {
+              style: {
+                flex: 2,
+                textAlign: "right"
+              },
+              text: " X ",
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 43
+              }
+            }),
+            _react3.default.createElement(texts.TextListItem, {
+              style: {
+                flex: 2
+              },
+              text: item.quantity,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 47
+              }
+            }),
+            _react3.default.createElement(texts.TextListItem, {
+              style: {
+                flex: 1
+              },
+              text: " = ",
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 48
+              }
+            }),
+            _react3.default.createElement(texts.TextListItem, {
+              style: {
+                flex: 4,
+                textAlign: "right"
+              },
+              text: priceString,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 49
+              }
+            })
+          )
+        );
+      }
+    }]);
+
+    return OverviewListItem;
+  }(_react2.Component));
+
+  exports.default = OverviewListItem;
+},705,[111,179,12,706,707,652,621,622],"app\\components\\OverviewListItem.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.TextListItem = exports.LabelBig = exports.LabelNormal = exports.TextBig = exports.TextNormal = undefined;
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\components\\textcomponents.js";
+
+  var _react = _require(_dependencyMap[0], "react");
+
+  var _react2 = _interopRequireDefault(_react);
+
+  var _reactNative = _require(_dependencyMap[1], "react-native");
+
+  var _styles = _require(_dependencyMap[2], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[3], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var TextNormal = exports.TextNormal = function TextNormal(_ref) {
+    var text = _ref.text,
+        style = _ref.style;
+    return _react2.default.createElement(
+      _reactNative.Text,
+      {
+        style: [_styles2.default.textNormal, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 9
+        }
+      },
+      text
+    );
+  };
+
+  var TextBig = exports.TextBig = function TextBig(_ref2) {
+    var text = _ref2.text,
+        style = _ref2.style;
+    return _react2.default.createElement(
+      _reactNative.Text,
+      {
+        style: [_styles2.default.textBig, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 13
+        }
+      },
+      text
+    );
+  };
+
+  var LabelNormal = exports.LabelNormal = function LabelNormal(_ref3) {
+    var text = _ref3.text,
+        style = _ref3.style;
+    return _react2.default.createElement(
+      _reactNative.Text,
+      {
+        style: [_styles2.default.labelNormal, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 17
+        }
+      },
+      text
+    );
+  };
+
+  var LabelBig = exports.LabelBig = function LabelBig(_ref4) {
+    var text = _ref4.text,
+        style = _ref4.style;
+    return _react2.default.createElement(
+      _reactNative.Text,
+      {
+        style: [_styles2.default.labelBig, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 21
+        }
+      },
+      text
+    );
+  };
+
+  var TextListItem = exports.TextListItem = function TextListItem(_ref5) {
+    var text = _ref5.text,
+        style = _ref5.style;
+    return _react2.default.createElement(
+      _reactNative.Text,
+      {
+        style: [_styles2.default.listItemText, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 25
+        }
+      },
+      text
+    );
+  };
+},706,[111,12,621,622],"app\\components\\textcomponents.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.Row = exports.RowAlignStart = exports.Container = undefined;
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\components\\viewcomponents.js";
+
+  var _react = _require(_dependencyMap[0], "react");
+
+  var _react2 = _interopRequireDefault(_react);
+
+  var _reactNative = _require(_dependencyMap[1], "react-native");
+
+  var _styles = _require(_dependencyMap[2], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[3], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  var Container = exports.Container = function Container(_ref) {
+    var children = _ref.children,
+        style = _ref.style;
+    return _react2.default.createElement(
+      _reactNative.View,
+      {
+        style: [_styles2.default.container, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 9
+        }
+      },
+      children
+    );
+  };
+
+  var RowAlignStart = exports.RowAlignStart = function RowAlignStart(_ref2) {
+    var children = _ref2.children,
+        style = _ref2.style;
+    return _react2.default.createElement(
+      _reactNative.View,
+      {
+        style: [_styles2.default.rowAlignStart, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 13
+        }
+      },
+      children
+    );
+  };
+
+  var Row = exports.Row = function Row(_ref3) {
+    var children = _ref3.children,
+        style = _ref3.style;
+    return _react2.default.createElement(
+      _reactNative.View,
+      {
+        style: [_styles2.default.row, style],
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 17
+        }
+      },
+      children
+    );
+  };
+},707,[111,12,621,622],"app\\components\\viewcomponents.js");
+__d(function (global, _require, module, exports, _dependencyMap) {
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _react2 = _require(_dependencyMap[0], "react");
+
+  var _react3 = _interopRequireDefault(_react2);
+
+  var _index = _require(_dependencyMap[1], "./../../node_modules/react-transform-hmr/lib/index.js");
+
+  var _index2 = _interopRequireDefault(_index);
+
+  var _jsxFileName = "c:\\Users\\janmo\\Projects\\Mobile Apps\\KassaApp\\Dijlezonen\\mobile_app\\app\\components\\OverviewSummary.js";
+
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+  var _reactNative = _require(_dependencyMap[2], "react-native");
+
+  var _textcomponents = _require(_dependencyMap[3], "../components/textcomponents");
+
+  var texts = _interopRequireWildcard(_textcomponents);
+
+  var _viewcomponents = _require(_dependencyMap[4], "../components/viewcomponents");
+
+  var views = _interopRequireWildcard(_viewcomponents);
+
+  var _styles = _require(_dependencyMap[5], "../styles/styles");
+
+  var _styles2 = _interopRequireDefault(_styles);
+
+  var _colors = _require(_dependencyMap[6], "../styles/colors");
+
+  var _colors2 = _interopRequireDefault(_colors);
+
+  function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+  var _components = {
+    OverviewSummary: {
+      displayName: "OverviewSummary"
+    }
+  };
+
+  var _node_modulesReactTransformHmrLibIndexJs2 = (0, _index2.default)({
+    filename: "c:/Users/janmo/Projects/Mobile Apps/KassaApp/Dijlezonen/mobile_app/app/components/OverviewSummary.js",
+    components: _components,
+    locals: [module],
+    imports: [_react3.default]
+  });
+
+  function _wrapComponent(id) {
+    return function (Component) {
+      return _node_modulesReactTransformHmrLibIndexJs2(Component, id);
+    };
+  }
+
+  var OverviewSummary = _wrapComponent("OverviewSummary")(function (_Component) {
+    _inherits(OverviewSummary, _Component);
+
+    function OverviewSummary() {
+      _classCallCheck(this, OverviewSummary);
+
+      return _possibleConstructorReturn(this, (OverviewSummary.__proto__ || Object.getPrototypeOf(OverviewSummary)).apply(this, arguments));
+    }
+
+    _createClass(OverviewSummary, [{
+      key: "render",
+      value: function render() {
+        return _react3.default.createElement(
+          _reactNative.View,
+          {
+            style: _styles2.default.overviewSummary,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 20
+            }
+          },
+          _react3.default.createElement(
+            views.Row,
+            {
+              style: {
+                marginBottom: 15
+              },
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 21
+              }
+            },
+            _react3.default.createElement(texts.LabelNormal, {
+              text: "TOTAAL: ",
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 22
+              }
+            }),
+            _react3.default.createElement(texts.TextNormal, {
+              text: this.props.totalAmountString,
+              style: {
+                color: _colors2.default.PRIMARY_COLOR
+              },
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 23
+              }
+            })
+          ),
+          _react3.default.createElement(
+            views.Row,
+            {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 29
+              }
+            },
+            _react3.default.createElement(texts.LabelNormal, {
+              text: "Evenement:",
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 30
+              }
+            }),
+            _react3.default.createElement(texts.TextNormal, {
+              text: this.props.eventName,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 31
+              }
+            })
+          ),
+          _react3.default.createElement(
+            views.Row,
+            {
+              style: {
+                marginBottom: 20
+              },
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 33
+              }
+            },
+            _react3.default.createElement(texts.LabelNormal, {
+              text: "Kassier:",
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 34
+              }
+            }),
+            _react3.default.createElement(texts.TextNormal, {
+              text: this.props.cashierName,
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 35
+              }
+            })
+          ),
+          _react3.default.createElement(_reactNative.Button, {
+            color: _colors2.default.PRIMARY_COLOR,
+            title: "Kies Klant",
+            onPress: function onPress() {
+              return console.log("kies klant");
+            },
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 38
+            }
+          })
+        );
+      }
+    }]);
+
+    return OverviewSummary;
+  }(_react2.Component));
+
+  exports.default = OverviewSummary;
+},708,[111,179,12,706,707,621,622],"app\\components\\OverviewSummary.js");
 __d(function (global, _require, module, exports, _dependencyMap) {
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -83909,6 +84747,6 @@ __d(function (global, _require, module, exports, _dependencyMap) {
   }(_react2.Component));
 
   exports.default = Logotitle;
-},704,[111,179,12,621,625],"app\\components\\LogoTitle.js");
+},710,[111,179,12,621,625],"app\\components\\LogoTitle.js");
 require(23);
 require(11);//# sourceMappingURL=index.map

@@ -4,7 +4,7 @@ import { AsyncStorage } from "react-native";
 
 import { fetchCustomers } from "./actions/customerActions";
 import { fetchEvents } from "./actions/eventActions";
-import {fetchProducts} from "./actions/productActions";
+import { fetchProducts } from "./actions/productActions";
 
 //redux-persist
 import { persistStore } from "redux-persist";

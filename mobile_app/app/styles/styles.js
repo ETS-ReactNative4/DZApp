@@ -2,7 +2,51 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import colors from "./colors";
 
+const normalFontSize = 18;
+const bigFontSize = 22;
+
 const styles = StyleSheet.create({
+  //general
+  box: {
+    borderColor: colors.SECONDARY_COLOR,
+    borderWidth: 2,
+    borderRadius: 10
+  },
+  //text components
+  textNormal: {
+    fontSize: normalFontSize
+  },
+  textBig: {
+    fontSize: bigFontSize
+  },
+  labelNormal: {
+    fontSize: normalFontSize,
+    color: colors.SECONDARY_COLOR,
+    marginRight: 5
+  },
+  labelBig: {
+    fontSize: bigFontSize,
+    color: colors.SECONDARY_COLOR,
+    marginRight: 5
+  },
+  //view
+  rowAlignStart: {
+    flexDirection: "row",
+    justifyContent: "flex-start"
+  },
+  /*****OverviewScreen *****/
+  //flatlist
+  overviewListHolder: {
+    flex: 0.5
+  },
+  //overviewsummary
+  overviewSummary: {
+    marginTop: 5,
+    padding: 5,
+    flex: 0.5
+    //justifyContent: "center"
+  },
+  //todo: refactor
   header1: {
     fontSize: 27,
     color: colors.PRIMARY_COLOR,
@@ -117,10 +161,6 @@ const styles = StyleSheet.create({
   thumbPriceLabel: {
     flex: 1
   },
-  thumbIsSelected: {
-    borderColor: colors.SECONDARY_COLOR,
-    borderWidth: 4
-  },
   /*****OrderScreen******/
   productGrid: {
     alignSelf: "center"
@@ -153,17 +193,34 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 0.4,
     flexDirection: "column",
-    borderWidth: 3,
-    borderColor: colors.PRIMARY_COLOR,
+    borderWidth: 2,
+    borderColor: colors.SECONDARY_COLOR,
     borderRadius: 10,
     justifyContent: "center"
   },
   /***** Order Overview ****/
-  listItemContainer: {},
+  listItemContainer: {
+    flex: 1,
+    padding: 5,
+    flexDirection: "column"
+  },
+  listItemText: {
+    fontSize: normalFontSize,
+    textAlignVertical: "center"
+  },
   separator: {
     height: 2,
     width: "100%",
-    backgroundColor: colors.SECONDARY_COLOR
+    backgroundColor: colors.SECONDARY_COLOR,
+    marginBottom: 5
+  },
+  //TouchableHightLight
+  iconContainerSmall: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 30,
+    width: 30,
+    borderRadius: 30 / 2
   }
 });
 

@@ -7,20 +7,19 @@ type Props = {
   product: {},
   quantity: number,
   onPress: () => any,
-  onLongPress: () => any,
-  isSelected: boolean
+  onLongPress: () => any
 };
 
 export default class ProductThumbnail extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {};    
+    this.state = {};
   }
 
   render() {
     return (
       <TouchableOpacity
-        style={[styles.thumbnail,this.props.isSelected? styles.thumbIsSelected : null]}
+        style={styles.thumbnail}
         onPress={this.props.onPress}
         onLongPress={this.props.onLongPress}
       >
@@ -29,10 +28,9 @@ export default class ProductThumbnail extends Component<Props, State> {
             style={styles.thumbImage}
             source={{ uri: this.props.product.imageUrl }}
           />
-          {
-            this.props.quantity > 0 &&
+          {this.props.quantity > 0 && (
             <Text style={styles.thumbQuantityLabel}>{this.props.quantity}</Text>
-          }
+          )}
         </View>
         <View style={styles.thumbCaption}>
           <Text style={styles.thumbNameLabel}>{this.props.product.name}</Text>
