@@ -125,7 +125,12 @@ class OverviewScreen extends Component<Props, State> {
                 {strings.OVERVIEW}
               </Text>
             </Button>
-            <Button vertical>
+            <Button
+              vertical
+              onPress={() => {
+                this.props.navigation.navigate("TopupScreen");
+              }}
+            >
               <Icon name="cash" />
               <Text style={styles.tabbarText}>{strings.TOPUP}</Text>
             </Button>

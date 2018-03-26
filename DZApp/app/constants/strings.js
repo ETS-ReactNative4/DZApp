@@ -35,9 +35,21 @@ export const DETAILS = "Details: ";
 
 //TopupScreen
 export const TOPUP = "Opladen";
+export const ENTER_TOPUP_AMT = "Hoeveel euro wenst u op te laden?";
+export const SCAN_CUSTOMER_CARD = "Scan QR code om een klant te kiezen:";
+export const AMOUNT = "Bedrag: ";
+export const INVALID_QR = "Ongeldige QR code!";
+export const CAM_PERMISSION_TITLE = "DZApp toelaten de camera te gebruiken?";
+export const CAM_PERMISSION_MESSAGE =
+  "DZApp heeft de camera nodig om klanten te identificeren.";
+export const DENY = "Nee, bedankt";
+export const OPEN_SETTINGS = "Instellingen Openen";
+export const CUSTOMER = "Klant: ";
+export const PICK_OTHER_CUSTOMER = "Kies andere klant";
+export const TOPUP_BALANCE = "Saldo opladen";
 
 //HistoryScreen
-export const HISTORY = "Geschiedenis";
+export const HISTORY = "Historiek";
 
 //ProductThumbnail
 export const IN_STOCK = "in voorraad";

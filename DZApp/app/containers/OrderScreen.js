@@ -110,7 +110,12 @@ class OrderScreen extends Component<Props, State> {
               <Icon name="list" />
               <Text style={styles.tabbarText}>{strings.OVERVIEW}</Text>
             </Button>
-            <Button vertical>
+            <Button
+              vertical
+              onPress={() => {
+                this.props.navigation.navigate("TopupScreen");
+              }}
+            >
               <Icon name="cash" />
               <Text style={styles.tabbarText}>{strings.TOPUP}</Text>
             </Button>

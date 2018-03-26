@@ -126,7 +126,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.SECONDARY_COLOR
   },
   quantitySliderStyle: {
-    width: "100%"
+    width: "100%",
+    marginBottom: 20
   },
   //OverviewScreen
   overviewListitem: {},
@@ -149,6 +150,18 @@ const styles = StyleSheet.create({
   },
   overviewSummaryButton: {
     marginTop: 20
+  },
+  //TopupScreen:
+  cameraHolder: {
+    height: 275,
+    width: "100%",
+    alignSelf: "center",
+    flexDirection: "row"
+  },
+  camera: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center"
   },
   //tabbar
   tabbarText: {

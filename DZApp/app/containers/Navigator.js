@@ -7,18 +7,22 @@ import LoginScreen from "./LoginScreen";
 import EventScreen from "./EventScreen";
 import OrderScreen from "./OrderScreen";
 import OverviewScreen from "./OverviewScreen";
+import TopupScreen from "./TopupScreen";
 
-const MainFlowNavigator = StackNavigator(
+const MainFlowNavigator = SwitchNavigator(
   {
     OrderScreen: {
       screen: OrderScreen
     },
     OverviewScreen: {
       screen: OverviewScreen
+    },
+    TopupScreen: {
+      screen: TopupScreen
     }
   },
   {
-    initialRouteName: "OrderScreen",
+    initialRouteName: "TopupScreen",
     headerMode: "none"
   }
 );
@@ -39,7 +43,7 @@ const Navigator = SwitchNavigator(
     }
   },
   {
-    initialRouteName: "LoadingScreen"
+    initialRouteName: "MainFlow"
   }
 );
 
