@@ -60,8 +60,10 @@ class LoginScreen extends Component<Props, State> {
             <Title>{strings.LOGIN}</Title>
           </Body>
         </Header>
-        <Content contentContainerStyle={styles.content}>
-          <H2 style={styles.centerText}>{strings.LOGIN_HEADER}</H2>
+        <Content padder>
+          <H2 style={[styles.centerText, styles.primary]}>
+            {strings.LOGIN_HEADER}
+          </H2>
           <Form style={styles.form}>
             <Item floatingLabel last>
               <Label>{strings.USERNAME}</Label>
@@ -81,19 +83,24 @@ class LoginScreen extends Component<Props, State> {
 
             <Text style={styles.error}>{this.props.errorMessage}</Text>
           </Form>
-          <Button
-            primary
-            block
-            onPress={() => this._onLoginButtonPress()}
-            disabled={this.state.userName === "" || this.state.password === ""}
-            style={
-              this.state.userName !== "" && this.state.password !== ""
-                ? styles.primaryBackground
-                : null
-            }
-          >
-            <Text>{strings.LOGIN}</Text>
-          </Button>
+          {this.state.userName !== "" &&
+            this.state.password !== "" && (
+              <Button
+                primary
+                block
+                onPress={() => this._onLoginButtonPress()}
+                disabled={
+                  this.state.userName === "" || this.state.password === ""
+                }
+                style={
+                  this.state.userName !== "" && this.state.password !== ""
+                    ? styles.primaryBackground
+                    : null
+                }
+              >
+                <Text>{strings.LOGIN}</Text>
+              </Button>
+            )}
         </Content>
       </Container>
     );

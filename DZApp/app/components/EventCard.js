@@ -9,7 +9,8 @@ import {
   Label,
   Text,
   View,
-  Content
+  Content,
+  Button
 } from "native-base";
 
 import { Grid, Row, Col } from "react-native-easy-grid";
@@ -25,46 +26,56 @@ import * as strings from "../constants/strings";
 import { to_NL_be_DateString } from "../functions/date";
 import { toStringWithDecimals } from "../functions/number";
 
-export const EventCard = ({ event }) => {
+export const EventCard = ({ event, onPress }) => {
   return (
     <View style={styles.eventCardHolder}>
-      {/* <Card>
+      <Card>
         <CardItem header>
           <Text>{event.name}</Text>
         </CardItem>
-        <CardItem> */}
-      <Content>
-        <Grid>
-          <Col>
-            <Row>
-              <Label>{strings.FROM}</Label>
-            </Row>
-            <Row>
-              <Label>{strings.TO}</Label>
-            </Row>
-            <Row>
-              <Label>{strings.SUBSCRIPTIONFEE}</Label>
-            </Row>
-          </Col>
-          <Col>
-            <Row>
-              <Text>{to_NL_be_DateString(new Date(event.fromDate))}</Text>
-            </Row>
-            <Row>
-              <Text>{to_NL_be_DateString(new Date(event.toDate))}</Text>
-            </Row>
-            <Row>
-              <Text>
-                {event.subscriptionFee
-                  ? toStringWithDecimals(event.subscriptionFee, 2) + " €"
-                  : "0.00 €"}
-              </Text>
-            </Row>
-          </Col>
-        </Grid>
-      </Content>
-      {/* </CardItem>
-      </Card> */}
+        <CardItem>
+          <Content>
+            <Grid>
+              <Col>
+                <Row>
+                  <Label>{strings.FROM}</Label>
+                </Row>
+                <Row>
+                  <Label>{strings.TO}</Label>
+                </Row>
+                <Row>
+                  <Label>{strings.SUBSCRIPTIONFEE}</Label>
+                </Row>
+              </Col>
+              <Col>
+                <Row>
+                  <Text>{to_NL_be_DateString(new Date(event.fromDate))}</Text>
+                </Row>
+                <Row>
+                  <Text>{to_NL_be_DateString(new Date(event.toDate))}</Text>
+                </Row>
+                <Row>
+                  <Text>
+                    {event.subscriptionFee
+                      ? toStringWithDecimals(event.subscriptionFee, 2) + " €"
+                      : "0.00 €"}
+                  </Text>
+                </Row>
+              </Col>
+            </Grid>
+          </Content>
+        </CardItem>
+        <CardItem>
+          <Button
+            primary
+            block
+            onPress={() => onPress()}
+            style={[styles.primaryBackground, styles.center, { width: "100%" }]}
+          >
+            <Text>{strings.PICK_EVENT}</Text>
+          </Button>
+        </CardItem>
+      </Card>
     </View>
   );
 };

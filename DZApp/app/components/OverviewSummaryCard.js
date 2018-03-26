@@ -8,7 +8,8 @@ import {
   Text,
   View,
   Content,
-  Button
+  Button,
+  H3
 } from "native-base";
 
 import { Grid, Row, Col } from "react-native-easy-grid";
@@ -31,46 +32,51 @@ export const OverviewSummaryCard = ({
 }) => {
   return (
     <View style={styles.overviewSummary}>
-      {/* <Card>
-        <CardItem> */}
-      <Content>
-        <Grid>
-          <Col>
-            <Row>
-              <Label>{strings.TOTAL}</Label>
-            </Row>
-            <Row>
-              <Label>{strings.EVENT}</Label>
-            </Row>
-            <Row>
-              <Label>{strings.CASHIER}</Label>
-            </Row>
-          </Col>
-          <Col>
-            <Row>
-              <Text style={[styles.rightText, styles.primary]}>
-                {totalAmountString}
-              </Text>
-            </Row>
-            <Row>
-              <Text>{eventName}</Text>
-            </Row>
-            <Row>
-              <Text>{cashierName}</Text>
-            </Row>
-          </Col>
-        </Grid>
-        <Button
-          primary
-          block
-          onPress={onPress}
-          style={[styles.primaryBackground, styles.overviewSummaryButton]}
-        >
-          <Text>{strings.CHOOSE_CUSTOMER}</Text>
-        </Button>
-      </Content>
-      {/* </CardItem>
-      </Card> */}
+      <Card>
+        <CardItem header>
+          <H3 style={styles.primary}>{strings.OVERVIEW}:</H3>
+        </CardItem>
+        <CardItem>
+          <Content>
+            <Grid>
+              <Col>
+                <Row>
+                  <Label>{strings.TOTAL}</Label>
+                </Row>
+                <Row>
+                  <Label>{strings.EVENT}</Label>
+                </Row>
+                <Row>
+                  <Label>{strings.CASHIER}</Label>
+                </Row>
+              </Col>
+              <Col>
+                <Row>
+                  <Text style={[styles.rightText, styles.primary]}>
+                    {totalAmountString}
+                  </Text>
+                </Row>
+                <Row>
+                  <Text>{eventName}</Text>
+                </Row>
+                <Row>
+                  <Text>{cashierName}</Text>
+                </Row>
+              </Col>
+            </Grid>
+          </Content>
+        </CardItem>
+        <CardItem>
+          <Button
+            primary
+            block
+            onPress={onPress}
+            style={[styles.primaryBackground, styles.center, { width: "100%" }]}
+          >
+            <Text>{strings.CHOOSE_CUSTOMER}</Text>
+          </Button>
+        </CardItem>
+      </Card>
     </View>
   );
 };

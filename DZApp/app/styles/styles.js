@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   //EventScreen
   eventCardHolder: {
-    height: 160,
+    height: 230,
     marginBottom: 10
   },
   //ProductThumbnail
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 0.3
   },
   overviewSummary: {
-    height: 175,
+    height: 230,
 
     marginTop: 20
   },

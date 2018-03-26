@@ -19,7 +19,9 @@ import {
   Text,
   List,
   ListItem,
-  H3
+  H3,
+  Card,
+  CardItem
 } from "native-base";
 import { OverviewSummaryCard } from "../components/OverviewSummaryCard";
 
@@ -75,25 +77,32 @@ class OverviewScreen extends Component<Props, State> {
             eventName={this.props.event.name}
             totalAmountString={this.props.totalAmountString}
           />
-          <List
-            dataSource={this.ds.cloneWithRows(this.props.orderlines)}
-            renderRow={orderline => {
-              return this._renderListViewRow(orderline);
-            }}
-            renderLeftHiddenRow={orderline => {
-              return this._renderLeftHiddenRow(orderline);
-            }}
-            renderRightHiddenRow={(orderline, secId, rowId, rowMap) => {
-              return this._renderRightHiddenRow(
-                orderline,
-                secId,
-                rowId,
-                rowMap
-              );
-            }}
-            leftOpenValue={75}
-            rightOpenValue={-75}
-          />
+          <Card>
+            <CardItem header>
+              <H3 style={styles.primary}>{strings.DETAILS}</H3>
+            </CardItem>
+            <CardItem>
+              <List
+                dataSource={this.ds.cloneWithRows(this.props.orderlines)}
+                renderRow={orderline => {
+                  return this._renderListViewRow(orderline);
+                }}
+                renderLeftHiddenRow={orderline => {
+                  return this._renderLeftHiddenRow(orderline);
+                }}
+                renderRightHiddenRow={(orderline, secId, rowId, rowMap) => {
+                  return this._renderRightHiddenRow(
+                    orderline,
+                    secId,
+                    rowId,
+                    rowMap
+                  );
+                }}
+                leftOpenValue={75}
+                rightOpenValue={-75}
+              />
+            </CardItem>
+          </Card>
           <ProductQuantityModal
             ref="modal"
             onSlidingComplete={this._onModalSlidingComplete}

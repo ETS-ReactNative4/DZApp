@@ -31,6 +31,7 @@ export const EVENT = "Evenement: ";
 export const CASHIER = "Kassier: ";
 export const TOTAL = "TOTAAL: ";
 export const CHOOSE_CUSTOMER = "Kies Klant";
+export const DETAILS = "Details: ";
 
 //TopupScreen
 export const TOPUP = "Opladen";

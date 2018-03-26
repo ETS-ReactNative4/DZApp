@@ -15,7 +15,9 @@ import {
   Text,
   Form,
   Thumbnail,
-  Picker
+  Picker,
+  Card,
+  CardItem
 } from "native-base";
 const Item = Picker.Item;
 import { EventCard } from "../components/EventCard";
@@ -63,8 +65,11 @@ class EventScreen extends Component<Props, State> {
             <Title>{strings.PICK_EVENT}</Title>
           </Body>
         </Header>
-        <Content contentContainerStyle={styles.content}>
-          <H2 style={styles.centerText}>{strings.EVENT_HEADER}</H2>
+        {/* <Content contentContainerStyle={styles.content}> */}
+        <Content padder>
+          <H2 style={[styles.centerText, styles.primary]}>
+            {strings.EVENT_HEADER}
+          </H2>
           <Form style={styles.form}>
             <Picker
               iosHeader={strings.PICK_EVENT_IOS_HEADER}
@@ -88,17 +93,9 @@ class EventScreen extends Component<Props, State> {
           {this.state.eventId !== "" && (
             <EventCard
               event={this.props.events.find(e => this.state.eventId === e._id)}
+              onPress={this._onEventButtonPress}
             />
           )}
-          <Button
-            primary
-            block
-            onPress={() => this._onEventButtonPress()}
-            disabled={this.state.eventId === ""}
-            style={this.state.eventId !== "" ? styles.primaryBackground : null}
-          >
-            <Text>{strings.PICK_EVENT}</Text>
-          </Button>
         </Content>
       </Container>
     );
