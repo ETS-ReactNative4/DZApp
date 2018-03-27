@@ -24,7 +24,7 @@ import colors from "../styles/colors";
 import * as strings from "../constants/strings";
 
 type Props = {
-  onModalHide: () => void,
+  //onModalHide: () => void,
   onSlidingComplete: number => void
 };
 
@@ -54,7 +54,7 @@ export class ProductQuantityModal extends Component<Props, State> {
         animationOutTiming={200}
         onBackButtonPress={this._toggleModalVisible}
         onBackdropPress={this._toggleModalVisible}
-        onModalHide={this.props.onModalHide}
+        //onModalHide={this.props.onModalHide}
         style={styles.quantityModal}
       >
         {this._renderModalContent()}

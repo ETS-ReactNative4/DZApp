@@ -4,19 +4,24 @@ import * as strings from "../constants/strings";
 
 const initialState = {
   isSyncing: false,
+  isProcessed: false,
   topups: [],
-  cashInRegister: 0
+  cashInRegister: 0,
+  lastTopup: null
 };
 
 const TopupReducer = (state: {} = initialState, action: {}) => {
   switch (action.type) {
     case types.LOCAL_TOPUP:
-      let amount = action.data.amount;
+      let topup = action.data;
+      let amount = topup.amount;
       let newTopups = state.topups.slice(0);
-      newTopups.push(action.data);
+      newTopups.push(topup);
       return Object.assign({}, state, {
         topups: newTopups,
-        cashInRegister: state.cashInRegister + amount
+        cashInRegister: state.cashInRegister + amount,
+        lastTopup: topup,
+        isProcessed: true
       });
     case types.TOPUP_SYNC_STARTED: {
       return Object.assign({}, state, {
@@ -33,6 +38,11 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
     case types.TOPUP_SYNC_FAILED: {
       return Object.assign({}, state, {
         isSyncing: false
+      });
+    }
+    case types.RESET_TOPUP_PROCESSED: {
+      return Object.assign({}, state, {
+        isProcessed: false
       });
     }
     default:

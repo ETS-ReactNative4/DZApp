@@ -33,8 +33,9 @@ const CustomerReducer = (state: {} = initialState, action: {}) => {
     }
     case types.LOCAL_TOPUP: {
       //get info from action
-      let customerId = action.data.customerId;
-      let topupAmount = action.data.amount;
+      let topup = action.data;
+      let customerId = topup.customerId;
+      let topupAmount = topup.amount;
       //clone the customer and set new balance
       let customer = state.customers.find(c => c._id === customerId);
       let newCustomer = Object.assign({}, customer);

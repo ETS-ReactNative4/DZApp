@@ -11,6 +11,8 @@ import { fetchCustomers } from "./customerActions";
 import { Store } from "../store/store";
 import { sendMessage, sendError } from "./messageActions";
 
+import { toStringWithDecimals } from "../functions/number";
+
 /************ Synchronous Actions ***************/
 
 //API request for product list started
@@ -29,8 +31,12 @@ export const topupSyncComplete = () => {
   return { type: types.TOPUP_SYNC_COMPLETE };
 };
 
-export const topupSyncFailes = () => {
+export const topupSyncFailed = () => {
   return { type: types.TOPUP_SYNC_FAILED };
+};
+
+export const resetTopupProcessed = () => {
+  return { type: types.RESET_TOPUP_PROCESSED };
 };
 
 /************ Asynchronous Actions ***************/
@@ -75,5 +81,21 @@ export const syncTopups = () => {
         dispatch(sendError(string.SYNCED));
         dispatch(topupSyncFailed());
       });
+  };
+};
+
+const _getTopupInfo = topup => {
+  let customers = Store.getState().CustomerReducer.customers;
+  let customer = customer.find(c => c._id === topup.customerId);
+  let fullname = `${customer.firstName} ${customer.lastName}`;
+
+  let previousBalance = customer.creditBalance;
+  let amount = topup.amount;
+  let nextBalance = previousBalance + amount;
+  return {
+    fullname: fullname,
+    previousBalance: toStringWithDecimals(previousBalance, 2) + " €",
+    amount: toStringWithDecimals(amount, 2) + " €",
+    currentBalance: toStringWithDecimals(currentBalance, 2) + " €"
   };
 };

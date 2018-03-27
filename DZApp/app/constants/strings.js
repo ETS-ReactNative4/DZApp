@@ -44,13 +44,18 @@ export const INVALID_QR = "Ongeldige QR code!";
 export const CAM_PERMISSION_TITLE = "DZApp toelaten de camera te gebruiken?";
 export const CAM_PERMISSION_MESSAGE =
   "DZApp heeft de camera nodig om klanten te identificeren.";
-// export const DENY = "Nee, bedankt";
-// export const OPEN_SETTINGS = "Instellingen Openen";
 export const CUSTOMER = "Klant: ";
+export const CURRENT_BALANCE = "Huidig saldo: ";
 export const PICK_OTHER_CUSTOMER = "Kies andere klant";
 export const TOPUP_BALANCE = "Saldo opladen";
 export const TOPUP_ALERT_TITLE = "Saldo opladen?";
 export const INVALID_AMOUNT = "Gelieve een bedrag groter dan 0 € in te voeren!";
+
+//Topupmodal
+export const TOPUP_COMPLETE = "Saldo opgeladen";
+export const PREV_BALANCE = "Vorig saldo: ";
+
+
 
 //HistoryScreen
 export const HISTORY = "Historiek";

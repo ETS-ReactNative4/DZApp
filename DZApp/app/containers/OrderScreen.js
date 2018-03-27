@@ -113,7 +113,7 @@ class OrderScreen extends Component<Props, State> {
             <Button
               vertical
               onPress={() => {
-                this.props.navigation.navigate("TopupScreen");
+                this.props.navigation.navigate("TopupNavigator");
               }}
             >
               <Icon name="cash" />

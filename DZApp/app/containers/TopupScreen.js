@@ -38,6 +38,7 @@ import * as strings from "../constants/strings";
 
 //functions
 import { toStringWithDecimals } from "../functions/number";
+import { showInfoToast, showErrorToast } from "../functions/toast";
 
 //redux
 import { bindActionCreators } from "redux";
@@ -49,8 +50,6 @@ import {
   sendMessage,
   sendError
 } from "../actions/messageActions";
-
-//import Permissions from "react-native-permissions";
 
 type Props = {};
 
@@ -93,6 +92,11 @@ class TopupScreen extends Component<Props, State> {
             {this.state.customer !== null
               ? this._renderCustomerInfo()
               : this._renderCam()}
+            {/* button */}
+            {this.state.sliderValue > 0 &&
+              this.state.customer !== null &&
+              this._renderTopupButton()}
+            }
           </View>
         </Content>
         <Footer>
@@ -135,34 +139,13 @@ class TopupScreen extends Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.message !== null) {
-      Toast.show(this.props.message, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-        backGroundColor: colors.PRIMARY_COLOR,
-        shadowColor: colors.SECONDARY_COLOR,
-        textColor: colors.TITLE_COLOR,
-        onHidden: () => {
-          this.props.removeMessage();
-        }
-      });
-    } else if (this.props.error !== null) {
-      Toast.show(this.props.error, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-        backgroundColor: "red",
-        textColor: colors.TITLE_COLOR,
-        onHidden: () => {
-          this.props.removeError();
-        }
-      });
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+    if (this.props.isProcessed && this.props.navigation) {
+      this.props.navigation.navigate("TopupSuccessScreen");
     }
   }
   _renderAmountEntry = () => {
@@ -171,9 +154,9 @@ class TopupScreen extends Component<Props, State> {
         <Text style={[styles.primary, { marginBottom: 10 }]}>
           {strings.ENTER_TOPUP_AMT}
         </Text>
-        <View style={[styles.row, { marginBottom: 10 }]}>
-          <H3>{strings.AMOUNT}</H3>
-          <H3 style={styles.secondary}>
+        <View style={[styles.valueRow, { marginBottom: 10 }]}>
+          <H3 style={styles.label}>{strings.AMOUNT}</H3>
+          <H3 style={styles.value}>
             {toStringWithDecimals(this.state.sliderValue, 2)} €
           </H3>
         </View>
@@ -225,9 +208,15 @@ class TopupScreen extends Component<Props, State> {
         <Text style={[styles.primary, { marginBottom: 10 }]}>
           {strings.TOPUP_FOR_CUSTOMER}
         </Text>
-        <View style={[styles.row, { marginBottom: 20 }]}>
-          <H3>{strings.CUSTOMER}</H3>
-          <H3 style={styles.secondary}>{fullName}</H3>
+        <View style={[styles.valueRow, { marginBottom: 10 }]}>
+          <H3 style={styles.label}>{strings.CUSTOMER}</H3>
+          <H3 style={styles.value}>{fullName}</H3>
+        </View>
+        <View style={[styles.valueRow, { marginBottom: 20 }]}>
+          <H3 style={styles.label}>{strings.CURRENT_BALANCE}</H3>
+          <H3 style={styles.value}>
+            {toStringWithDecimals(this.state.customer.creditBalance, 2)} €
+          </H3>
         </View>
         <Button
           block
@@ -237,42 +226,19 @@ class TopupScreen extends Component<Props, State> {
         >
           <Text style={styles.primary}>{strings.PICK_OTHER_CUSTOMER}</Text>
         </Button>
-        <Button
-          block
-          style={styles.primaryBackground}
-          onPress={this._onTopupButtonPressed}
-        >
-          <Text style={styles.white}>{strings.TOPUP_BALANCE}</Text>
-        </Button>
       </View>
     );
   };
 
-  _renderMessageToast = () => {
+  _renderTopupButton = () => {
     return (
-      <Toast
-        visible={this.props.message !== null}
-        position={50}
-        shadow={true}
-        animation={true}
-        hideOnPress={true}
+      <Button
+        block
+        style={styles.primaryBackground}
+        onPress={this._onTopupButtonPressed}
       >
-        {this.props.message}
-      </Toast>
-    );
-  };
-
-  _renderErrorToast = () => {
-    return (
-      <Toast
-        visible={this.props.error !== null}
-        position={50}
-        shadow={true}
-        animation={true}
-        hideOnPress={true}
-      >
-        {this.props.error}
-      </Toast>
+        <Text style={styles.white}>{strings.TOPUP_BALANCE}</Text>
+      </Button>
     );
   };
 
@@ -324,6 +290,7 @@ const mapStateToProps = state => {
   return {
     customers: state.CustomerReducer.customers,
     cashierId: state.CashierReducer.cashierId,
+    isProcessed: state.TopupReducer.isProcessed,
     message: state.MessageReducer.message,
     error: state.MessageReducer.error
   };

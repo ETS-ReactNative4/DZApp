@@ -41,15 +41,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between"
+    flexDirection: "row"
+    //justifyContent: "space-between"
   },
-  // row: {
-  //   flexDirection: "row"
-  // },
-  // column: {
-  //   flexDirection: "column"
-  // },
+  valueRow: {
+    flexDirection: "row",
+    flex: 1
+  },
+  //typography
+  label: {
+    color: colors.LABEL_COLOR,
+    flex: 0.5
+  },
+  value: {
+    color: colors.SECONDARY_COLOR,
+    flex: 0.5
+  },
   //LoginScreen
   form: {
     marginBottom: 20
