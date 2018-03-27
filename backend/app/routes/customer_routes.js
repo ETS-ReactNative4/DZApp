@@ -29,7 +29,7 @@ module.exports = function(app, db) {
   app.get("/customers", (req, res) => {
     const values = db
       .collection("customers")
-      .find({},{hashedPass: 0})
+      .find({}, { hashedPass: 0 })
       .toArray((err, item) => {
         if (err) res.send({ error: err });
         else res.send(item);
@@ -67,8 +67,8 @@ module.exports = function(app, db) {
                 if (err) res.send({ error: "An error occurred" });
                 else
                   //return number of inserts - should be 1
-                  console.log (result);
-                  res.send(result.result);
+                  console.log(result);
+                res.send(result.result);
               });
             }
           });
@@ -96,25 +96,6 @@ module.exports = function(app, db) {
   //   });
   // });
 
-  //update customer: creditBalance
-  //balanceChange in requestBody determines which value will be added (positive or negative) to the current balance
-  app.put("/customers/updateBalance/:id", (req, res) => {
-    const id = req.params.id;
-    const details = { _id: new ObjectID(id) };
-    const balanceChange = Number(req.body.balanceChange);
-
-    db
-      .collection("customers")
-      .update(
-        details,
-        { $inc: { creditBalance: balanceChange } },
-        (err, result) => {
-          if (err) res.send({ error: err });
-          else res.send(result);
-        }
-      );
-  });
-
   //authenticate cashier
   app.post("/customers/login", (req, res) => {
     const userName = req.body.userName;
@@ -126,26 +107,32 @@ module.exports = function(app, db) {
       res.send({ error: "No username or password provided" });
       return;
     } else {
-      db.collection("customers").findOne(
-        {userName: new RegExp(userName,'i'),role: 'cashier'},
-        {hashedPass:1},(err,item) => {
-          if(err) res.send({error: "Fout bij opvragen kassierinfo"})
-          else{
-            if(!item) res.send({error: "Ongeldig wachtwoord of gebruikersnaam"})
-            else{
-              bcrypt.compare(password,item.hashedPass,(err,result) => {
-                if(err) res.send({error: "Fout bij vergelijken wachtwoord"});
-                else{
-                  if(result)
-                  res.send({id: item._id});
-                  else
-                  res.send({error: "Ongeldig wachtwoord of gebruikersnaam"})
-                }
-              })
+      db
+        .collection("customers")
+        .findOne(
+          { userName: new RegExp(userName, "i"), role: "cashier" },
+          { hashedPass: 1 },
+          (err, item) => {
+            if (err) res.send({ error: "Fout bij opvragen kassierinfo" });
+            else {
+              if (!item)
+                res.send({ error: "Ongeldig wachtwoord of gebruikersnaam" });
+              else {
+                bcrypt.compare(password, item.hashedPass, (err, result) => {
+                  if (err)
+                    res.send({ error: "Fout bij vergelijken wachtwoord" });
+                  else {
+                    if (result) res.send({ id: item._id });
+                    else
+                      res.send({
+                        error: "Ongeldig wachtwoord of gebruikersnaam"
+                      });
+                  }
+                });
+              }
             }
           }
-        }
-      );
+        );
     }
   });
 };

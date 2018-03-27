@@ -23,3 +23,15 @@ export const FETCH_PRODUCTS_FAILED = "FETCH_PRODUCTS_FAILED";
 
 //order actions
 export const SET_PRODUCT_QUANTITY = "SET_PRODUCT_QUANTITY";
+
+//topup actions
+export const LOCAL_TOPUP = "LOCAL_TOPUP";
+export const TOPUP_SYNC_STARTED = "TOPUP_SYNC_STARTED";
+export const TOPUP_SYNC_COMPLETE = "TOPUP_SYNC_COMPLETE";
+export const TOPUP_SYNC_FAILED = "TOPUP_SYNC_FAILED";
+
+//message actions
+export const SEND_MESSAGE = "SEND_MESSAGE";
+export const SEND_ERROR = "SEND_ERROR";
+export const REMOVE_MESSAGE = "REMOVE_MESSAGE";
+export const REMOVE_ERROR = "REMOVE_ERROR";

@@ -31,6 +31,22 @@ const CustomerReducer = (state: {} = initialState, action: {}) => {
         errorMessage: action.data
       });
     }
+    case types.LOCAL_TOPUP: {
+      //get info from action
+      let customerId = action.data.customerId;
+      let topupAmount = action.data.amount;
+      //clone the customer and set new balance
+      let customer = state.customers.find(c => c._id === customerId);
+      let newCustomer = Object.assign({}, customer);
+      newCustomer.creditBalance += topupAmount;
+      //clone the customers and set cloned customer
+      let newCustomers = state.customers.slice(0);
+      let index = newCustomers.indexOf(customer);
+      newCustomers[index] = newCustomer;
+      return Object.assign({}, state, {
+        customers: newCustomers
+      });
+    }
 
     default:
       return state;
