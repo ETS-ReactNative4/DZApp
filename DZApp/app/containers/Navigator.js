@@ -43,7 +43,7 @@ const Navigator = SwitchNavigator(
     }
   },
   {
-    initialRouteName: "MainFlow"
+    initialRouteName: "LoadingScreen"
   }
 );
 

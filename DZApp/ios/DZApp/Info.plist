@@ -40,6 +40,8 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
+	<key>NSCameraUsageDescription</key>
+	<string>DZApp heeft de camera nodig om klanten te identificeren. Toelating geven om de camera te gebruiken?</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

@@ -153,14 +153,14 @@ const styles = StyleSheet.create({
   },
   //TopupScreen:
   cameraHolder: {
-    height: 275,
+    height: 300,
     width: "100%",
     alignSelf: "center",
     flexDirection: "row"
   },
   camera: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "center",
     alignItems: "center"
   },
   //tabbar
