@@ -49,6 +49,7 @@ class EventScreen extends Component<Props, State> {
       eventId: ""
     };
     this._onEventButtonPress = this._onEventButtonPress.bind(this);
+    this._onPickerValueChange = this._onPickerValueChange.bind(this);
   }
 
   render() {
@@ -106,6 +107,49 @@ class EventScreen extends Component<Props, State> {
       this.props.navigation.navigate("LoginScreen");
     }
   }
+
+  _renderPicker = () => {
+    Platfrom.select({
+      android: () => {
+        return (
+          <Picker
+            selectedValue={this.state.eventId}
+            onValueChange={this._onPickerValueChange}
+          >
+            <Item label={strings.PICK_EVENT_IOS_HEADER} value="" key="" />
+            {this.props.events.map((event, key) => (
+              <Item
+                label={`${event.name} (${to_NL_be_DateString(
+                  new Date(event.fromDate)
+                )})`}
+                value={event._id}
+                key={event._id}
+              />
+            ))}
+          </Picker>
+        );
+      },
+      ios: () => {
+        return (
+          <Picker
+            placeholder={strings.PICK_EVENT_IOS_HEADER}
+            selectedValue={this.state.eventId}
+            onValueChange={this._onPickerValueChange}
+          >
+            {this.props.events.map((event, key) => (
+              <Item
+                label={`${event.name} (${to_NL_be_DateString(
+                  new Date(event.fromDate)
+                )})`}
+                value={event._id}
+                key={event._id}
+              />
+            ))}
+          </Picker>
+        );
+      }
+    });
+  };
 
   _onEventButtonPress() {
     this.props.setEvent(this.state.eventId, this.props.navigation);
