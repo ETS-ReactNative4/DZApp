@@ -16,11 +16,14 @@ import {
   H2,
   Button,
   Text,
-  Thumbnail
+  Thumbnail,
+  View,
+  Spinner
 } from "native-base";
 
 //styles
 import styles from "../styles/styles";
+import colors from "../styles/colors";
 
 //resources
 import * as strings from "../constants/strings";
@@ -29,6 +32,7 @@ import * as strings from "../constants/strings";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { login } from "../actions/cashierActions";
+import { showInfoToast, showErrorToast } from "../functions/toast";
 
 type Props = {};
 
@@ -60,51 +64,70 @@ class LoginScreen extends Component<Props, State> {
             <Title>{strings.LOGIN}</Title>
           </Body>
         </Header>
-        <Content padder>
-          <H2 style={[styles.centerText, styles.primary]}>
-            {strings.LOGIN_HEADER}
-          </H2>
-          <Form style={styles.form}>
-            <Item floatingLabel last>
-              <Label>{strings.USERNAME}</Label>
-              <Input
-                onChangeText={value => this.setState({ userName: value })}
-                value={this.state.userName}
-              />
-            </Item>
-            <Item floatingLabel last>
-              <Label>{strings.PASSWORD}</Label>
-              <Input
-                onChangeText={value => this.setState({ password: value })}
-                value={this.state.password}
-                secureTextEntry={true}
-              />
-            </Item>
-
-            <Text style={styles.error}>{this.props.errorMessage}</Text>
-          </Form>
-          {this.state.userName !== "" &&
-            this.state.password !== "" && (
-              <Button
-                primary
-                block
-                onPress={() => this._onLoginButtonPress()}
-                disabled={
-                  this.state.userName === "" || this.state.password === ""
-                }
-                style={
-                  this.state.userName !== "" && this.state.password !== ""
-                    ? styles.primaryBackground
-                    : null
-                }
-              >
-                <Text>{strings.LOGIN}</Text>
-              </Button>
-            )}
+        <Content padder contentContainerStyle={styles.content}>
+          {this.props.isAuthenticating
+            ? this._renderSpinner()
+            : this._renderForm()}
         </Content>
       </Container>
     );
   }
+
+  componentDidUpdate() {
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+  }
+
+  _renderForm = () => {
+    return (
+      <View>
+        <H2 style={styles.title}>{strings.LOGIN_HEADER}</H2>
+        <Form>
+          <Item floatingLabel last>
+            <Label>{strings.USERNAME}</Label>
+            <Input
+              onChangeText={value => this.setState({ userName: value })}
+              value={this.state.userName}
+            />
+          </Item>
+          <Item floatingLabel last>
+            <Label>{strings.PASSWORD}</Label>
+            <Input
+              onChangeText={value => this.setState({ password: value })}
+              value={this.state.password}
+              secureTextEntry={true}
+            />
+          </Item>
+        </Form>
+        <Button
+          onPress={() => this._onLoginButtonPress()}
+          disabled={this.state.userName === "" || this.state.password === ""}
+          style={
+            this.state.userName !== "" && this.state.password !== ""
+              ? styles.primaryActionButton
+              : styles.primaryActionButtonDisabled
+          }
+        >
+          <Text style={styles.primaryButtonText}>{strings.LOGIN}</Text>
+        </Button>
+      </View>
+    );
+  };
+
+  _renderSpinner = () => {
+    return (
+      <Spinner
+        color={colors.SECONDARY_COLOR}
+        style={styles.center}
+        large
+        animating={this.props.isAuthenticating}
+      />
+    );
+  };
 
   _onLoginButtonPress = () => {
     let credentials = {
@@ -121,7 +144,12 @@ class LoginScreen extends Component<Props, State> {
 
 const mapStateToProps = state => {
   return {
-    errorMessage: state.CashierReducer.errorMessage
+    //errorMessage: state.CashierReducer.errorMessage
+    message: state.MessageReducer.message,
+    error: state.MessageReducer.error,
+    isAuthenticating: state.CashierReducer.isAuthenticating,
+    message: state.MessageReducer.message,
+    error: state.MessageReducer.error,
   };
 };
 

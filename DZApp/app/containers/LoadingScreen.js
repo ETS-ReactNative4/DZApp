@@ -64,8 +64,8 @@ class LoadingScreen extends Component<Props, State> {
       setTimeout(() => {
         this.props.navigation.navigate(
           !this.props.cashierId
-            ? "LoginScreen"
-            : !this.props.eventId ? "EventScreen" : "OrderScreen"
+            ? "AuthNavigator"
+            : !this.props.eventId ? "EventScreen" : "MainFlowNavigator"
         );
       }, 2000);
   }

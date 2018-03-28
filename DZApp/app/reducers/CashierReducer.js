@@ -3,8 +3,7 @@ import * as types from "../actions/types";
 
 const initialState = {
   isAuthenticating: false,
-  cashierId: null,
-  errorMessage: null
+  cashierId: null
 };
 
 const CashierReducer = (state: {} = initialState, action: {}) => {
@@ -12,20 +11,17 @@ const CashierReducer = (state: {} = initialState, action: {}) => {
     case types.REQUEST_LOGIN:
       return Object.assign({}, state, {
         isAuthenticating: true,
-        cashierId: null,
-        errorMessage: null
+        cashierId: null
       });
     case types.LOGIN_SUCCESS:
       return Object.assign({}, state, {
         isAuthenticating: false,
-        cashierId: action.data,
-        errorMessage: null
+        cashierId: action.data
       });
     case types.LOGIN_ERROR:
       return Object.assign({}, state, {
         isAuthenticating: false,
-        cashierId: null,
-        errorMessage: action.data
+        cashierId: null
       });
     default:
       return state;

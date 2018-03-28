@@ -19,11 +19,14 @@ import {
   Text,
   List,
   ListItem,
+  H2,
   H3,
   Card,
-  CardItem
+  CardItem,
+  View
 } from "native-base";
 import { OverviewSummaryCard } from "../components/OverviewSummaryCard";
+import { Grid, Row, Col } from "react-native-easy-grid";
 
 //styles
 import styles from "../styles/styles";
@@ -38,21 +41,29 @@ import { setProductQuantity } from "../actions/orderActions";
 
 //functions
 import { toStringWithDecimals } from "../functions/number";
+import { showInfoToast, showErrorToast } from "../functions/toast";
 
 type Props = {};
 
-type State = {};
+type State = {
+  showList: boolean
+};
 
 class OverviewScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.state = {};
+    this.state = {
+      showList: false
+    };
 
     this._onTrashIconPress = this._onTrashIconPress.bind(this);
     this._onModalSlidingComplete = this._onModalSlidingComplete.bind(this);
     this._toggleModalVisible = this._toggleModalVisible.bind(this);
     this._onEditIconPress = this._onEditIconPress.bind(this);
+
+    this._checkLoginState();
+    this._checkEventState();
   }
 
   render() {
@@ -70,39 +81,9 @@ class OverviewScreen extends Component<Props, State> {
           </Body>
         </Header>
         <Content padder>
-          <OverviewSummaryCard
-            cashierName={`${this.props.cashier.firstName} ${
-              this.props.cashier.lastName
-            }`}
-            eventName={this.props.event.name}
-            totalAmountString={this.props.totalAmountString}
-          />
-          <Card>
-            <CardItem header>
-              <H3 style={styles.primary}>{strings.DETAILS}</H3>
-            </CardItem>
-            <CardItem>
-              <List
-                dataSource={this.ds.cloneWithRows(this.props.orderlines)}
-                renderRow={orderline => {
-                  return this._renderListViewRow(orderline);
-                }}
-                renderLeftHiddenRow={orderline => {
-                  return this._renderLeftHiddenRow(orderline);
-                }}
-                renderRightHiddenRow={(orderline, secId, rowId, rowMap) => {
-                  return this._renderRightHiddenRow(
-                    orderline,
-                    secId,
-                    rowId,
-                    rowMap
-                  );
-                }}
-                leftOpenValue={75}
-                rightOpenValue={-75}
-              />
-            </CardItem>
-          </Card>
+          {this._renderSummary()}
+          {this._renderListButton()}
+          {this.state.showList && this._renderList()}
           <ProductQuantityModal
             ref="modal"
             onSlidingComplete={this._onModalSlidingComplete}
@@ -144,23 +125,41 @@ class OverviewScreen extends Component<Props, State> {
     );
   }
 
-  //navigate away from OverviewScreen when no cashierId or eventId is set
-  componentDidUpdate() {
-    if (!this.props.cashierId) this.props.navigation.navigate("LoginScreen");
-    else if (!this.props.eventId) this.props.navigation.navigate("EventScreen");
-  }
+  _renderSummary = () => {
+    let amount = this.props.totalAmountString;
+    let cashierfullname =
+      this.props.cashier.firstName + " " + this.props.cashier.lastName;
+    let eventName = this.props.event.name;
 
-  _toggleModalVisible = (): void => {
-    let modal = this.refs.modal;
-    modal.setState({
-      isVisible: !modal.state.isVisible
-    });
-  };
-
-  _onModalSlidingComplete = (value: number) => {
-    let modal = this.refs.modal;
-    let product = modal.state.product;
-    this.props.setProductQuantity(product._id, value);
+    return (
+      <View>
+        <H2 style={styles.title}>{strings.OVERVIEW}</H2>
+        <Grid>
+          <Col style={{ width: 125, marginRight: 10 }}>
+            <Row>
+              <Text style={styles.label}>{strings.TOTAL}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.EVENT}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.CASHIER}</Text>
+            </Row>
+          </Col>
+          <Col>
+            <Row>
+              <Text style={styles.value}>{amount}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.value}>{cashierfullname}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.value}>{eventName}</Text>
+            </Row>
+          </Col>
+        </Grid>
+      </View>
+    );
   };
 
   _renderListViewRow = (orderline: {}): {} => {
@@ -206,6 +205,82 @@ class OverviewScreen extends Component<Props, State> {
         <Icon name="trash" style={styles.secondary} />
       </Button>
     );
+  };
+
+  _renderListButton = () => {
+    let text = strings.LIST;
+    let icon = this.state.showList ? "arrow-up" : "arrow-down";
+
+    return (
+      <View style={{ marginTop: 20 }}>
+        <Grid>
+          <Row>
+            <H2 style={[styles.title, { marginRight: 5 }]}>{text}</H2>
+            <Button
+              rounded
+              small
+              transparent
+              onPress={() => this._toggleListVisible()}
+            >
+              <Icon name={icon} style={styles.secondary} />
+            </Button>
+          </Row>
+        </Grid>
+      </View>
+    );
+  };
+
+  _renderList = () => {
+    return (
+      <List
+        dataSource={this.ds.cloneWithRows(this.props.orderlines)}
+        renderRow={orderline => {
+          return this._renderListViewRow(orderline);
+        }}
+        renderLeftHiddenRow={orderline => {
+          return this._renderLeftHiddenRow(orderline);
+        }}
+        renderRightHiddenRow={(orderline, secId, rowId, rowMap) => {
+          return this._renderRightHiddenRow(orderline, secId, rowId, rowMap);
+        }}
+        leftOpenValue={75}
+        rightOpenValue={-75}
+      />
+    );
+  };
+
+  componentDidUpdate() {
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+  }
+
+  _checkLoginState = () => {
+    if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
+  };
+
+  _checkEventState = () => {
+    if (!this.props.eventId) this.props.navigation.navigate("EventScreen");
+  };
+
+  _toggleModalVisible = (): void => {
+    let modal = this.refs.modal;
+    modal.setState({
+      isVisible: !modal.state.isVisible
+    });
+  };
+
+  _toggleListVisible = (): void => {
+    this.setState({ showList: !this.state.showList });
+  };
+
+  _onModalSlidingComplete = (value: number) => {
+    let modal = this.refs.modal;
+    let product = modal.state.product;
+    this.props.setProductQuantity(product._id, value);
   };
 
   _onEditIconPress = (orderline: {}): {} => {
@@ -256,7 +331,9 @@ const mapStateToProps = state => {
     ),
     event: state.EventReducer.events.find(
       e => e._id === state.EventReducer.eventId
-    )
+    ),
+    message: state.MessageReducer.message,
+    error: state.MessageReducer.error
   };
 };
 

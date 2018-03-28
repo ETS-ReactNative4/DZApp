@@ -32,6 +32,9 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setProductQuantity } from "../actions/orderActions";
 
+//functions
+import { showInfoToast, showErrorToast } from "../functions/toast";
+
 type Props = {};
 
 type State = {};
@@ -48,6 +51,9 @@ class OrderScreen extends Component<Props, State> {
       this
     );
     this._onModalSlidingComplete = this._onModalSlidingComplete.bind(this);
+
+    this._checkLoginState();
+    this._checkEventState();
   }
 
   render() {
@@ -131,9 +137,21 @@ class OrderScreen extends Component<Props, State> {
 
   //navigate away from OrderScreen when no cashierId or eventId is set
   componentDidUpdate() {
-    if (!this.props.cashierId) this.props.navigation.navigate("LoginScreen");
-    else if (!this.props.eventId) this.props.navigation.navigate("EventScreen");
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
   }
+
+  _checkLoginState = () => {
+    if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
+  };
+
+  _checkEventState = () => {
+    if (!this.props.eventId) this.props.navigation.navigate("EventScreen");
+  };
 
   //increment the product's quantity in orderlines by 1
   //if stock allows it
@@ -184,7 +202,9 @@ const mapStateToProps = state => {
     products: state.ProductReducer.products,
     orderlines: state.OrderReducer.orderlines,
     cashierId: state.CashierReducer.cashierId,
-    eventId: state.EventReducer.eventId
+    eventId: state.EventReducer.eventId,
+    message: state.MessageReducer.message,
+    error: state.MessageReducer.error,
   };
 };
 

@@ -5,10 +5,63 @@ import { StyleSheet } from "react-native";
 import colors from "./colors";
 
 const styles = StyleSheet.create({
+  /*** */
+  title: {
+    color: colors.PRIMARY_COLOR,
+    marginBottom: 20
+  },
+  label: {
+    color: colors.LABEL_COLOR
+  },
+  value: {
+    color: colors.SECONDARY_COLOR
+  },
+  primaryActionButton: {
+    backgroundColor: colors.PRIMARY_COLOR,
+    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: "center",
+    width: 250,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  primaryActionButtonDisabled: {
+    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: "center",
+    width: 250,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  borderedButton: {
+    marginBottom: 20,
+    marginTop: 20,
+    alignSelf: "center",
+    width: 250,
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: colors.PRIMARY_COLOR
+  },
+  titleButton: {
+    
+  },
+
+  primaryButtonText: {
+    textAlign: "center",
+    color: colors.TITLE_COLOR
+  },
+  borderedButtonText: {
+    textAlign: "center",
+    color: colors.PRIMARY_COLOR
+  },
+  pickerText: {
+    fontWeight: "bold",
+    color: colors.PRIMARY_COLOR
+  },
+  /*** */
   content: {
     flex: 1,
-    justifyContent: "center",
-    padding: 20
+    justifyContent: "center"
   },
   centerText: {
     textAlign: "center"
@@ -48,19 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1
   },
-  //typography
-  label: {
-    color: colors.LABEL_COLOR,
-    flex: 0.5
-  },
-  value: {
-    color: colors.SECONDARY_COLOR,
-    flex: 0.5
-  },
-  //LoginScreen
-  form: {
-    marginBottom: 20
-  },
+  //LoginScreen,
   error: {
     color: "red",
     margin: 10

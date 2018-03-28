@@ -25,6 +25,18 @@ const TopupNavigator = StackNavigator(
   }
 );
 
+const AuthNavigator = StackNavigator(
+  {
+    LoginScreen: {
+      screen: LoginScreen
+    }
+  },
+  {
+    initialRouteName: "LoginScreen",
+    headerMode: "none"
+  }
+);
+
 const MainFlowNavigator = SwitchNavigator(
   {
     OrderScreen: {
@@ -48,18 +60,18 @@ const Navigator = SwitchNavigator(
     LoadingScreen: {
       screen: LoadingScreen
     },
-    LoginScreen: {
-      screen: LoginScreen
+    AuthNavigator: {
+      screen: AuthNavigator
     },
     EventScreen: {
       screen: EventScreen
     },
-    MainFlow: {
+    MainFlowNavigator: {
       screen: MainFlowNavigator
     }
   },
   {
-    initialRouteName: "LoadingScreen"
+    initialRouteName: "MainFlowNavigator"
   }
 );
 

@@ -68,7 +68,7 @@ const orderPersistConfig = {
 const topupPersistConfig = {
   key: "TopupReducer",
   storage: AsyncStorage,
-  whitelist: ["topups", "cashInRegister"],
+  whitelist: ["topups", "cashInRegister", "lastTopup"],
   stateReconciler: autoMergeLevel2
 };
 

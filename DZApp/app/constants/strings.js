@@ -1,6 +1,7 @@
 //general
 export const OK = "OK";
 export const CANCEL = "Annuleer";
+export const BACK = "Terug";
 
 //LoginScreen
 export const LOGIN_HEADER = "Gelieve aan te melden";
@@ -30,15 +31,18 @@ export const ENTER_QUANTITY = "Voer hoeveelheid in voor:";
 export const OVERVIEW = "Overzicht";
 export const EVENT = "Evenement: ";
 export const CASHIER = "Kassier: ";
-export const TOTAL = "TOTAAL: ";
+export const TOTAL = "Totaal: ";
 export const CHOOSE_CUSTOMER = "Kies Klant";
 export const DETAILS = "Details: ";
+// export const SHOW_LIST = "Toon lijst";
+// export const HIDE_LIST = "Verberg lijst";
+export const LIST = "Lijst"
 
 //TopupScreen
 export const TOPUP = "Opladen";
-export const ENTER_TOPUP_AMT = "Hoeveel euro wenst u op te laden?";
-export const SCAN_CUSTOMER_CARD = "Scan QR code om een klant te kiezen:";
-export const TOPUP_FOR_CUSTOMER = "Saldo opladen voor:";
+export const ENTER_TOPUP_AMT = "Kies bedrag:";
+export const SCAN_CUSTOMER_CARD = "Scan QR code:";
+export const TOPUP_FOR_CUSTOMER = "Opladen voor:";
 export const AMOUNT = "Bedrag: ";
 export const INVALID_QR = "Ongeldige QR code!";
 export const CAM_PERMISSION_TITLE = "DZApp toelaten de camera te gebruiken?";
@@ -49,13 +53,12 @@ export const CURRENT_BALANCE = "Huidig saldo: ";
 export const PICK_OTHER_CUSTOMER = "Kies andere klant";
 export const TOPUP_BALANCE = "Saldo opladen";
 export const TOPUP_ALERT_TITLE = "Saldo opladen?";
+export const TOPUP_FOR = " opladen voor ";
 export const INVALID_AMOUNT = "Gelieve een bedrag groter dan 0 € in te voeren!";
 
-//Topupmodal
+//TopSuccessScreen
 export const TOPUP_COMPLETE = "Saldo opgeladen";
 export const PREV_BALANCE = "Vorig saldo: ";
-
-
 
 //HistoryScreen
 export const HISTORY = "Historiek";
@@ -70,3 +73,4 @@ export const UNABLE_TO_SYNC = "Kon niet synchroniseren met de server";
 
 //Success messages
 export const SYNCED = "Gesynchroniseerd met server";
+export const AUTHENTICATED = "Succesvol aangemeld";

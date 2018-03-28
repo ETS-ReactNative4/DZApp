@@ -20,7 +20,7 @@ import {
   FooterTab,
   Icon,
   Title,
-  H3,
+  H2,
   Form,
   Item,
   Label,
@@ -28,6 +28,7 @@ import {
 } from "native-base";
 import Camera from "react-native-camera";
 import Toast from "react-native-root-toast";
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 //styles
 import styles from "../styles/styles";
@@ -44,12 +45,7 @@ import { showInfoToast, showErrorToast } from "../functions/toast";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { topupBalance } from "../actions/topupActions";
-import {
-  removeMessage,
-  removeError,
-  sendMessage,
-  sendError
-} from "../actions/messageActions";
+import { sendError } from "../actions/messageActions";
 
 type Props = {};
 
@@ -68,6 +64,7 @@ class TopupScreen extends Component<Props, State> {
     };
     this._onBarCodeRead = this._onBarCodeRead.bind(this);
     this._onTopupButtonPressed = this._onTopupButtonPressed.bind(this);
+    this._checkLoginState();
   }
 
   render() {
@@ -86,17 +83,13 @@ class TopupScreen extends Component<Props, State> {
         </Header>
         <Content padder>
           <View style={styles.content}>
-            {/* amount */}
             {this._renderAmountEntry()}
-            {/* member */}
             {this.state.customer !== null
               ? this._renderCustomerInfo()
               : this._renderCam()}
-            {/* button */}
             {this.state.sliderValue > 0 &&
               this.state.customer !== null &&
               this._renderTopupButton()}
-            }
           </View>
         </Content>
         <Footer>
@@ -137,6 +130,20 @@ class TopupScreen extends Component<Props, State> {
     );
   }
 
+  // shouldComponentUpdate() {
+  //   if (this.props.isProcessed && this.props.navigation) {
+  //     this.props.navigation.navigate("TopupSuccessScreen");
+  //   }
+  //   return true;
+  // }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isProcessed && nextProps.navigation) {
+      this.setState({ customer: null, sliderValue: 0 });
+      nextProps.navigation.navigate("TopupSuccessScreen");
+    }
+  }
+
   componentDidUpdate() {
     if (this.props.message !== null) {
       showInfoToast(this.props.message);
@@ -144,21 +151,29 @@ class TopupScreen extends Component<Props, State> {
     if (this.props.error !== null) {
       showErrorToast(this.props.error);
     }
-    if (this.props.isProcessed && this.props.navigation) {
-      this.props.navigation.navigate("TopupSuccessScreen");
-    }
+    // if (this.props.isProcessed && this.props.navigation) {
+    //   this.props.navigation.navigate("TopupSuccessScreen");
+    // }
   }
   _renderAmountEntry = () => {
+    let amount = toStringWithDecimals(this.state.sliderValue, 2) + " €";
+
     return (
       <View>
-        <Text style={[styles.primary, { marginBottom: 10 }]}>
-          {strings.ENTER_TOPUP_AMT}
-        </Text>
-        <View style={[styles.valueRow, { marginBottom: 10 }]}>
-          <H3 style={styles.label}>{strings.AMOUNT}</H3>
-          <H3 style={styles.value}>
-            {toStringWithDecimals(this.state.sliderValue, 2)} €
-          </H3>
+        <H2 style={styles.title}>{strings.ENTER_TOPUP_AMT}</H2>
+        <View>
+          <Grid>
+            <Col style={{ width: 125, marginRight: 10 }}>
+              <Row>
+                <Text style={styles.label}>{strings.AMOUNT}</Text>
+              </Row>
+            </Col>
+            <Col>
+              <Row>
+                <Text style={styles.value}>{amount}</Text>
+              </Row>
+            </Col>
+          </Grid>
         </View>
         <Slider
           value={this.state.sliderValue}
@@ -179,9 +194,7 @@ class TopupScreen extends Component<Props, State> {
   _renderCam = () => {
     return (
       <View>
-        <Text style={[styles.primary, { marginBottom: 10 }]}>
-          {strings.SCAN_CUSTOMER_CARD}
-        </Text>
+        <H2 style={styles.title}>{strings.SCAN_CUSTOMER_CARD}</H2>
         <View style={styles.cameraHolder}>
           <Camera
             style={styles.camera}
@@ -202,29 +215,40 @@ class TopupScreen extends Component<Props, State> {
   _renderCustomerInfo = () => {
     let fullName =
       this.state.customer.firstName + " " + this.state.customer.lastName;
+    let currentBalance =
+      toStringWithDecimals(this.state.customer.creditBalance, 2) + " €";
 
     return (
       <View>
-        <Text style={[styles.primary, { marginBottom: 10 }]}>
-          {strings.TOPUP_FOR_CUSTOMER}
-        </Text>
-        <View style={[styles.valueRow, { marginBottom: 10 }]}>
-          <H3 style={styles.label}>{strings.CUSTOMER}</H3>
-          <H3 style={styles.value}>{fullName}</H3>
-        </View>
-        <View style={[styles.valueRow, { marginBottom: 20 }]}>
-          <H3 style={styles.label}>{strings.CURRENT_BALANCE}</H3>
-          <H3 style={styles.value}>
-            {toStringWithDecimals(this.state.customer.creditBalance, 2)} €
-          </H3>
+        <H2 style={styles.title}>{strings.TOPUP_FOR_CUSTOMER}</H2>
+        <View>
+          <Grid>
+            <Col style={{ width: 125, marginRight: 10 }}>
+              <Row>
+                <Text style={styles.label}>{strings.CUSTOMER}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
+              </Row>
+            </Col>
+            <Col>
+              <Row>
+                <Text style={styles.value}>{fullName}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.value}>{currentBalance}</Text>
+              </Row>
+            </Col>
+          </Grid>
         </View>
         <Button
-          block
           bordered
-          style={[{ marginBottom: 50, borderColor: colors.PRIMARY_COLOR }]}
+          style={styles.borderedButton}
           onPress={() => this.setState({ customer: null })}
         >
-          <Text style={styles.primary}>{strings.PICK_OTHER_CUSTOMER}</Text>
+          <Text style={styles.borderedButtonText}>
+            {strings.PICK_OTHER_CUSTOMER}
+          </Text>
         </Button>
       </View>
     );
@@ -232,14 +256,19 @@ class TopupScreen extends Component<Props, State> {
 
   _renderTopupButton = () => {
     return (
-      <Button
-        block
-        style={styles.primaryBackground}
-        onPress={this._onTopupButtonPressed}
-      >
-        <Text style={styles.white}>{strings.TOPUP_BALANCE}</Text>
-      </Button>
+      <View>
+        <Button
+          style={styles.primaryActionButton}
+          onPress={this._onTopupButtonPressed}
+        >
+          <Text style={styles.primaryButtonText}>{strings.TOPUP_BALANCE}</Text>
+        </Button>
+      </View>
     );
+  };
+
+  _checkLoginState = () => {
+    if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
   };
 
   _onSliderValueChange = value => this.setState({ sliderValue: value });
@@ -259,30 +288,29 @@ class TopupScreen extends Component<Props, State> {
 
   _onTopupButtonPressed = () => {
     let customer = this.state.customer;
+    let fullName = customer.firstName + " " + customer.lastName;
+    let amountString = toStringWithDecimals(this.state.sliderValue) + " €";
 
     if (this.state.sliderValue > 0) {
       Alert.alert(
         strings.TOPUP_ALERT_TITLE,
-        `${customer.firstName} ${customer.lastName} - ${toStringWithDecimals(
-          this.state.sliderValue
-        )} €`,
+        amountString + strings.TOPUP_FOR + fullName + "?",
         [
           { text: strings.CANCEL, onPress: () => {}, style: "cancel" },
-          {
-            text: strings.OK,
-            onPress: () => {
-              this.props.topupBalance({
-                cashierId: this.props.cashierId,
-                customerId: this.state.customer._id,
-                timestamp: new Date().toJSON(),
-                amount: this.state.sliderValue
-              });
-              this.setState({ customer: null, sliderValue: 0 });
-            }
-          }
+          { text: strings.OK, onPress: () => this._onAlertConfirmation() }
         ]
       );
     } else this.props.sendError(strings.INVALID_AMOUNT);
+  };
+
+  _onAlertConfirmation = () => {
+    this.props.topupBalance({
+      cashierId: this.props.cashierId,
+      customerId: this.state.customer._id,
+      timestamp: new Date().toJSON(),
+      amount: this.state.sliderValue
+    });
+    //this.setState({ customer: null, sliderValue: 0 });
   };
 }
 
@@ -292,15 +320,13 @@ const mapStateToProps = state => {
     cashierId: state.CashierReducer.cashierId,
     isProcessed: state.TopupReducer.isProcessed,
     message: state.MessageReducer.message,
-    error: state.MessageReducer.error
+    error: state.MessageReducer.error,
+    cashierId: state.CashierReducer.cashierId
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    { topupBalance, removeMessage, removeError, sendMessage, sendError },
-    dispatch
-  );
+  return bindActionCreators({ topupBalance, sendError }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopupScreen);

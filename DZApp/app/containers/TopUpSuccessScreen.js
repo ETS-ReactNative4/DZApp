@@ -6,24 +6,21 @@ import React, { Component } from "react";
 //components
 import {
   Container,
-  Text,
-  View,
-  Button,
   Header,
-  Content,
-  Body,
   Left,
   Thumbnail,
+  Body,
+  Title,
+  Content,
+  View,
   Footer,
   FooterTab,
+  Button,
   Icon,
-  Title,
-  H3,
-  Form,
-  Item,
-  Label,
-  Input
+  Text,
+  H2
 } from "native-base";
+import { Col, Row, Grid } from "react-native-easy-grid";
 import Toast from "react-native-root-toast";
 
 //styles
@@ -50,6 +47,8 @@ class TopupSuccessScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {};
+    this._onPress = this._onPress.bind(this);
+    this._checkLoginState();
   }
 
   render() {
@@ -64,17 +63,30 @@ class TopupSuccessScreen extends Component<Props, State> {
       <Container>
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail
-              square
-              source={require("../assets/images/site_dz.jpg")}
-            />
+            <Grid>
+              <Row>
+                <Button
+                  transparent
+                  onPress={() => this.props.navigation.goBack()}
+                >
+                  <Icon name="arrow-back" />
+                </Button>
+                <Thumbnail
+                  square
+                  source={require("../assets/images/site_dz.jpg")}
+                />
+              </Row>
+            </Grid>
           </Left>
           <Body>
             <Title>{strings.TOPUP}</Title>
           </Body>
         </Header>
         <Content padder>
-          <View style={styles.content}>{this._renderTopupInfo()}</View>
+          <View style={styles.content}>
+            {this._renderTopupInfo()}
+            {this._renderButton()}
+          </View>
         </Content>
         <Footer>
           <FooterTab style={styles.primaryBackground}>
@@ -118,6 +130,10 @@ class TopupSuccessScreen extends Component<Props, State> {
     this.props.resetTopupProcessed();
   }
 
+  _checkLoginState = () => {
+    if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
+  };
+
   componentDidUpdate() {
     if (this.props.message !== null) {
       showInfoToast(this.props.message);
@@ -130,24 +146,57 @@ class TopupSuccessScreen extends Component<Props, State> {
   _renderTopupInfo = () => {
     return (
       <View>
-        <View style={[styles.valueRow, { marginBottom: 10 }]}>
-          <H3 style={styles.label}>{strings.CUSTOMER}</H3>
-          <H3 style={styles.value}>{this.props.fullname}</H3>
-        </View>
-        <View style={[styles.valueRow, { marginBottom: 10 }]}>
-          <H3 style={styles.label}>{strings.PREV_BALANCE}</H3>
-          <H3 style={styles.value}>{this.props.previousBalance}</H3>
-        </View>
-        <View style={[styles.valueRow, { marginBottom: 10 }]}>
-          <H3 style={styles.label}>{strings.AMOUNT}</H3>
-          <H3 style={styles.value}>{this.props.amount}</H3>
-        </View>
-        <View style={[styles.valueRow, { marginBottom: 10 }]}>
-          <H3 style={styles.label}>{strings.CURRENT_BALANCE}</H3>
-          <H3 style={styles.value}>{this.props.currentBalance}</H3>
-        </View>
+        <H2 style={styles.title}>{strings.TOPUP_COMPLETE}</H2>
+        <Grid>
+          <Col style={{ width: 125, marginRight: 10 }}>
+            <Row>
+              <Text style={styles.label}>{strings.CUSTOMER}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.PREV_BALANCE}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.AMOUNT}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
+            </Row>
+          </Col>
+          <Col>
+            <Row>
+              <Text style={styles.value}>{this.props.fullname}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.value}>{this.props.previousBalance}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.value}>{this.props.amount}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.value}>{this.props.currentBalance}</Text>
+            </Row>
+          </Col>
+        </Grid>
       </View>
     );
+  };
+
+  _renderButton = () => {
+    return (
+      <View>
+        <Button
+          block
+          style={styles.primaryActionButton}
+          onPress={this._onPress}
+        >
+          <Text style={styles.white}>{strings.BACK}</Text>
+        </Button>
+      </View>
+    );
+  };
+
+  _onPress = () => {
+    this.props.navigation.goBack();
   };
 }
 
@@ -160,18 +209,19 @@ const mapStateToProps = state => {
   let currentBalance = customer.creditBalance;
   let previousBalance = currentBalance - amount;
 
-  let fullName = `${customer.firstName} ${customer.lastName}`;
+  let fullname = `${customer.firstName} ${customer.lastName}`;
   let previousBalanceString = toStringWithDecimals(previousBalance, 2) + " €";
   let amountString = toStringWithDecimals(amount, 2) + " €";
   let currentBalanceString = toStringWithDecimals(currentBalance, 2) + " €";
 
   return {
-    fullname: state.TopupReducer.lastTopup.fullname,
+    fullname: fullname,
     previousBalance: previousBalanceString,
     currentBalance: currentBalanceString,
     amount: amountString,
     message: state.MessageReducer.message,
-    error: state.MessageReducer.error
+    error: state.MessageReducer.error,
+    cashierId: state.CashierReducer.cashierId
   };
 };
 

@@ -1,7 +1,9 @@
 //@flow
 import * as types from "./types";
+import * as strings from "../constants/strings";
 import { URL } from "../constants/serversettings";
 import { fetchWrapper } from "../functions/fetch";
+import { sendError, sendMessage } from "./messageActions";
 
 /************ Synchronous Actions ***************/
 export const requestLogin = () => {
@@ -44,12 +46,18 @@ export const login = (userCredentials: {}, navigation: {}) => {
       .then(response => response.json())
       .then(json => {
         if (json.error) {
+          dispatch(sendError(json.error));
           dispatch(loginError(json.error));
         } else {
           navigation.navigate("OrderScreen");
+          dispatch(sendMessage(strings.AUTHENTICATED));
           dispatch(loginSuccess(json.id));
+          navigation.navigate("MainFlowNavigator");
         }
       })
-      .catch(error => dispatch(loginError(error.message)));
+      .catch(error => {
+        dispatch(sendError(error.message));
+        dispatch(loginError(error.message));
+      });
   };
 };
