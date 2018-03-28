@@ -14,24 +14,24 @@ const styles = StyleSheet.create({
     color: colors.LABEL_COLOR
   },
   value: {
-    color: colors.SECONDARY_COLOR
+    //color: colors.SECONDARY_COLOR
   },
   primaryActionButton: {
-    backgroundColor: colors.PRIMARY_COLOR,
-    marginBottom: 20,
-    marginTop: 20,
-    alignSelf: "center",
-    width: 250,
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: colors.PRIMARY_COLOR
+    //marginBottom: 20,
+    //marginTop: 20,
+    //alignSelf: "center",
+    //width: 250,
+    //alignItems: "center",
+    //justifyContent: "center"
   },
   primaryActionButtonDisabled: {
-    marginBottom: 20,
-    marginTop: 20,
-    alignSelf: "center",
-    width: 250,
-    alignItems: "center",
-    justifyContent: "center"
+    // marginBottom: 20,
+    // marginTop: 20,
+    // alignSelf: "center",
+    // width: 250,
+    // alignItems: "center",
+    // justifyContent: "center"
   },
   borderedButton: {
     marginBottom: 20,
@@ -42,8 +42,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderColor: colors.PRIMARY_COLOR
   },
-  titleButton: {
-    
+  smallButtonText: {
+    fontSize: 12,
+    color: colors.SECONDARY_COLOR
   },
 
   primaryButtonText: {
@@ -58,10 +59,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.PRIMARY_COLOR
   },
-  /*** */
+  /***POSITION */
   content: {
     flex: 1,
     justifyContent: "center"
+  },
+  justifyCenter: {
+    justifyContent: "center"
+  },
+  alignCenter: {
+    alignItems: "center"
   },
   centerText: {
     textAlign: "center"
@@ -72,9 +79,13 @@ const styles = StyleSheet.create({
   center: {
     alignSelf: "center"
   },
-  end: {
+  right: {
     alignSelf: "flex-end"
   },
+  left: {
+    alignSelf: "flex-start"
+  },
+  /***COLORS */
   white: {
     color: colors.TITLE_COLOR
   },
@@ -177,28 +188,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 20
   },
-  //OverviewScreen
-  overviewListitem: {},
-  overviewListThumbnail: {
-    marginRight: 10
-  },
-  overviewListName: {
-    flex: 0.3
-  },
-  overviewListQuantity: {
-    flex: 0.3
-  },
-  overviewListPrice: {
-    flex: 0.3
-  },
-  overviewSummary: {
-    height: 230,
 
-    marginTop: 20
-  },
-  overviewSummaryButton: {
-    marginTop: 20
-  },
   //TopupScreen:
   cameraHolder: {
     height: 300,

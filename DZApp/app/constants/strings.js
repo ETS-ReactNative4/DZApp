@@ -33,10 +33,12 @@ export const EVENT = "Evenement: ";
 export const CASHIER = "Kassier: ";
 export const TOTAL = "Totaal: ";
 export const CHOOSE_CUSTOMER = "Kies Klant";
-export const DETAILS = "Details: ";
-// export const SHOW_LIST = "Toon lijst";
-// export const HIDE_LIST = "Verberg lijst";
-export const LIST = "Lijst"
+export const DETAILS = "Details";
+export const SHOW_LIST = "Toon details";
+export const HIDE_LIST = "Verberg details";
+export const CHANGE_EVENT = "Wijzig evenement"
+
+
 
 //TopupScreen
 export const TOPUP = "Opladen";

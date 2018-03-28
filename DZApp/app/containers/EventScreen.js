@@ -1,6 +1,6 @@
 //@flow
 import React, { Component } from "react";
-import { Platform } from "react-native";
+import { Platform, BackHandler } from "react-native";
 
 //components
 import {
@@ -18,7 +18,8 @@ import {
   Picker,
   Card,
   CardItem,
-  View
+  View,
+  Icon
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 const Item = Picker.Item;
@@ -51,6 +52,10 @@ class EventScreen extends Component<Props, State> {
     this.state = {
       eventId: ""
     };
+
+    const { params } = this.props.navigation.state;
+    this.previousRouteName = params ? params.previousState.routeName : null;
+
     this._onPress = this._onPress.bind(this);
     this._onPickerValueChange = this._onPickerValueChange.bind(this);
     this._checkLoginState();
@@ -61,10 +66,29 @@ class EventScreen extends Component<Props, State> {
       <Container>
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail
-              square
-              source={require("../assets/images/site_dz.jpg")}
-            />
+            {this.previousRouteName === null ? (
+              <Thumbnail
+                square
+                source={require("../assets/images/site_dz.jpg")}
+              />
+            ) : (
+              <Grid>
+                <Row>
+                  <Button
+                    transparent
+                    onPress={() =>
+                      this.props.navigation.navigate(this.previousRouteName)
+                    }
+                  >
+                    <Icon name="arrow-back" style={styles.white} />
+                  </Button>
+                  <Thumbnail
+                    square
+                    source={require("../assets/images/site_dz.jpg")}
+                  />
+                </Row>
+              </Grid>
+            )}
           </Left>
           <Body>
             <Title>{strings.PICK_EVENT}</Title>
@@ -73,20 +97,28 @@ class EventScreen extends Component<Props, State> {
         <Content padder>
           <H2 style={styles.title}>{strings.EVENT_HEADER}</H2>
           <Form style={styles.form}>{this._renderPicker()}</Form>
-
           {this.state.eventId !== "" && this._renderEventInfo()}
-
-          {this._renderButton()}
-          {/* <EventCard
-              event={this.props.events.find(e => this.state.eventId === e._id)}
-              onPress={this._onEventButtonPress}
-            /> */}
+          {this._renderPickEventButton()}
         </Content>
       </Container>
     );
   }
 
   componentDidMount() {
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.onBackButtonPressAndroid
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this.onBackButtonPressAndroid
+    );
+  }
+
+  componentDidUpdate() {
     if (this.props.message !== null) {
       showInfoToast(this.props.message);
     }
@@ -94,6 +126,15 @@ class EventScreen extends Component<Props, State> {
       showErrorToast(this.props.error);
     }
   }
+
+  onBackButtonPressAndroid = () => {
+    if (this.previousRouteName) {
+      this.props.navigation.navigate(this.previousRouteName);
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
@@ -179,7 +220,7 @@ class EventScreen extends Component<Props, State> {
     );
   };
 
-  _renderButton = () => {
+  _renderPickEventButton = () => {
     return (
       <View>
         <Button

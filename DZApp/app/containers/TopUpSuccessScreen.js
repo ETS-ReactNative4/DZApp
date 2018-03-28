@@ -69,7 +69,7 @@ class TopupSuccessScreen extends Component<Props, State> {
                   transparent
                   onPress={() => this.props.navigation.goBack()}
                 >
-                  <Icon name="arrow-back" />
+                  <Icon name="arrow-back" style={styles.white} />
                 </Button>
                 <Thumbnail
                   square

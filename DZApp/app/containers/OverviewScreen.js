@@ -9,6 +9,7 @@ import {
   Header,
   Left,
   Body,
+  Right,
   Title,
   Content,
   Thumbnail,
@@ -82,8 +83,9 @@ class OverviewScreen extends Component<Props, State> {
         </Header>
         <Content padder>
           {this._renderSummary()}
-          {this._renderListButton()}
-          {this.state.showList && this._renderList()}
+          {this.state.showList &&
+            this.props.orderlines.length > 0 &&
+            this._renderList()}
           <ProductQuantityModal
             ref="modal"
             onSlidingComplete={this._onModalSlidingComplete}
@@ -132,33 +134,102 @@ class OverviewScreen extends Component<Props, State> {
     let eventName = this.props.event.name;
 
     return (
-      <View>
-        <H2 style={styles.title}>{strings.OVERVIEW}</H2>
-        <Grid>
-          <Col style={{ width: 125, marginRight: 10 }}>
-            <Row>
-              <Text style={styles.label}>{strings.TOTAL}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.label}>{strings.EVENT}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.label}>{strings.CASHIER}</Text>
-            </Row>
-          </Col>
-          <Col>
-            <Row>
-              <Text style={styles.value}>{amount}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.value}>{cashierfullname}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.value}>{eventName}</Text>
-            </Row>
-          </Col>
-        </Grid>
-      </View>
+      <Card>
+        <CardItem header>
+          <Text>{strings.OVERVIEW}</Text>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <Grid>
+              <Col style={{ width: 125, marginRight: 10 }}>
+                <Row>
+                  <Text style={styles.label}>{strings.TOTAL}</Text>
+                </Row>
+                <Row>
+                  <Text style={styles.label}>{strings.EVENT}</Text>
+                </Row>
+                <Row>
+                  <Text style={styles.label}>{strings.CASHIER}</Text>
+                </Row>
+              </Col>
+              <Col>
+                <Row>
+                  <Text style={styles.value}>{amount}</Text>
+                </Row>
+                <Row>
+                  <Text style={styles.value}>{eventName}</Text>
+                </Row>
+                <Row>
+                  <Text style={styles.value}>{cashierfullname}</Text>
+                </Row>
+              </Col>
+            </Grid>
+          </Body>
+        </CardItem>
+        {this.props.orderlines.length > 0 && (
+          <CardItem>
+            <Body>
+              <Button full style={styles.primaryActionButton}>
+                <Text style={styles.primaryButtonText}>
+                  {strings.CHOOSE_CUSTOMER}
+                </Text>
+              </Button>
+            </Body>
+          </CardItem>
+        )}
+        <CardItem footer>
+          <Grid>
+            <Col>
+              <Button
+                transparent
+                full
+                small
+                onPress={() => {
+                  this._onEventChangePress();
+                }}
+              >
+                <Text style={styles.smallButtonText}>
+                  {strings.CHANGE_EVENT}
+                </Text>
+              </Button>
+            </Col>
+            <Col>
+              {this.props.orderlines.length > 0 && this._renderListButton()}
+            </Col>
+          </Grid>
+        </CardItem>
+      </Card>
+    );
+  };
+
+  _renderList = () => {
+    return (
+      <Card>
+        <CardItem header>
+          <Text>{strings.DETAILS}</Text>
+        </CardItem>
+        <CardItem>
+          <List
+            dataSource={this.ds.cloneWithRows(this.props.orderlines)}
+            renderRow={orderline => {
+              return this._renderListViewRow(orderline);
+            }}
+            renderLeftHiddenRow={orderline => {
+              return this._renderLeftHiddenRow(orderline);
+            }}
+            renderRightHiddenRow={(orderline, secId, rowId, rowMap) => {
+              return this._renderRightHiddenRow(
+                orderline,
+                secId,
+                rowId,
+                rowMap
+              );
+            }}
+            leftOpenValue={75}
+            rightOpenValue={-75}
+          />
+        </CardItem>
+      </Card>
     );
   };
 
@@ -167,21 +238,25 @@ class OverviewScreen extends Component<Props, State> {
     let linePrice = orderline.quantity * product.price;
     let linePriceString = toStringWithDecimals(linePrice, 2) + " €";
     return (
-      <ListItem style={styles.row}>
-        <Thumbnail
-          small
-          source={{ uri: product.imageUrl }}
-          style={styles.overviewListThumbnail}
-        />
-        <Text style={styles.overviewListName}>{orderline.name}</Text>
-        <Text style={[styles.overviewListQuantity, styles.rightText]}>
-          X {orderline.quantity}
-        </Text>
-        <Text
-          style={[styles.overviewListPrice, styles.rightText, styles.primary]}
-        >
-          = {linePriceString}
-        </Text>
+      <ListItem>
+        <Grid>
+          <Row>
+            <Col style={styles.justifyCenter} size={15}>
+              <Thumbnail small source={{ uri: product.imageUrl }} />
+            </Col>
+            <Col style={styles.justifyCenter} size={45}>
+              <Text style={styles.left}>{orderline.name}</Text>
+            </Col>
+            <Col style={styles.justifyCenter} size={15}>
+              <Text>X {orderline.quantity}</Text>
+            </Col>
+            <Col style={styles.justifyCenter} size={25}>
+              <Text style={[styles.secondary, styles.right]}>
+                = {linePriceString}
+              </Text>
+            </Col>
+          </Row>
+        </Grid>
       </ListItem>
     );
   };
@@ -208,44 +283,12 @@ class OverviewScreen extends Component<Props, State> {
   };
 
   _renderListButton = () => {
-    let text = strings.LIST;
-    let icon = this.state.showList ? "arrow-up" : "arrow-down";
+    let text = this.state.showList ? strings.HIDE_LIST : strings.SHOW_LIST;
 
     return (
-      <View style={{ marginTop: 20 }}>
-        <Grid>
-          <Row>
-            <H2 style={[styles.title, { marginRight: 5 }]}>{text}</H2>
-            <Button
-              rounded
-              small
-              transparent
-              onPress={() => this._toggleListVisible()}
-            >
-              <Icon name={icon} style={styles.secondary} />
-            </Button>
-          </Row>
-        </Grid>
-      </View>
-    );
-  };
-
-  _renderList = () => {
-    return (
-      <List
-        dataSource={this.ds.cloneWithRows(this.props.orderlines)}
-        renderRow={orderline => {
-          return this._renderListViewRow(orderline);
-        }}
-        renderLeftHiddenRow={orderline => {
-          return this._renderLeftHiddenRow(orderline);
-        }}
-        renderRightHiddenRow={(orderline, secId, rowId, rowMap) => {
-          return this._renderRightHiddenRow(orderline, secId, rowId, rowMap);
-        }}
-        leftOpenValue={75}
-        rightOpenValue={-75}
-      />
+      <Button transparent small full onPress={() => this._toggleListVisible()}>
+        <Text style={styles.smallButtonText}>{text}</Text>
+      </Button>
     );
   };
 
@@ -275,6 +318,12 @@ class OverviewScreen extends Component<Props, State> {
 
   _toggleListVisible = (): void => {
     this.setState({ showList: !this.state.showList });
+  };
+
+  _onEventChangePress = (): void => {
+    this.props.navigation.navigate("EventScreen", {
+      previousState: this.props.navigation.state
+    });
   };
 
   _onModalSlidingComplete = (value: number) => {
