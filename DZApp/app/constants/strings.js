@@ -8,6 +8,7 @@ export const LOGIN_HEADER = "Gelieve aan te melden";
 export const USERNAME = "Gebruikersnaam";
 export const PASSWORD = "Wachtwoord";
 export const LOGIN = "Aanmelden";
+export const FORGOT_PASS = "Wachtwoord vergeten?"
 
 //LoadingScreen
 export const LOCAL_LOADING = "Lokale data laden";
@@ -25,7 +26,9 @@ export const SUBSCRIPTIONFEE = "Inschrijvingsgeld: ";
 
 //OrderScreen
 export const ORDER = "Bestellen";
-export const ENTER_QUANTITY = "Voer hoeveelheid in voor:";
+export const ENTER_QUANTITY = "Voer hoeveelheid in voor";
+export const QUANTITY = "Aantal";
+export const INVALID_QUANTITY = "Gelieve een geheel getal in te voeren"
 
 //OverviewScreen
 export const OVERVIEW = "Overzicht";
@@ -66,7 +69,7 @@ export const PREV_BALANCE = "Vorig saldo: ";
 export const HISTORY = "Historiek";
 
 //ProductThumbnail
-export const IN_STOCK = "in voorraad";
+export const IN_STOCK = "Voorraad:";
 export const INSUFFICIENT_STOCK = "Onvoldoende voorraad!";
 
 //Error messages

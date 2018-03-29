@@ -13,26 +13,16 @@ const styles = StyleSheet.create({
   label: {
     color: colors.LABEL_COLOR
   },
-  value: {
-    //color: colors.SECONDARY_COLOR
+  value: {},
+  error: {
+    color: "red",
+    fontSize: 12
   },
   primaryActionButton: {
     backgroundColor: colors.PRIMARY_COLOR
-    //marginBottom: 20,
-    //marginTop: 20,
-    //alignSelf: "center",
-    //width: 250,
-    //alignItems: "center",
-    //justifyContent: "center"
   },
-  primaryActionButtonDisabled: {
-    // marginBottom: 20,
-    // marginTop: 20,
-    // alignSelf: "center",
-    // width: 250,
-    // alignItems: "center",
-    // justifyContent: "center"
-  },
+
+  primaryActionButtonDisabled: {},
   borderedButton: {
     marginBottom: 20,
     marginTop: 20,
@@ -112,10 +102,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1
   },
-  //LoginScreen,
-  error: {
-    color: "red",
-    margin: 10
+  /*** Components */
+
+  /*** Cards */
+  cardForm: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    marginBottom: 20
+  },
+  cardPicker: {
+    paddingLeft: 10,
+    paddingRight: 10
   },
   //LoadingScreen
   loadingContainer: {
@@ -124,33 +121,29 @@ const styles = StyleSheet.create({
   loadingThumb: {
     marginBottom: 20
   },
-  //EventScreen
-  eventCardHolder: {
-    height: 230,
-    marginBottom: 10
-  },
   //ProductThumbnail
   productThumbnailHolder: {
     width: 130,
-    height: 130,
+    height: 130
+  },
+  productThumbnailGrid: {
     borderColor: colors.SECONDARY_COLOR,
     borderWidth: 2,
-    borderRadius: 10
-  },
-  productThumbnailCaption: {
-    flex: 0.4,
+    borderRadius: 10,
     padding: 5
   },
-  productThumbnailText: {
-    fontSize: 12
+  productThumbnailName: {
+    fontSize: 15,
+    color: colors.PRIMARY_COLOR,
+    marginTop: 5
   },
-  productThumbnailImageHolder: {
-    flex: 0.6
+  productThumbnailInfo: {
+    fontSize: 12,
+    color: colors.LABEL_COLOR
   },
-  productThumbnailImage: {
-    flex: 1,
-    width: undefined,
-    height: undefined
+  productThumbnailRow: {
+    paddingLeft: 5,
+    paddingRight: 5
   },
   productThumbnailQuantity: {
     backgroundColor: colors.PRIMARY_COLOR,
@@ -159,19 +152,27 @@ const styles = StyleSheet.create({
     top: 5,
     justifyContent: "center"
   },
-  productThumbnailTrash: {
+  productThumbnailTrashIcon: {
+    fontSize: 20,
+    color: colors.SECONDARY_COLOR
+  },
+  productThumbnailTrashButton: {
+    borderRadius: 100,
     position: "absolute",
     right: -10,
-    bottom: -2,
-    justifyContent: "center",
-    borderRadius: 100
+    bottom: 0,
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    height: 30,
+    width: 45,
+    padding: 0
   },
   //ProductQuantityModal
   quantityModal: {
     flex: 1
   },
   quantityModalContent: {
-    height: 200
+    height: 400
   },
   quantitySliderTrackStyle: {
     height: 2,

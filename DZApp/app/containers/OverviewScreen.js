@@ -185,7 +185,7 @@ class OverviewScreen extends Component<Props, State> {
                 full
                 small
                 onPress={() => {
-                  this._onEventChangePress();
+                  this._onChangeEventButtonPress();
                 }}
               >
                 <Text style={styles.smallButtonText}>
@@ -320,7 +320,7 @@ class OverviewScreen extends Component<Props, State> {
     this.setState({ showList: !this.state.showList });
   };
 
-  _onEventChangePress = (): void => {
+  _onChangeEventButtonPress = (): void => {
     this.props.navigation.navigate("EventScreen", {
       previousState: this.props.navigation.state
     });

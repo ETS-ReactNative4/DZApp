@@ -17,7 +17,8 @@ import {
   FooterTab,
   Button,
   Icon,
-  Text
+  Text,
+  View
 } from "native-base";
 import GridView from "react-native-super-grid";
 
@@ -34,6 +35,7 @@ import { setProductQuantity } from "../actions/orderActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
+import { sendError } from "../actions/messageActions";
 
 type Props = {};
 
@@ -50,15 +52,13 @@ class OrderScreen extends Component<Props, State> {
     this._onProductThumbnailTrashButtonPress = this._onProductThumbnailTrashButtonPress.bind(
       this
     );
-    this._onModalSlidingComplete = this._onModalSlidingComplete.bind(this);
+    this._onModalConfirm = this._onModalConfirm.bind(this);
 
     this._checkLoginState();
     this._checkEventState();
   }
 
   render() {
-    let orderlines = this.props.orderlines;
-
     return (
       <Container>
         <Header style={styles.primaryBackground}>
@@ -72,31 +72,14 @@ class OrderScreen extends Component<Props, State> {
             <Title>{strings.ORDER}</Title>
           </Body>
         </Header>
-        <Content contentContainerStyle={styles.content} padder>
-          <GridView
-            // style={styles.productGrid}
-            itemDimension={130}
-            items={this.props.products}
-            renderItem={p => {
-              let quantity = orderlines[p._id] || 0;
-              return (
-                <ProductThumbnail
-                  product={p}
-                  quantity={quantity}
-                  onPress={() => this._onProductThumbnailPress(p._id)}
-                  onLongPress={() => this._onProductThumbnailLongPress(p._id)}
-                  onTrashButtonPress={() =>
-                    this._onProductThumbnailTrashButtonPress(p._id)
-                  }
-                />
-              );
-            }}
-            horizontal={true}
-            spacing={10}
-          />
+        <Content
+          contentContainerStyle={[styles.content, styles.alignCenter]}
+          padder
+        >
+          {this._renderGrid()}
           <ProductQuantityModal
             ref="modal"
-            onSlidingComplete={this._onModalSlidingComplete}
+            onConfirmButtonPress={value => this._onModalConfirm(value)}
           />
         </Content>
         <Footer>
@@ -135,6 +118,38 @@ class OrderScreen extends Component<Props, State> {
     );
   }
 
+  _renderGrid = () => {
+    let orderlines = this.props.orderlines;
+    let products = this.props.products;
+    return (
+      <GridView
+        // style={styles.productGrid}
+        itemDimension={150}
+        items={products}
+        renderItem={product => {
+          let quantity = orderlines[product._id] || 0;
+          return this._renderGridItem(product, quantity);
+        }}
+        horizontal={true}
+        spacing={10}
+      />
+    );
+  };
+
+  _renderGridItem = (product, quantity) => {
+    return (
+      <ProductThumbnail
+        product={product}
+        quantity={quantity}
+        onPress={() => this._onProductThumbnailPress(product._id)}
+        onLongPress={() => this._onProductThumbnailLongPress(product._id)}
+        onTrashButtonPress={() =>
+          this._onProductThumbnailTrashButtonPress(product._id)
+        }
+      />
+    );
+  };
+
   //navigate away from OrderScreen when no cashierId or eventId is set
   componentDidUpdate() {
     if (this.props.message !== null) {
@@ -161,12 +176,7 @@ class OrderScreen extends Component<Props, State> {
 
     if (inStock > inOrderline)
       this.props.setProductQuantity(productId, ++inOrderline);
-    else
-      Toast.show({
-        text: strings.INSUFFICIENT_STOCK,
-        type: "danger",
-        duration: 2000
-      });
+    else this.props.sendError(strings.INSUFFICIENT_STOCK);
   };
 
   _onProductThumbnailLongPress = (productId: String) => {
@@ -190,10 +200,11 @@ class OrderScreen extends Component<Props, State> {
     modal.setState({ isVisible: !modal.state.isVisible });
   };
 
-  _onModalSlidingComplete = (value: number) => {
+  _onModalConfirm = (value: number) => {
     let modal = this.refs.modal;
     let product = modal.state.product;
     this.props.setProductQuantity(product._id, value);
+    this._toggleModalVisible();
   };
 }
 
@@ -204,12 +215,12 @@ const mapStateToProps = state => {
     cashierId: state.CashierReducer.cashierId,
     eventId: state.EventReducer.eventId,
     message: state.MessageReducer.message,
-    error: state.MessageReducer.error,
+    error: state.MessageReducer.error
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setProductQuantity }, dispatch);
+  return bindActionCreators({ setProductQuantity, sendError }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderScreen);

@@ -40,7 +40,7 @@ const cashierPersistConfig = {
 const eventPersistConfig = {
   key: "EventReducer",
   storage: AsyncStorage,
-  whitelist: ["events"],
+  whitelist: ["events", "eventId"],
   stateReconciler: autoMergeLevel2
 };
 

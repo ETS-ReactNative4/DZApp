@@ -12,8 +12,11 @@ import {
   Right,
   Header,
   Button,
-  Form,
-  View
+  View,
+  Item,
+  Input,
+  Label,
+  Form
 } from "native-base";
 
 //style
@@ -23,9 +26,11 @@ import colors from "../styles/colors";
 //resources
 import * as strings from "../constants/strings";
 
+//functions
+import { validateIntegerBetween } from "../functions/validation";
+
 type Props = {
-  //onModalHide: () => void,
-  onSlidingComplete: number => void
+  onConfirmButtonPress: number => void
 };
 
 type State = {
@@ -39,7 +44,8 @@ export class ProductQuantityModal extends Component<Props, State> {
     this.state = {
       isVisible: false,
       quantity: 0,
-      product: {}
+      product: {},
+      error: null
     };
   }
 
@@ -54,7 +60,6 @@ export class ProductQuantityModal extends Component<Props, State> {
         animationOutTiming={200}
         onBackButtonPress={this._toggleModalVisible}
         onBackdropPress={this._toggleModalVisible}
-        //onModalHide={this.props.onModalHide}
         style={styles.quantityModal}
       >
         {this._renderModalContent()}
@@ -68,50 +73,86 @@ export class ProductQuantityModal extends Component<Props, State> {
     return (
       <View style={styles.quantityModalContent}>
         <Card style={styles.content}>
-          <CardItem header>
+          <CardItem>
+            <Text style={{ fontWeight: "bold" }}>
+              {strings.ENTER_QUANTITY} {product.name} ({strings.IN_STOCK}{" "}
+              {product.inStock})
+            </Text>
+          </CardItem>
+          <Form style={styles.cardForm}>
+            {this.state.error ? (
+              <Item floatingLabel error last>
+                <Label>{strings.QUANTITY}</Label>
+                <Input
+                  onChangeText={value => this._onChangeText(value)}
+                  value={quantity.toString()}
+                />
+              </Item>
+            ) : (
+              <Item floatingLabel last>
+                <Label>{strings.QUANTITY}</Label>
+                <Input
+                  onChangeText={value => this._onChangeText(value)}
+                  value={quantity.toString()}
+                />
+              </Item>
+            )}
+          </Form>
+          {this.state.error && (
+            <CardItem>
+              <Text style={styles.error}>{this.state.error}</Text>
+            </CardItem>
+          )}
+          <CardItem>
             <Body>
-              <View style={styles.row}>
-                <Text>{product.name || ""} X </Text>
-                <Text style={[styles.primary, styles.end]}> {quantity}</Text>
-              </View>
-              <Slider
-                value={quantity}
-                onValueChange={value => this._onSliderValueChange(value)}
-                onSlidingComplete={value => this.props.onSlidingComplete(value)}
-                minimumValue={0}
-                maximumValue={product.inStock ? product.inStock : 0}
-                step={1}
-                style={styles.quantitySliderStyle}
-                trackStyle={styles.quantitySliderTrackStyle}
-                disabled={product.inStock ? product.inStock === 0 : true}
-                thumbStyle={styles.quantitySliderThumbStyle}
-                minimumTrackTintColor={colors.SECONDARY_COLOR}
-                maximumTrackTintColor={colors.PRIMARY_COLOR}
-              />
               <Button
-                primary
-                block
-                onPress={() => this._toggleModalVisible()}
-                style={styles.primaryBackground}
+                full
+                style={
+                  this.state.error === null
+                    ? styles.primaryActionButton
+                    : styles.primaryActionButtonDisabled
+                }
+                onPress={() =>
+                  this.props.onConfirmButtonPress(this.state.quantity)
+                }
+                disabled={this.state.error !== null}
               >
-                <Text>{strings.OK}</Text>
+                <Text style={styles.primaryButtonText}>{strings.OK}</Text>
               </Button>
             </Body>
+          </CardItem>
+          <CardItem footer>
+            <Button
+              transparent
+              full
+              small
+              onPress={() => {
+                this._toggleModalVisible();
+              }}
+            >
+              <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
+            </Button>
           </CardItem>
         </Card>
       </View>
     );
   };
 
-  _onSliderValueChange = (value: number) => {
-    this.setState({
-      quantity: value
-    });
+  _onChangeText = value => {
+    console.log("change text");
+    let product = this.state.product;
+    let valid = validateIntegerBetween(value, 0, product.inStock);
+    if (valid) {
+      this.setState({ error: null, quantity: value });
+    } else {
+      this.setState({
+        error: `${strings.INVALID_QUANTITY} (>= 0 en <= ${product.inStock})`,
+        quantity: value
+      });
+    }
   };
 
-  _onSlidingComplete = (value: number) => {
-    this.props.onSlidingComplete(value);
-  };
+  _onConfirmInput = value => {};
 
   _toggleModalVisible = () => {
     this.setState({ isVisible: !this.state.isVisible });

@@ -19,7 +19,8 @@ import {
   Card,
   CardItem,
   View,
-  Icon
+  Icon,
+  Right
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 const Item = Picker.Item;
@@ -56,7 +57,7 @@ class EventScreen extends Component<Props, State> {
     const { params } = this.props.navigation.state;
     this.previousRouteName = params ? params.previousState.routeName : null;
 
-    this._onPress = this._onPress.bind(this);
+    this._onPickEventButtonPress = this._onPickEventButtonPress.bind(this);
     this._onPickerValueChange = this._onPickerValueChange.bind(this);
     this._checkLoginState();
   }
@@ -95,26 +96,42 @@ class EventScreen extends Component<Props, State> {
           </Body>
         </Header>
         <Content padder>
-          <H2 style={styles.title}>{strings.EVENT_HEADER}</H2>
-          <Form style={styles.form}>{this._renderPicker()}</Form>
+          {/* <H2 style={styles.title}>{strings.EVENT_HEADER}</H2>
+          <Form style={styles.form}>{this._renderPicker()}</Form> */}
+          {this._renderInputForm()}
           {this.state.eventId !== "" && this._renderEventInfo()}
-          {this._renderPickEventButton()}
         </Content>
       </Container>
     );
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.eventId) {
+      this.setState({
+        eventId: nextProps.eventId
+      });
+    }
+  }
+
+  componentWillMount() {
+    if (this.props.eventId) {
+      this.setState({
+        eventId: this.props.eventId
+      });
+    }
+  }
+
   componentDidMount() {
     BackHandler.addEventListener(
       "hardwareBackPress",
-      this.onBackButtonPressAndroid
+      this._onBackButtonPressAndroid
     );
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener(
       "hardwareBackPress",
-      this.onBackButtonPressAndroid
+      this._onBackButtonPressAndroid
     );
   }
 
@@ -127,7 +144,7 @@ class EventScreen extends Component<Props, State> {
     }
   }
 
-  onBackButtonPressAndroid = () => {
+  _onBackButtonPressAndroid = () => {
     if (this.previousRouteName) {
       this.props.navigation.navigate(this.previousRouteName);
       return true;
@@ -138,6 +155,31 @@ class EventScreen extends Component<Props, State> {
 
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
+  };
+
+  _renderInputForm = () => {
+    return (
+      <Card>
+        <CardItem header>
+          <Text>{strings.PICK_EVENT}</Text>
+        </CardItem>
+        <View style={styles.cardPicker}>{this._renderPicker()}</View>
+        {this.previousRouteName && (
+          <CardItem footer>
+            <Button
+              transparent
+              full
+              small
+              onPress={() => {
+                this.props.navigation.navigate(this.previousRouteName);
+              }}
+            >
+              <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
+            </Button>
+          </CardItem>
+        )}
+      </Card>
+    );
   };
 
   _renderPicker = Platform.select({
@@ -183,62 +225,59 @@ class EventScreen extends Component<Props, State> {
 
   _renderEventInfo = () => {
     let event = this.props.events.find(e => e._id === this.state.eventId);
+    let fromDateString = to_NL_be_DateString(new Date(event.fromDate));
+    let toDateString = to_NL_be_DateString(new Date(event.toDate));
+    let subscriptionFeeString = event.subscriptionFee
+      ? toStringWithDecimals(event.subscriptionFee, 2) + " €"
+      : "0.00 €";
 
     return (
-      <Grid>
-        <Col style={{ width: 150, marginRight: 10 }}>
-          <Row>
-            <Text style={styles.label}>{strings.FROM}</Text>
-          </Row>
-          <Row>
-            <Text style={styles.label}>{strings.TO}</Text>
-          </Row>
-          <Row>
-            <Text style={styles.label}>{strings.SUBSCRIPTIONFEE}</Text>
-          </Row>
-        </Col>
-        <Col>
-          <Row>
-            <Text style={styles.value}>
-              {to_NL_be_DateString(new Date(event.fromDate))}
-            </Text>
-          </Row>
-          <Row>
-            <Text style={styles.value}>
-              {to_NL_be_DateString(new Date(event.toDate))}
-            </Text>
-          </Row>
-          <Row>
-            <Text style={styles.value}>
-              {event.subscriptionFee
-                ? toStringWithDecimals(event.subscriptionFee, 2) + " €"
-                : "0.00 €"}
-            </Text>
-          </Row>
-        </Col>
-      </Grid>
+      <Card>
+        <CardItem header>
+          <Text>{event.name}</Text>
+        </CardItem>
+        <CardItem>
+          <Grid>
+            <Col style={{ width: 150, marginRight: 10 }}>
+              <Row>
+                <Text style={styles.label}>{strings.FROM}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.TO}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.SUBSCRIPTIONFEE}</Text>
+              </Row>
+            </Col>
+            <Col>
+              <Row>
+                <Text style={styles.value}>{fromDateString}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.value}>{toDateString}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.value}>{subscriptionFeeString}</Text>
+              </Row>
+            </Col>
+          </Grid>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <Button
+              full
+              style={styles.primaryActionButton}
+              onPress={this._onPickEventButtonPress}
+            >
+              <Text style={styles.primaryButtonText}>{strings.PICK_EVENT}</Text>
+            </Button>
+          </Body>
+        </CardItem>
+      </Card>
     );
   };
 
-  _renderPickEventButton = () => {
-    return (
-      <View>
-        <Button
-          style={
-            this.state.eventId !== ""
-              ? styles.primaryActionButton
-              : styles.primaryActionButtonDisabled
-          }
-          onPress={this._onPress}
-          disabled={this.state.eventId === ""}
-        >
-          <Text style={styles.primaryButtonText}>{strings.PICK_EVENT}</Text>
-        </Button>
-      </View>
-    );
-  };
-
-  _onPress() {
+  _onPickEventButtonPress() {
     this.props.setEvent(this.state.eventId, this.props.navigation);
   }
 
@@ -256,6 +295,7 @@ const mapStateToProps = state => {
       return new Date(a.fromDate) - new Date(b.fromDate);
     }),
     cashierId: state.CashierReducer.cashierId,
+    eventId: state.EventReducer.eventId,
     message: state.MessageReducer.message,
     error: state.MessageReducer.error
   };
