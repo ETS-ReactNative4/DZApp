@@ -7,11 +7,23 @@ const initialState = {
   isProcessed: false,
   topups: [],
   cashInRegister: 0,
-  lastTopup: null
+  lastTopup: null,
+  currentAmount: null,
+  currentCustomer: null
 };
 
 const TopupReducer = (state: {} = initialState, action: {}) => {
   switch (action.type) {
+    case types.SET_TOPUP_AMOUNT: {
+      return Object.assign({}, state, {
+        currentAmount: action.data
+      });
+    }
+    case types.SET_TOPUP_CUSTOMER: {
+      return Object.assign({}, state, {
+        currentCustomer: action.data
+      });
+    }
     case types.LOCAL_TOPUP:
       let topup = action.data;
       let amount = topup.amount;

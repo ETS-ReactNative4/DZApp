@@ -26,7 +26,6 @@ import {
   CardItem,
   View
 } from "native-base";
-import { OverviewSummaryCard } from "../components/OverviewSummaryCard";
 import { Grid, Row, Col } from "react-native-easy-grid";
 
 //styles

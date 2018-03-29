@@ -16,6 +16,20 @@ import { toStringWithDecimals } from "../functions/number";
 /************ Synchronous Actions ***************/
 
 //API request for product list started
+export const setTopupAmount = (amount: number): {} => {
+  return {
+    type: types.SET_TOPUP_AMOUNT,
+    data: amount
+  };
+};
+
+export const setTopupCustomer = (customer: {}): {} => {
+  return {
+    type: types.SET_TOPUP_CUSTOMER,
+    data: customer
+  };
+};
+
 export const localTopup = (topup: {}): {} => {
   return {
     type: types.LOCAL_TOPUP,

@@ -8,7 +8,7 @@ export const LOGIN_HEADER = "Gelieve aan te melden";
 export const USERNAME = "Gebruikersnaam";
 export const PASSWORD = "Wachtwoord";
 export const LOGIN = "Aanmelden";
-export const FORGOT_PASS = "Wachtwoord vergeten?"
+export const FORGOT_PASS = "Wachtwoord vergeten?";
 
 //LoadingScreen
 export const LOCAL_LOADING = "Lokale data laden";
@@ -28,7 +28,7 @@ export const SUBSCRIPTIONFEE = "Inschrijvingsgeld: ";
 export const ORDER = "Bestellen";
 export const ENTER_QUANTITY = "Voer hoeveelheid in voor";
 export const QUANTITY = "Aantal";
-export const INVALID_QUANTITY = "Gelieve een geheel getal in te voeren"
+export const INVALID_QUANTITY = "Gelieve een geheel getal in te voeren";
 
 //OverviewScreen
 export const OVERVIEW = "Overzicht";
@@ -39,27 +39,29 @@ export const CHOOSE_CUSTOMER = "Kies Klant";
 export const DETAILS = "Details";
 export const SHOW_LIST = "Toon details";
 export const HIDE_LIST = "Verberg details";
-export const CHANGE_EVENT = "Wijzig evenement"
-
-
+export const CHANGE_EVENT = "Wijzig evenement";
 
 //TopupScreen
-export const TOPUP = "Opladen";
-export const ENTER_TOPUP_AMT = "Kies bedrag:";
+export const TOPUP = "Saldo Opladen";
+export const ENTER_TOPUP_AMT = "Kies bedrag";
 export const SCAN_CUSTOMER_CARD = "Scan QR code:";
 export const TOPUP_FOR_CUSTOMER = "Opladen voor:";
-export const AMOUNT = "Bedrag: ";
+export const AMOUNT = "Bedrag (€)";
 export const INVALID_QR = "Ongeldige QR code!";
 export const CAM_PERMISSION_TITLE = "DZApp toelaten de camera te gebruiken?";
 export const CAM_PERMISSION_MESSAGE =
   "DZApp heeft de camera nodig om klanten te identificeren.";
 export const CUSTOMER = "Klant: ";
 export const CURRENT_BALANCE = "Huidig saldo: ";
+export const TOPUP_AMOUNT = "Bedrag:"
 export const PICK_OTHER_CUSTOMER = "Kies andere klant";
 export const TOPUP_BALANCE = "Saldo opladen";
-export const TOPUP_ALERT_TITLE = "Saldo opladen?";
+export const TOPUP_CONFIRM = "Saldo opladen?";
 export const TOPUP_FOR = " opladen voor ";
-export const INVALID_AMOUNT = "Gelieve een bedrag groter dan 0 € in te voeren!";
+export const INVALID_AMOUNT =
+  "Gelieve een bedrag > 0 en <= 100 € in te voeren!";
+  export const CHANGE_AMOUNT = "Wijzig bedrag";
+  export const CHANGE_CUSTOMER = "Wijzig klant"
 
 //TopSuccessScreen
 export const TOPUP_COMPLETE = "Saldo opgeladen";

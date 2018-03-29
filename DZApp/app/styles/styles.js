@@ -172,7 +172,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   quantityModalContent: {
-    height: 400
+    height: 350
+  },
+  topupConfirmModalContent: {
+    height: 200
   },
   quantitySliderTrackStyle: {
     height: 2,

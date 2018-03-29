@@ -2,7 +2,6 @@
 import React, { Component } from "react";
 
 //components
-import Slider from "react-native-slider";
 import Modal from "react-native-modal";
 import {
   Text,
@@ -84,6 +83,7 @@ export class ProductQuantityModal extends Component<Props, State> {
               <Item floatingLabel error last>
                 <Label>{strings.QUANTITY}</Label>
                 <Input
+                  keyboardType="numeric"
                   onChangeText={value => this._onChangeText(value)}
                   value={quantity.toString()}
                 />
@@ -92,6 +92,7 @@ export class ProductQuantityModal extends Component<Props, State> {
               <Item floatingLabel last>
                 <Label>{strings.QUANTITY}</Label>
                 <Input
+                  keyboardType="numeric"
                   onChangeText={value => this._onChangeText(value)}
                   value={quantity.toString()}
                 />
@@ -139,7 +140,7 @@ export class ProductQuantityModal extends Component<Props, State> {
   };
 
   _onChangeText = value => {
-    console.log("change text");
+    value = value.replace(/\s+/g, "");
     let product = this.state.product;
     let valid = validateIntegerBetween(value, 0, product.inStock);
     if (valid) {
@@ -151,8 +152,6 @@ export class ProductQuantityModal extends Component<Props, State> {
       });
     }
   };
-
-  _onConfirmInput = value => {};
 
   _toggleModalVisible = () => {
     this.setState({ isVisible: !this.state.isVisible });

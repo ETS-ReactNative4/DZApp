@@ -7,20 +7,29 @@ import LoginScreen from "./LoginScreen";
 import EventScreen from "./EventScreen";
 import OrderScreen from "./OrderScreen";
 import OverviewScreen from "./OverviewScreen";
-import TopupScreen from "./TopupScreen";
+//import TopupScreen from "./TopupScreen";
+import TopupAmountScreen from "./TopupAmountScreen";
+import TopupCustomerScreen from "./TopupCustomerScreen";
 import TopupSuccessScreen from "./TopUpSuccessScreen";
+import TopupConfirmScreen from "./TopupConfirmScreen";
 
 const TopupNavigator = StackNavigator(
   {
-    TopupScreen: {
-      screen: TopupScreen
+    TopupAmountScreen: {
+      screen: TopupAmountScreen
+    },
+    TopupCustomerScreen: {
+      screen: TopupCustomerScreen
     },
     TopupSuccessScreen: {
       screen: TopupSuccessScreen
+    },
+    TopupConfirmScreen: {
+      screen: TopupConfirmScreen
     }
   },
   {
-    initialRouteName: "TopupScreen",
+    initialRouteName: "TopupAmountScreen",
     headerMode: "none"
   }
 );
@@ -50,7 +59,7 @@ const MainFlowNavigator = SwitchNavigator(
     }
   },
   {
-    initialRouteName: "OrderScreen",
+    initialRouteName: "TopupNavigator",
     headerMode: "none"
   }
 );
