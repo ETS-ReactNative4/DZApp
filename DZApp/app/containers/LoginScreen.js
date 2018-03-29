@@ -65,7 +65,11 @@ class LoginScreen extends Component<Props, State> {
             <Title>{strings.LOGIN}</Title>
           </Body>
         </Header>
-        <Content padder>{this._renderForm()}</Content>
+        <Content padder contentContainerStyle={styles.scrollviewCenter}>
+          {this.props.isAuthenticating
+            ? this._renderSpinner()
+            : this._renderForm()}
+        </Content>
       </Container>
     );
   }
@@ -85,56 +89,49 @@ class LoginScreen extends Component<Props, State> {
         <CardItem header>
           <Text>{strings.LOGIN_HEADER}</Text>
         </CardItem>
-        {this.props.isAuthenticating ? (
-          <CardItem>
-            <Body>{this._renderSpinner()}</Body>
-          </CardItem>
-        ) : (
-          <View>
-            <View style={styles.cardForm}>
-              <Item floatingLabel last>
-                <Label>{strings.USERNAME}</Label>
-                <Input
-                  onChangeText={value => this.setState({ userName: value })}
-                  value={this.state.userName}
-                />
-              </Item>
-              <Item floatingLabel last>
-                <Label>{strings.PASSWORD}</Label>
-                <Input
-                  onChangeText={value => this.setState({ password: value })}
-                  value={this.state.password}
-                  secureTextEntry={true}
-                />
-              </Item>
-            </View>
-            <CardItem>
-              <Body>
-                <Button
-                  full
-                  onPress={() => this._onLoginButtonPress()}
-                  disabled={
-                    this.state.userName === "" || this.state.password === ""
-                  }
-                  style={
-                    this.state.userName !== "" && this.state.password !== ""
-                      ? styles.primaryActionButton
-                      : styles.primaryActionButtonDisabled
-                  }
-                >
-                  <Text style={styles.primaryButtonText}>{strings.LOGIN}</Text>
-                </Button>
-              </Body>
-            </CardItem>
-            <CardItem footer>
-              <Button transparent full small onPress={() => {}}>
-                <Text style={styles.smallButtonText}>
-                  {strings.FORGOT_PASS}
-                </Text>
-              </Button>
-            </CardItem>
+
+        <View>
+          <View style={styles.cardForm}>
+            <Item floatingLabel last>
+              <Label>{strings.USERNAME}</Label>
+              <Input
+                onChangeText={value => this.setState({ userName: value })}
+                value={this.state.userName}
+              />
+            </Item>
+            <Item floatingLabel last>
+              <Label>{strings.PASSWORD}</Label>
+              <Input
+                onChangeText={value => this.setState({ password: value })}
+                value={this.state.password}
+                secureTextEntry={true}
+              />
+            </Item>
           </View>
-        )}
+          <CardItem>
+            <Body>
+              <Button
+                full
+                onPress={() => this._onLoginButtonPress()}
+                disabled={
+                  this.state.userName === "" || this.state.password === ""
+                }
+                style={
+                  this.state.userName !== "" && this.state.password !== ""
+                    ? styles.primaryActionButton
+                    : styles.primaryActionButtonDisabled
+                }
+              >
+                <Text style={styles.primaryButtonText}>{strings.LOGIN}</Text>
+              </Button>
+            </Body>
+          </CardItem>
+          <CardItem footer>
+            <Button transparent full small onPress={() => {}}>
+              <Text style={styles.smallButtonText}>{strings.FORGOT_PASS}</Text>
+            </Button>
+          </CardItem>
+        </View>
       </Card>
     );
   };

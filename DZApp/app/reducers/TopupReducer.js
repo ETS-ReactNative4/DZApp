@@ -9,7 +9,8 @@ const initialState = {
   cashInRegister: 0,
   lastTopup: null,
   currentAmount: null,
-  currentCustomer: null
+  currentCustomer: null,
+  previousBalance: null
 };
 
 const TopupReducer = (state: {} = initialState, action: {}) => {
@@ -25,7 +26,8 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       });
     }
     case types.LOCAL_TOPUP:
-      let topup = action.data;
+      let topup = action.data.topup;
+      let previousBalance = action.data.previousBalance;
       let amount = topup.amount;
       let newTopups = state.topups.slice(0);
       newTopups.push(topup);
@@ -33,7 +35,8 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
         topups: newTopups,
         cashInRegister: state.cashInRegister + amount,
         lastTopup: topup,
-        isProcessed: true
+        isProcessed: true,
+        previousBalance: previousBalance
       });
     case types.TOPUP_SYNC_STARTED: {
       return Object.assign({}, state, {
@@ -55,6 +58,11 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
     case types.RESET_TOPUP_PROCESSED: {
       return Object.assign({}, state, {
         isProcessed: false
+      });
+    }
+    case types.RESET_PREVIOUS_BALANCE: {
+      return Object.assign({}, state, {
+        previousBalance: null
       });
     }
     default:

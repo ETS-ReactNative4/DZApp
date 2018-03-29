@@ -21,11 +21,11 @@ const TopupNavigator = StackNavigator(
     TopupCustomerScreen: {
       screen: TopupCustomerScreen
     },
-    TopupSuccessScreen: {
-      screen: TopupSuccessScreen
-    },
     TopupConfirmScreen: {
       screen: TopupConfirmScreen
+    },
+    TopupSuccessScreen: {
+      screen: TopupSuccessScreen
     }
   },
   {

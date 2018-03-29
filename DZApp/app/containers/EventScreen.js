@@ -92,12 +92,14 @@ class EventScreen extends Component<Props, State> {
             )}
           </Left>
           <Body>
-            <Title>{strings.PICK_EVENT}</Title>
+            <Title>
+              {this.previousRouteName
+                ? strings.CHANGE_EVENT
+                : strings.PICK_EVENT}
+            </Title>
           </Body>
         </Header>
-        <Content padder>
-          {/* <H2 style={styles.title}>{strings.EVENT_HEADER}</H2>
-          <Form style={styles.form}>{this._renderPicker()}</Form> */}
+        <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this._renderInputForm()}
           {this.state.eventId !== "" && this._renderEventInfo()}
         </Content>
@@ -161,7 +163,9 @@ class EventScreen extends Component<Props, State> {
     return (
       <Card>
         <CardItem header>
-          <Text>{strings.PICK_EVENT}</Text>
+          <Text>
+            {this.previousRouteName ? strings.CHANGE_EVENT : strings.PICK_EVENT}
+          </Text>
         </CardItem>
         <View style={styles.cardPicker}>{this._renderPicker()}</View>
         {this.previousRouteName && (

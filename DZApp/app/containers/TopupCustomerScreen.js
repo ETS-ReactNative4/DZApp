@@ -54,7 +54,7 @@ class TopupCustomerScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      customer: null,
+      customer: this.props.customer || null,
       error: null
     };
 
@@ -86,10 +86,14 @@ class TopupCustomerScreen extends Component<Props, State> {
             </Grid>
           </Left>
           <Body>
-            <Title>{strings.TOPUP}</Title>
+            <Title>
+              {this.previousRouteName
+                ? strings.CHANGE_CUSTOMER
+                : strings.CHOOSE_CUSTOMER}
+            </Title>
           </Body>
         </Header>
-        <Content padder >
+        <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {customer === null ? this._renderCam() : this._renderCustomerInfo()}
         </Content>
         <Footer>
@@ -214,26 +218,42 @@ class TopupCustomerScreen extends Component<Props, State> {
               onPress={this._onConfirmButtonPress}
             >
               <Text style={styles.primaryButtonText}>
-                {this.previousRouteName
-                  ? strings.CHANGE_CUSTOMER
-                  : strings.CHOOSE_CUSTOMER}
+                {strings.CHOOSE_CUSTOMER}
               </Text>
             </Button>
           </Body>
         </CardItem>
         <CardItem footer>
-          <Button
-            transparent
-            full
-            small
-            onPress={() => {
-              this.setState({ customer: null });
-            }}
-          >
-            <Text style={styles.smallButtonText}>
-              {strings.PICK_OTHER_CUSTOMER}
-            </Text>
-          </Button>
+          <Grid>
+            <Col>
+              <Button
+                transparent
+                full
+                small
+                onPress={() => {
+                  this.setState({ customer: null });
+                }}
+              >
+                <Text style={styles.smallButtonText}>
+                  {strings.PICK_OTHER_CUSTOMER}
+                </Text>
+              </Button>
+            </Col>
+            <Col>
+              {this.previousRouteName && (
+                <Button
+                  transparent
+                  full
+                  small
+                  onPress={() => {
+                    this.props.navigation.goBack();
+                  }}
+                >
+                  <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
+                </Button>
+              )}
+            </Col>
+          </Grid>
         </CardItem>
       </Card>
     );
@@ -267,7 +287,8 @@ const mapStateToProps = state => {
     cashierId: state.CashierReducer.cashierId,
     customers: state.CustomerReducer.customers,
     message: state.MessageReducer.message,
-    error: state.MessageReducer.error
+    error: state.MessageReducer.error,
+    customer: state.TopupReducer.currentCustomer
   };
 };
 

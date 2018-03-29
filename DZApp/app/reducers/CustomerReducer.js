@@ -33,7 +33,7 @@ const CustomerReducer = (state: {} = initialState, action: {}) => {
     }
     case types.LOCAL_TOPUP: {
       //get info from action
-      let topup = action.data;
+      let topup = action.data.topup;
       let customerId = topup.customerId;
       let topupAmount = topup.amount;
       //clone the customer and set new balance

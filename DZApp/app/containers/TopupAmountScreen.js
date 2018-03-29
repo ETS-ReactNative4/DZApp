@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 
 //components
+import { Keyboard } from "react-native";
 import {
   Container,
   Text,
@@ -38,7 +39,12 @@ import { showInfoToast, showErrorToast } from "../functions/toast";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { setTopupAmount } from "../actions/topupActions";
+import {
+  setTopupAmount,
+  setTopupCustomer,
+  resetPreviousBalance,
+  resetTopupProcessed
+} from "../actions/topupActions";
 
 type Props = {};
 
@@ -50,13 +56,23 @@ type State = {
 class TopupAmountScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {
-      quantity: this.props.amount || 5,
-      error: null
-    };
 
     const { params } = this.props.navigation.state;
-    this.previousRouteName = params ? params.previousState.routeName : null;
+    this.previousRouteName =
+      params && params.previousState ? params.previousState.routeName : null;
+    let reset = params ? params.reset : false;
+
+    if (reset) {
+      this.props.setTopupAmount(null),
+        this.props.setTopupCustomer(null),
+        this.props.resetPreviousBalance(null),
+        this.props.resetTopupProcessed(null);
+    }
+
+    this.state = {
+      quantity: reset ? "" : this.props.amount || "",
+      error: null
+    };
 
     this._checkLoginState();
   }
@@ -89,10 +105,16 @@ class TopupAmountScreen extends Component<Props, State> {
             )}
           </Left>
           <Body>
-            <Title>{strings.TOPUP}</Title>
+            <Title>
+              {this.previousRouteName
+                ? strings.CHANGE_AMOUNT
+                : strings.ENTER_TOPUP_AMT}
+            </Title>
           </Body>
         </Header>
-        <Content padder>{this._renderForm()}</Content>
+        <Content padder contentContainerStyle={styles.scrollviewCenter}>
+          {this._renderForm()}
+        </Content>
         <Footer>
           <FooterTab style={styles.primaryBackground}>
             <Button
@@ -143,6 +165,7 @@ class TopupAmountScreen extends Component<Props, State> {
   _renderForm = () => {
     let quantity = this.state.quantity;
     let error = this.state.error;
+    let disabled = this.state.error !== null || this.state.quantity === "";
 
     return (
       <Card>
@@ -174,9 +197,9 @@ class TopupAmountScreen extends Component<Props, State> {
               <Button
                 full
                 onPress={() => this._onConfirmButtonPress()}
-                disabled={this.state.error !== null}
+                disabled={disabled}
                 style={
-                  this.state.error === null
+                  !disabled
                     ? styles.primaryActionButton
                     : styles.primaryActionButtonDisabled
                 }
@@ -189,6 +212,20 @@ class TopupAmountScreen extends Component<Props, State> {
               </Button>
             </Body>
           </CardItem>
+          {this.previousRouteName && (
+            <CardItem footer>
+              <Button
+                transparent
+                full
+                small
+                onPress={() => {
+                  this.props.navigation.goBack();
+                }}
+              >
+                <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
+              </Button>
+            </CardItem>
+          )}
         </View>
       </Card>
     );
@@ -213,7 +250,8 @@ class TopupAmountScreen extends Component<Props, State> {
   };
 
   _onConfirmButtonPress = () => {
-    this.props.setTopupAmount(this.state.quantity);
+    Keyboard.dismiss();
+    this.props.setTopupAmount(Number(this.state.quantity));
 
     this.previousRouteName === null
       ? this.props.navigation.navigate("TopupCustomerScreen")
@@ -233,7 +271,15 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setTopupAmount }, dispatch);
+  return bindActionCreators(
+    {
+      setTopupAmount,
+      setTopupCustomer,
+      resetPreviousBalance,
+      resetTopupProcessed
+    },
+    dispatch
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopupAmountScreen);

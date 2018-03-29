@@ -31,9 +31,13 @@ export const setTopupCustomer = (customer: {}): {} => {
 };
 
 export const localTopup = (topup: {}): {} => {
+  let customers = Store.getState().CustomerReducer.customers;
+  let customer = customers.find(c => c._id === topup.customerId);
+  let previousBalance = customer.creditBalance;
+
   return {
     type: types.LOCAL_TOPUP,
-    data: topup
+    data: { topup: topup, previousBalance: previousBalance }
   };
 };
 
@@ -51,6 +55,10 @@ export const topupSyncFailed = () => {
 
 export const resetTopupProcessed = () => {
   return { type: types.RESET_TOPUP_PROCESSED };
+};
+
+export const resetPreviousBalance = () => {
+  return { type: types.RESET_PREVIOUS_BALANCE };
 };
 
 /************ Asynchronous Actions ***************/

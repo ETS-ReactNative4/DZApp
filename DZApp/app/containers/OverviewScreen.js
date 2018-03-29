@@ -80,7 +80,7 @@ class OverviewScreen extends Component<Props, State> {
             <Title>{strings.OVERVIEW}</Title>
           </Body>
         </Header>
-        <Content padder>
+        <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this._renderSummary()}
           {this.state.showList &&
             this.props.orderlines.length > 0 &&

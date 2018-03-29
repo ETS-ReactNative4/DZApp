@@ -1,7 +1,7 @@
-//Template screen with basic imports and redux integration
-
 //@flow
 import React, { Component } from "react";
+
+import { BackHandler } from "react-native";
 
 //components
 import {
@@ -18,7 +18,8 @@ import {
   Button,
   Icon,
   Text,
-  H2
+  CardItem,
+  Card
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Toast from "react-native-root-toast";
@@ -37,17 +38,28 @@ import { showInfoToast, showErrorToast } from "../functions/toast";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { resetTopupProcessed } from "../actions/topupActions";
+
+//navigation
+import { NavigationActions } from "react-navigation";
 
 type Props = {};
 
-type State = {};
+type State = {
+  previousBalance: number,
+  currentBalance: number,
+  fullname: String,
+  amount: number
+};
 
 class TopupSuccessScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {};
-    this._onPress = this._onPress.bind(this);
+    this.state = {
+      previousBalance: props.previousBalance,
+      currentBalance: props.currentBalance,
+      fullName: props.fullname,
+      amount: props.amount
+    };
     this._checkLoginState();
   }
 
@@ -63,30 +75,17 @@ class TopupSuccessScreen extends Component<Props, State> {
       <Container>
         <Header style={styles.primaryBackground}>
           <Left>
-            <Grid>
-              <Row>
-                <Button
-                  transparent
-                  onPress={() => this.props.navigation.goBack()}
-                >
-                  <Icon name="arrow-back" style={styles.white} />
-                </Button>
-                <Thumbnail
-                  square
-                  source={require("../assets/images/site_dz.jpg")}
-                />
-              </Row>
-            </Grid>
+            <Thumbnail
+              square
+              source={require("../assets/images/site_dz.jpg")}
+            />
           </Left>
           <Body>
             <Title>{strings.TOPUP}</Title>
           </Body>
         </Header>
-        <Content padder>
-          <View style={styles.content}>
-            {this._renderTopupInfo()}
-            {this._renderButton()}
-          </View>
+        <Content padder contentContainerStyle={styles.scrollviewCenter}>
+          {this._renderTopupInfo()}
         </Content>
         <Footer>
           <FooterTab style={styles.primaryBackground}>
@@ -126,10 +125,6 @@ class TopupSuccessScreen extends Component<Props, State> {
     );
   }
 
-  componentDidMount() {
-    this.props.resetTopupProcessed();
-  }
-
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
   };
@@ -143,71 +138,121 @@ class TopupSuccessScreen extends Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  _onBackButtonPressAndroid = () => {
+    this._onTopupButtonPress();
+    return true;
+  };
+
   _renderTopupInfo = () => {
     return (
-      <View>
-        <H2 style={styles.title}>{strings.TOPUP_COMPLETE}</H2>
-        <Grid>
-          <Col style={{ width: 125, marginRight: 10 }}>
-            <Row>
-              <Text style={styles.label}>{strings.CUSTOMER}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.label}>{strings.PREV_BALANCE}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.label}>{strings.AMOUNT}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
-            </Row>
-          </Col>
-          <Col>
-            <Row>
-              <Text style={styles.value}>{this.props.fullname}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.value}>{this.props.previousBalance}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.value}>{this.props.amount}</Text>
-            </Row>
-            <Row>
-              <Text style={styles.value}>{this.props.currentBalance}</Text>
-            </Row>
-          </Col>
-        </Grid>
-      </View>
+      <Card>
+        <CardItem header>
+          <Text>{strings.TOPUP_COMPLETE}</Text>
+        </CardItem>
+        <CardItem>
+          <Grid>
+            <Col style={{ width: 125, marginRight: 10 }}>
+              <Row>
+                <Text style={styles.label}>{strings.CUSTOMER}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.PREV_BALANCE}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.AMOUNT_LABEL}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
+              </Row>
+            </Col>
+            <Col>
+              <Row>
+                <Text style={styles.value}>{this.state.fullname}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.value}>{this.state.previousBalance}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.value}>{this.state.amount}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.value}>{this.state.currentBalance}</Text>
+              </Row>
+            </Col>
+          </Grid>
+        </CardItem>
+        <CardItem footer>
+          <Grid>
+            <Col>
+              <Button
+                transparent
+                full
+                small
+                onPress={() => {
+                  this._onPOSButtonPress();
+                }}
+              >
+                <Text style={styles.smallButtonText}>{strings.TO_POS}</Text>
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                transparent
+                full
+                small
+                onPress={() => {
+                  this._onTopupButtonPress();
+                }}
+              >
+                <Text style={styles.smallButtonText}>{strings.TO_TOPUP}</Text>
+              </Button>
+            </Col>
+          </Grid>
+        </CardItem>
+      </Card>
     );
   };
 
-  _renderButton = () => {
-    return (
-      <View>
-        <Button
-          block
-          style={styles.primaryActionButton}
-          onPress={this._onPress}
-        >
-          <Text style={styles.white}>{strings.BACK}</Text>
-        </Button>
-      </View>
-    );
+  _onPOSButtonPress = () => {
+    this.props.navigation.navigate("OrderScreen");
   };
 
-  _onPress = () => {
-    this.props.navigation.goBack();
+  _onTopupButtonPress = () => {
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: "TopupAmountScreen",
+          params: { reset: true }
+        })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   };
 }
 
 const mapStateToProps = state => {
   let topup = state.TopupReducer.lastTopup;
+  let previousBalance = state.TopupReducer.previousBalance;
   let amount = topup.amount;
   let customer = state.CustomerReducer.customers.find(
     c => c._id === topup.customerId
   );
   let currentBalance = customer.creditBalance;
-  let previousBalance = currentBalance - amount;
 
   let fullname = `${customer.firstName} ${customer.lastName}`;
   let previousBalanceString = toStringWithDecimals(previousBalance, 2) + " €";
@@ -226,7 +271,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ resetTopupProcessed }, dispatch);
+  return bindActionCreators({}, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopupSuccessScreen);

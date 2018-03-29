@@ -47,21 +47,22 @@ export const ENTER_TOPUP_AMT = "Kies bedrag";
 export const SCAN_CUSTOMER_CARD = "Scan QR code:";
 export const TOPUP_FOR_CUSTOMER = "Opladen voor:";
 export const AMOUNT = "Bedrag (€)";
+export const AMOUNT_LABEL = "Bedrag:";
 export const INVALID_QR = "Ongeldige QR code!";
 export const CAM_PERMISSION_TITLE = "DZApp toelaten de camera te gebruiken?";
 export const CAM_PERMISSION_MESSAGE =
   "DZApp heeft de camera nodig om klanten te identificeren.";
 export const CUSTOMER = "Klant: ";
 export const CURRENT_BALANCE = "Huidig saldo: ";
-export const TOPUP_AMOUNT = "Bedrag:"
+export const TOPUP_AMOUNT = "Bedrag:";
 export const PICK_OTHER_CUSTOMER = "Kies andere klant";
 export const TOPUP_BALANCE = "Saldo opladen";
 export const TOPUP_CONFIRM = "Saldo opladen?";
 export const TOPUP_FOR = " opladen voor ";
 export const INVALID_AMOUNT =
   "Gelieve een bedrag > 0 en <= 100 € in te voeren!";
-  export const CHANGE_AMOUNT = "Wijzig bedrag";
-  export const CHANGE_CUSTOMER = "Wijzig klant"
+export const CHANGE_AMOUNT = "Wijzig bedrag";
+export const CHANGE_CUSTOMER = "Wijzig klant";
 
 //TopSuccessScreen
 export const TOPUP_COMPLETE = "Saldo opgeladen";
@@ -81,3 +82,7 @@ export const UNABLE_TO_SYNC = "Kon niet synchroniseren met de server";
 //Success messages
 export const SYNCED = "Gesynchroniseerd met server";
 export const AUTHENTICATED = "Succesvol aangemeld";
+
+//navigation
+export const TO_POS = "Naar kassa";
+export const TO_TOPUP = "Naar opladen";

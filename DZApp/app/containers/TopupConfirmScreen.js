@@ -41,6 +41,9 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { topupBalance } from "../actions/topupActions";
 
+//navigation
+import { NavigationActions } from "react-navigation";
+
 type Props = {};
 
 type State = {
@@ -82,7 +85,7 @@ class TopupConfirmScreen extends Component<Props, State> {
             <Title>{strings.TOPUP}</Title>
           </Body>
         </Header>
-        <Content padder>
+        <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this._renderOverview()}
           <TopupConfirmModal
             ref="modal"
@@ -237,8 +240,19 @@ class TopupConfirmScreen extends Component<Props, State> {
 
   _onModalConfirmButtonPress = () => {
     this._toggleModalVisible();
-    this.props.topupBalance({});
+    this.props.topupBalance({
+      cashierId: this.props.cashierId,
+      customerId: this.props.customer._id,
+      timestamp: new Date().toJSON(),
+      amount: this.props.amount
+    });
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: "TopupSuccessScreen" }),]
+    });
+    this.props.navigation.dispatch(resetAction);
   };
+    
 
   _toggleModalVisible = () => {
     let modal = this.refs.modal;

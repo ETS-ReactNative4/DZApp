@@ -75,6 +75,11 @@ const styles = StyleSheet.create({
   left: {
     alignSelf: "flex-start"
   },
+  //for centering inside scrollview
+  scrollviewCenter: {
+    flexGrow: 1,
+    justifyContent: "center"
+  },
   /***COLORS */
   white: {
     color: colors.TITLE_COLOR
