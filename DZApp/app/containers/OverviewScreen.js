@@ -88,6 +88,7 @@ class OverviewScreen extends Component<Props, State> {
           <ProductQuantityModal
             ref="modal"
             onSlidingComplete={this._onModalSlidingComplete}
+            onConfirmButtonPress={this._onModalConfirm}
           />
         </Content>
         <Footer>
@@ -329,6 +330,13 @@ class OverviewScreen extends Component<Props, State> {
     let modal = this.refs.modal;
     let product = modal.state.product;
     this.props.setProductQuantity(product._id, value);
+  };
+
+  _onModalConfirm = (value: number) => {
+    let modal = this.refs.modal;
+    let product = modal.state.product;
+    this.props.setProductQuantity(product._id, value);
+    this._toggleModalVisible();
   };
 
   _onEditIconPress = (orderline: {}): {} => {

@@ -80,7 +80,7 @@ const Navigator = SwitchNavigator(
     }
   },
   {
-    initialRouteName: "MainFlowNavigator"
+    initialRouteName: "AuthNavigator"
   }
 );
 

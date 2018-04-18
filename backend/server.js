@@ -7,8 +7,9 @@ const db = require("./config/db");
 const app = express();
 
 //android
-const port = 8000;
-const ip = "192.168.0.132";
+const port = 80;
+//const ip = "192.168.0.132";
+//const ip = "10.3.208.75";
 
 //ios
 // const port = 3000;
@@ -22,9 +23,9 @@ MongoClient.connect(db.url, (err, database) => {
 
   require("./app/routes")(app, database);
 
-  var server = app.listen(port, ip, () => {
+  var server = app.listen(port, () => {
     var host = server.address().address;
     var port = server.address().port;
-    console.log("running at http://" + host + ":" + port);
+    console.log("running at port: " + port);
   });
 });

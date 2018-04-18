@@ -12,7 +12,6 @@ import colors from "../styles/colors";
 import * as strings from "../constants/strings";
 
 //redux
-//redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { login } from "../actions/cashierActions";

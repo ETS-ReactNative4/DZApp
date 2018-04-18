@@ -17,14 +17,12 @@ export const sendError = (error: String): {} => {
   };
 };
 
-//API response for customer list received
 export const removeMessage = (): {} => {
   return {
     type: types.REMOVE_MESSAGE
   };
 };
 
-//Set the active customer in global state
 export const removeError = (): {} => {
   return {
     type: types.REMOVE_ERROR

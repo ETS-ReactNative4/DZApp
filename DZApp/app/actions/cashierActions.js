@@ -32,6 +32,7 @@ export const loginError = (error: String) => {
 export const login = (userCredentials: {}, navigation: {}) => {
   return function(dispatch) {
     dispatch(requestLogin());
+    
 
     return fetchWrapper(
       5000,
