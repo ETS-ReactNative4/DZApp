@@ -66,9 +66,7 @@ class LoginScreen extends Component<Props, State> {
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
-          {this.props.isAuthenticating
-            ? this._renderSpinner()
-            : this._renderForm()}
+          {this._renderForm()}
         </Content>
       </Container>
     );
@@ -84,30 +82,35 @@ class LoginScreen extends Component<Props, State> {
   }
 
   _renderForm = () => {
+    let renderSpinner = this.props.isAuthenticating;
+
     return (
       <Card>
         <CardItem header>
           <Text>{strings.LOGIN_HEADER}</Text>
         </CardItem>
-
         <View>
-          <View style={styles.cardForm}>
-            <Item floatingLabel last>
-              <Label>{strings.USERNAME}</Label>
-              <Input
-                onChangeText={value => this.setState({ userName: value })}
-                value={this.state.userName}
-              />
-            </Item>
-            <Item floatingLabel last>
-              <Label>{strings.PASSWORD}</Label>
-              <Input
-                onChangeText={value => this.setState({ password: value })}
-                value={this.state.password}
-                secureTextEntry={true}
-              />
-            </Item>
-          </View>
+          {renderSpinner ? (
+            this._renderSpinner()
+          ) : (
+            <View style={styles.cardForm}>
+              <Item floatingLabel last>
+                <Label>{strings.USERNAME}</Label>
+                <Input
+                  onChangeText={value => this.setState({ userName: value })}
+                  value={this.state.userName}
+                />
+              </Item>
+              <Item floatingLabel last>
+                <Label>{strings.PASSWORD}</Label>
+                <Input
+                  onChangeText={value => this.setState({ password: value })}
+                  value={this.state.password}
+                  secureTextEntry={true}
+                />
+              </Item>
+            </View>
+          )}
           <CardItem>
             <Body>
               <Button
@@ -140,7 +143,7 @@ class LoginScreen extends Component<Props, State> {
     return (
       <Spinner
         color={colors.SECONDARY_COLOR}
-        style={styles.center}
+        //style={styles.center}
         large
         animating={this.props.isAuthenticating}
       />

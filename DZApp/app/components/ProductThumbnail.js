@@ -12,8 +12,7 @@ import colors from "../styles/colors";
 //resources
 import * as strings from "../constants/strings";
 
-//functions
-import { toStringWithDecimals } from "../functions/number";
+
 
 export const ProductThumbnail = ({
   product,
@@ -22,7 +21,7 @@ export const ProductThumbnail = ({
   onLongPress,
   onTrashButtonPress
 }) => {
-  let priceString = toStringWithDecimals(product.price, 2) + " €";
+  let priceString = product.price.toFixed(2) + " €";
   let inStockString = `${strings.IN_STOCK} ${product.inStock} `;
 
   return (

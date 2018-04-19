@@ -19,7 +19,8 @@ import {
   Icon,
   Text,
   CardItem,
-  Card
+  Card,
+  Subtitle
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Toast from "react-native-root-toast";
@@ -64,24 +65,22 @@ class TopupSuccessScreen extends Component<Props, State> {
   }
 
   render() {
-    let fullname = this.props.fullname;
-    let previousBalance =
-      toStringWithDecimals(this.props.previousBalance, 2) + " €";
-    let currentBalance =
-      toStringWithDecimals(this.props.currentBalance, 2) + " €";
-    let amount = toStringWithDecimals(this.props.amount, 2) + " €";
+    // let fullname = this.props.fullname;
+    // let previousBalance = this.props.previousBalance.toFixed(2) + " €";
+
+    // let currentBalance = this.props.currentBalance.toFixed(2) + " €";
+
+    // let amount = this.props.amount.toFixed(2) + " €";
 
     return (
       <Container>
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail
-              square
-              source={require("../assets/images/site_dz.jpg")}
-            />
+            <Thumbnail square source={require("../assets/images/logo.gif")} />
           </Left>
           <Body>
             <Title>{strings.TOPUP}</Title>
+            <Subtitle>{strings.TOPPED_UP}</Subtitle>
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
@@ -161,38 +160,34 @@ class TopupSuccessScreen extends Component<Props, State> {
     return (
       <Card>
         <CardItem header>
-          <Text>{strings.TOPUP_COMPLETE}</Text>
+          <Text>{strings.TOPPED_UP}</Text>
         </CardItem>
         <CardItem>
           <Grid>
-            <Col style={{ width: 125, marginRight: 10 }}>
-              <Row>
-                <Text style={styles.label}>{strings.CUSTOMER}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.PREV_BALANCE}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.AMOUNT_LABEL}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
-              </Row>
-            </Col>
-            <Col>
-              <Row>
-                <Text style={styles.value}>{this.state.fullname}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{this.state.previousBalance}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{this.state.amount}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{this.state.currentBalance}</Text>
-              </Row>
-            </Col>
+            <Row>
+              <Text style={styles.label}>{strings.CUSTOMER}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{this.state.fullName}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.PREV_BALANCE}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{this.state.previousBalance}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.AMOUNT_LABEL}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{this.state.amount}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{this.state.currentBalance}</Text>
+            </Row>
           </Grid>
         </CardItem>
         <CardItem footer>
@@ -255,9 +250,9 @@ const mapStateToProps = state => {
   let currentBalance = customer.creditBalance;
 
   let fullname = `${customer.firstName} ${customer.lastName}`;
-  let previousBalanceString = toStringWithDecimals(previousBalance, 2) + " €";
-  let amountString = toStringWithDecimals(amount, 2) + " €";
-  let currentBalanceString = toStringWithDecimals(currentBalance, 2) + " €";
+  let previousBalanceString = previousBalance.toFixed(2) + " €";
+  let amountString = amount.toFixed(2) + " €";
+  let currentBalanceString = currentBalance.toFixed(2) + " €";
 
   return {
     fullname: fullname,

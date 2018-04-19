@@ -10,7 +10,8 @@ const initialState = {
   lastTopup: null,
   currentAmount: null,
   currentCustomer: null,
-  previousBalance: null
+  previousBalance: null,
+  history: []
 };
 
 const TopupReducer = (state: {} = initialState, action: {}) => {

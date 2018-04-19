@@ -20,7 +20,8 @@ import {
   Label,
   Input,
   Card,
-  CardItem
+  CardItem,
+  Subtitle
 } from "native-base";
 import Camera from "react-native-camera";
 import { Vibration } from "react-native";
@@ -34,7 +35,6 @@ import colors from "../styles/colors";
 import * as strings from "../constants/strings";
 
 //functions
-import { toStringWithDecimals } from "../functions/number";
 import { showInfoToast, showErrorToast } from "../functions/toast";
 
 //redux
@@ -80,17 +80,18 @@ class TopupCustomerScreen extends Component<Props, State> {
                 </Button>
                 <Thumbnail
                   square
-                  source={require("../assets/images/site_dz.jpg")}
+                  source={require("../assets/images/logo.gif")}
                 />
               </Row>
             </Grid>
           </Left>
           <Body>
-            <Title>
+            <Title>{strings.TOPUP}</Title>
+            <Subtitle>
               {this.previousRouteName
                 ? strings.CHANGE_CUSTOMER
                 : strings.CHOOSE_CUSTOMER}
-            </Title>
+            </Subtitle>
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
@@ -178,8 +179,7 @@ class TopupCustomerScreen extends Component<Props, State> {
   _renderCustomerInfo = () => {
     let fullName =
       this.state.customer.firstName + " " + this.state.customer.lastName;
-    let currentBalance =
-      toStringWithDecimals(this.state.customer.creditBalance, 2) + " €";
+    let currentBalance = this.state.customer.creditBalance.toFixed(2) + " €";
 
     return (
       <Card>
@@ -192,22 +192,18 @@ class TopupCustomerScreen extends Component<Props, State> {
         </CardItem>
         <CardItem>
           <Grid>
-            <Col style={{ width: 150, marginRight: 10 }}>
-              <Row>
-                <Text style={styles.label}>{strings.CUSTOMER}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
-              </Row>
-            </Col>
-            <Col>
-              <Row>
-                <Text style={styles.value}>{fullName}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{currentBalance}</Text>
-              </Row>
-            </Col>
+            <Row>
+              <Text style={styles.label}>{strings.CUSTOMER}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{fullName}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{currentBalance}</Text>
+            </Row>
           </Grid>
         </CardItem>
         <CardItem>
@@ -218,7 +214,9 @@ class TopupCustomerScreen extends Component<Props, State> {
               onPress={this._onConfirmButtonPress}
             >
               <Text style={styles.primaryButtonText}>
-                {strings.CHOOSE_CUSTOMER}
+                {this.previousRouteName
+                  ? strings.CHANGE_CUSTOMER
+                  : strings.CONFIRM_CUSTOMER}
               </Text>
             </Button>
           </Body>

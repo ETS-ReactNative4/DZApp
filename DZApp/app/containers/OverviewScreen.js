@@ -81,15 +81,17 @@ class OverviewScreen extends Component<Props, State> {
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
-          {this._renderSummary()}
-          {this.state.showList &&
-            this.props.orderlines.length > 0 &&
-            this._renderList()}
-          <ProductQuantityModal
-            ref="modal"
-            onSlidingComplete={this._onModalSlidingComplete}
-            onConfirmButtonPress={this._onModalConfirm}
-          />
+          <Card>
+            {this._renderSummary()}
+            {this.state.showList &&
+              this.props.orderlines.length > 0 &&
+              this._renderList()}
+            <ProductQuantityModal
+              ref="modal"
+              onSlidingComplete={this._onModalSlidingComplete}
+              onConfirmButtonPress={this._onModalConfirm}
+            />
+          </Card>
         </Content>
         <Footer>
           <FooterTab style={styles.primaryBackground}>
@@ -134,35 +136,31 @@ class OverviewScreen extends Component<Props, State> {
     let eventName = this.props.event.name;
 
     return (
-      <Card>
+      <View>
         <CardItem header>
           <Text>{strings.OVERVIEW}</Text>
         </CardItem>
         <CardItem>
           <Body>
             <Grid>
-              <Col style={{ width: 125, marginRight: 10 }}>
-                <Row>
-                  <Text style={styles.label}>{strings.TOTAL}</Text>
-                </Row>
-                <Row>
-                  <Text style={styles.label}>{strings.EVENT}</Text>
-                </Row>
-                <Row>
-                  <Text style={styles.label}>{strings.CASHIER}</Text>
-                </Row>
-              </Col>
-              <Col>
-                <Row>
-                  <Text style={styles.value}>{amount}</Text>
-                </Row>
-                <Row>
-                  <Text style={styles.value}>{eventName}</Text>
-                </Row>
-                <Row>
-                  <Text style={styles.value}>{cashierfullname}</Text>
-                </Row>
-              </Col>
+              <Row>
+                <Text style={styles.label}>{strings.TOTAL}</Text>
+              </Row>
+              <Row style={styles.valueRow}>
+                <Text style={styles.value}>{amount}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.EVENT}</Text>
+              </Row>
+              <Row style={styles.valueRow}>
+                <Text style={styles.value}>{eventName}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.CASHIER}</Text>
+              </Row>
+              <Row style={styles.valueRow}>
+                <Text style={styles.value}>{cashierfullname}</Text>
+              </Row>
             </Grid>
           </Body>
         </CardItem>
@@ -177,7 +175,7 @@ class OverviewScreen extends Component<Props, State> {
             </Body>
           </CardItem>
         )}
-        <CardItem footer>
+        <CardItem footer bordered>
           <Grid>
             <Col>
               <Button
@@ -198,17 +196,17 @@ class OverviewScreen extends Component<Props, State> {
             </Col>
           </Grid>
         </CardItem>
-      </Card>
+      </View>
     );
   };
 
   _renderList = () => {
     return (
-      <Card>
+      <View>
         <CardItem header>
           <Text>{strings.DETAILS}</Text>
         </CardItem>
-        <CardItem>
+        <CardItem bordered>
           <List
             dataSource={this.ds.cloneWithRows(this.props.orderlines)}
             renderRow={orderline => {
@@ -229,30 +227,34 @@ class OverviewScreen extends Component<Props, State> {
             rightOpenValue={-75}
           />
         </CardItem>
-      </Card>
+      </View>
     );
   };
 
   _renderListViewRow = (orderline: {}): {} => {
     let product = this.props.products.find(p => p._id === orderline.productId);
     let linePrice = orderline.quantity * product.price;
-    let linePriceString = toStringWithDecimals(linePrice, 2) + " €";
+    let linePriceString = linePrice.toFixed(2) + " €";
     return (
       <ListItem>
         <Grid>
           <Row>
-            <Col style={styles.justifyCenter} size={15}>
+            <Col style={styles.justifyCenter} size={20}>
               <Thumbnail small source={{ uri: product.imageUrl }} />
             </Col>
-            <Col style={styles.justifyCenter} size={45}>
-              <Text style={styles.left}>{orderline.name}</Text>
+            <Col style={styles.justifyCenter} size={30}>
+              <Text style={styles.left} numberOfLines={1} ellipsizeMode="tail">
+                {orderline.name}
+              </Text>
             </Col>
             <Col style={styles.justifyCenter} size={15}>
-              <Text>X {orderline.quantity}</Text>
+              <Text style={styles.right} numberOfLines={1} ellipsizeMode="tail">
+                {orderline.quantity}
+              </Text>
             </Col>
-            <Col style={styles.justifyCenter} size={25}>
+            <Col style={styles.justifyCenter} size={35}>
               <Text style={[styles.secondary, styles.right]}>
-                = {linePriceString}
+                {linePriceString}
               </Text>
             </Col>
           </Row>

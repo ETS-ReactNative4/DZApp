@@ -80,7 +80,7 @@ const Navigator = SwitchNavigator(
     }
   },
   {
-    initialRouteName: "AuthNavigator"
+    initialRouteName: "EventScreen"
   }
 );
 

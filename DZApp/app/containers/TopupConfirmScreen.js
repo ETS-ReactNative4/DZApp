@@ -20,7 +20,8 @@ import {
   Label,
   Input,
   Card,
-  CardItem
+  CardItem,
+  Subtitle
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { TopupConfirmModal } from "../components/TopupConfirmModal";
@@ -35,6 +36,7 @@ import * as strings from "../constants/strings";
 //functions
 import { toStringWithDecimals } from "../functions/number";
 import { showInfoToast, showErrorToast } from "../functions/toast";
+import moment from "moment-timezone";
 
 //redux
 import { bindActionCreators } from "redux";
@@ -67,22 +69,25 @@ class TopupConfirmScreen extends Component<Props, State> {
     return (
       <Container>
         <Header style={styles.primaryBackground}>
-          <Grid>
-            <Row>
-              <Button
-                transparent
-                onPress={() => this.props.navigation.goBack()}
-              >
-                <Icon name="arrow-back" style={styles.white} />
-              </Button>
-              <Thumbnail
-                square
-                source={require("../assets/images/site_dz.jpg")}
-              />
-            </Row>
-          </Grid>
+          <Left>
+            <Grid>
+              <Row>
+                <Button
+                  transparent
+                  onPress={() => this.props.navigation.goBack()}
+                >
+                  <Icon name="arrow-back" style={styles.white} />
+                </Button>
+                <Thumbnail
+                  square
+                  source={require("../assets/images/logo.gif")}
+                />
+              </Row>
+            </Grid>
+          </Left>
           <Body>
             <Title>{strings.TOPUP}</Title>
+            <Subtitle>{strings.CONFIRM}</Subtitle>
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
@@ -146,9 +151,8 @@ class TopupConfirmScreen extends Component<Props, State> {
     let customer = this.props.customer;
 
     let fullName = customer.firstName + " " + customer.lastName;
-    let currentBalanceString =
-      toStringWithDecimals(customer.creditBalance, 2) + " €";
-    let amountString = toStringWithDecimals(amount, 2) + " €";
+    let currentBalanceString = customer.creditBalance.toFixed(2) + " €";
+    let amountString = amount.toFixed(2) + " €";
 
     return (
       <Card>
@@ -157,28 +161,24 @@ class TopupConfirmScreen extends Component<Props, State> {
         </CardItem>
         <CardItem>
           <Grid>
-            <Col style={{ width: 150, marginRight: 10 }}>
-              <Row>
-                <Text style={styles.label}>{strings.CUSTOMER}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.TOPUP_AMOUNT}</Text>
-              </Row>
-            </Col>
-            <Col>
-              <Row>
-                <Text style={styles.value}>{fullName}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{currentBalanceString}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{amountString}</Text>
-              </Row>
-            </Col>
+            <Row>
+              <Text style={styles.label}>{strings.CUSTOMER}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{fullName}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{currentBalanceString}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.TOPUP_AMOUNT}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{amountString}</Text>
+            </Row>
           </Grid>
         </CardItem>
         <CardItem>
@@ -243,16 +243,15 @@ class TopupConfirmScreen extends Component<Props, State> {
     this.props.topupBalance({
       cashierId: this.props.cashierId,
       customerId: this.props.customer._id,
-      timestamp: new Date().toJSON(),
+      timestamp: moment().valueOf(),
       amount: this.props.amount
     });
     const resetAction = NavigationActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: "TopupSuccessScreen" }),]
+      actions: [NavigationActions.navigate({ routeName: "TopupSuccessScreen" })]
     });
     this.props.navigation.dispatch(resetAction);
   };
-    
 
   _toggleModalVisible = () => {
     let modal = this.refs.modal;

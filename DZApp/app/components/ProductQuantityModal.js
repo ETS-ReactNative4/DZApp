@@ -26,7 +26,7 @@ import colors from "../styles/colors";
 import * as strings from "../constants/strings";
 
 //functions
-import { validateIntegerBetween } from "../functions/validation";
+import { validateIntegerGreaterThan } from "../functions/validation";
 
 type Props = {
   onConfirmButtonPress: number => void
@@ -142,12 +142,12 @@ export class ProductQuantityModal extends Component<Props, State> {
   _onChangeText = value => {
     value = value.replace(/\s+/g, "");
     let product = this.state.product;
-    let valid = validateIntegerBetween(value, 0, product.inStock);
+    let valid = validateIntegerGreaterThan(value, 0);
     if (valid) {
       this.setState({ error: null, quantity: value });
     } else {
       this.setState({
-        error: `${strings.INVALID_QUANTITY} (>= 0 en <= ${product.inStock})`,
+        error: `${strings.INVALID_QUANTITY} (>= 0)`,
         quantity: value
       });
     }

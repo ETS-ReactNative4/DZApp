@@ -6,6 +6,14 @@ export const validateIntegerBetween = (value, lowerIncl, upperIncl) => {
   return valid;
 };
 
+export const validateIntegerGreaterThan = (value, lowerIncl) => {
+  let valid = true;
+  let intValue = parseInt(value, 10);
+  if (!(value == intValue)) valid = false;
+  if (intValue < lowerIncl) valid = false;
+  return valid;
+};
+
 export const validateTopupAmount = value => {
   value = Number(value);
   let valid = true;

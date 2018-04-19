@@ -17,12 +17,16 @@ export const SERVER_SYNC_SUCCESS = "Gesynchroniseerd met server";
 export const SERVER_SYNC_FAILURE = "Probleem met synchronisatie: offline modus";
 
 //EventScreen
-export const EVENT_HEADER = "Kies een evenement";
-export const PICK_EVENT = "Kies Evenement";
+export const EVENT_HEADER = "Kies een productie of evenement";
+export const PICK_EVENT = "Kies Productie";
 export const PICK_EVENT_IOS_HEADER = "Kies...";
-export const FROM = "Van: ";
-export const TO = "Tot: ";
-export const SUBSCRIPTIONFEE = "Inschrijvingsgeld: ";
+export const FROM_LABEL = "Van: ";
+export const TO_LABEL = "Tot: ";
+export const SUBSCRIPTIONFEE_LABEL = "Inschrijvingsgeld: ";
+export const PICKER_PRODUCTION = "productie";
+export const PICKER_EVENT = "evenement";
+export const TYPE_LABEL = "Type: ";
+export const CHANGE_EVENT = "Wijzig productie";
 
 //OrderScreen
 export const ORDER = "Bestellen";
@@ -32,18 +36,19 @@ export const INVALID_QUANTITY = "Gelieve een geheel getal in te voeren";
 
 //OverviewScreen
 export const OVERVIEW = "Overzicht";
-export const EVENT = "Evenement: ";
+export const EVENT = "Productie: ";
 export const CASHIER = "Kassier: ";
 export const TOTAL = "Totaal: ";
 export const CHOOSE_CUSTOMER = "Kies Klant";
 export const DETAILS = "Details";
 export const SHOW_LIST = "Toon details";
 export const HIDE_LIST = "Verberg details";
-export const CHANGE_EVENT = "Wijzig evenement";
 
 //TopupScreen
 export const TOPUP = "Saldo Opladen";
-export const ENTER_TOPUP_AMT = "Kies bedrag";
+export const ENTER_TOPUP_AMT = "Bedrag invoeren";
+export const CONFIRM_AMT = "Bevestig bedrag";
+export const CONFIRM_CUSTOMER = "Bevestig klant";
 export const SCAN_CUSTOMER_CARD = "Scan QR code:";
 export const TOPUP_FOR_CUSTOMER = "Opladen voor:";
 export const AMOUNT = "Bedrag (€)";
@@ -63,15 +68,11 @@ export const INVALID_AMOUNT =
   "Gelieve een bedrag > 0 en <= 100 € in te voeren!";
 export const CHANGE_AMOUNT = "Wijzig bedrag";
 export const CHANGE_CUSTOMER = "Wijzig klant";
-
-//TopSuccessScreen
-export const TOPUP_COMPLETE = "Saldo opgeladen";
+export const CONFIRM = "Bevestig";
+export const TOPPED_UP = "Saldo Opgeladen";
 export const PREV_BALANCE = "Vorig saldo: ";
 
-//HistoryScreen
 export const HISTORY = "Historiek";
-
-//ProductThumbnail
 export const IN_STOCK = "Voorraad:";
 export const INSUFFICIENT_STOCK = "Onvoldoende voorraad!";
 

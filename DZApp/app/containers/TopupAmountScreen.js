@@ -21,7 +21,8 @@ import {
   Label,
   Input,
   Card,
-  CardItem
+  CardItem,
+  Subtitle
 } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
@@ -83,10 +84,7 @@ class TopupAmountScreen extends Component<Props, State> {
         <Header style={styles.primaryBackground}>
           <Left>
             {this.previousRouteName === null ? (
-              <Thumbnail
-                square
-                source={require("../assets/images/site_dz.jpg")}
-              />
+              <Thumbnail square source={require("../assets/images/logo.gif")} />
             ) : (
               <Grid>
                 <Row>
@@ -98,18 +96,19 @@ class TopupAmountScreen extends Component<Props, State> {
                   </Button>
                   <Thumbnail
                     square
-                    source={require("../assets/images/site_dz.jpg")}
+                    source={require("../assets/images/logo.gif")}
                   />
                 </Row>
               </Grid>
             )}
           </Left>
           <Body>
-            <Title>
+            <Title>{strings.TOPUP}</Title>
+            <Subtitle>
               {this.previousRouteName
                 ? strings.CHANGE_AMOUNT
                 : strings.ENTER_TOPUP_AMT}
-            </Title>
+            </Subtitle>
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
@@ -207,7 +206,7 @@ class TopupAmountScreen extends Component<Props, State> {
                 <Text style={styles.primaryButtonText}>
                   {this.previousRouteName
                     ? strings.CHANGE_AMOUNT
-                    : strings.ENTER_TOPUP_AMT}
+                    : strings.CONFIRM_AMT}
                 </Text>
               </Button>
             </Body>

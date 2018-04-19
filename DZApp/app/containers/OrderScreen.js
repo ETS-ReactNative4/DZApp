@@ -63,10 +63,7 @@ class OrderScreen extends Component<Props, State> {
       <Container>
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail
-              square
-              source={require("../assets/images/site_dz.jpg")}
-            />
+            <Thumbnail square source={require("../assets/images/logo.gif")} />
           </Left>
           <Body>
             <Title>{strings.ORDER}</Title>
@@ -150,7 +147,6 @@ class OrderScreen extends Component<Props, State> {
     );
   };
 
-  //navigate away from OrderScreen when no cashierId or eventId is set
   componentDidUpdate() {
     if (this.props.message !== null) {
       showInfoToast(this.props.message);
@@ -160,6 +156,7 @@ class OrderScreen extends Component<Props, State> {
     }
   }
 
+  //navigate away from OrderScreen when no cashierId or eventId is set
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
   };
@@ -169,14 +166,13 @@ class OrderScreen extends Component<Props, State> {
   };
 
   //increment the product's quantity in orderlines by 1
-  //if stock allows it
   _onProductThumbnailPress = (productId: String) => {
-    let inStock = this.props.products.find(p => p._id === productId).inStock;
+    //let inStock = this.props.products.find(p => p._id === productId).inStock;
     let inOrderline = this.props.orderlines[productId] || 0;
 
-    if (inStock > inOrderline)
-      this.props.setProductQuantity(productId, ++inOrderline);
-    else this.props.sendError(strings.INSUFFICIENT_STOCK);
+    //if (inStock > inOrderline)
+    this.props.setProductQuantity(productId, ++inOrderline);
+    //else this.props.sendError(strings.INSUFFICIENT_STOCK);
   };
 
   _onProductThumbnailLongPress = (productId: String) => {

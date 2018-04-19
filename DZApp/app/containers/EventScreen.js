@@ -38,8 +38,8 @@ import { setEvent } from "../actions/eventActions";
 
 //functions
 import { to_NL_be_DateString } from "../functions/date";
-import { toStringWithDecimals } from "../functions/number";
 import { showInfoToast, showErrorToast } from "../functions/toast";
+import moment from "moment-timezone";
 
 type Props = {};
 
@@ -68,10 +68,7 @@ class EventScreen extends Component<Props, State> {
         <Header style={styles.primaryBackground}>
           <Left>
             {this.previousRouteName === null ? (
-              <Thumbnail
-                square
-                source={require("../assets/images/site_dz.jpg")}
-              />
+              <Thumbnail square source={require("../assets/images/logo.gif")} />
             ) : (
               <Grid>
                 <Row>
@@ -85,7 +82,7 @@ class EventScreen extends Component<Props, State> {
                   </Button>
                   <Thumbnail
                     square
-                    source={require("../assets/images/site_dz.jpg")}
+                    source={require("../assets/images/logo.gif")}
                   />
                 </Row>
               </Grid>
@@ -100,8 +97,10 @@ class EventScreen extends Component<Props, State> {
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
-          {this._renderInputForm()}
-          {this.state.eventId !== "" && this._renderEventInfo()}
+          <Card>
+            {this._renderInputForm()}
+            {this.state.eventId !== "" && this._renderEventInfo()}
+          </Card>
         </Content>
       </Container>
     );
@@ -161,15 +160,15 @@ class EventScreen extends Component<Props, State> {
 
   _renderInputForm = () => {
     return (
-      <Card>
+      <View>
         <CardItem header>
           <Text>
             {this.previousRouteName ? strings.CHANGE_EVENT : strings.PICK_EVENT}
           </Text>
         </CardItem>
         <View style={styles.cardPicker}>{this._renderPicker()}</View>
-        {this.previousRouteName && (
-          <CardItem footer>
+        <CardItem footer bordered>
+          {this.previousRouteName && (
             <Button
               transparent
               full
@@ -180,9 +179,9 @@ class EventScreen extends Component<Props, State> {
             >
               <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
             </Button>
-          </CardItem>
-        )}
-      </Card>
+          )}
+        </CardItem>
+      </View>
     );
   };
 
@@ -194,15 +193,20 @@ class EventScreen extends Component<Props, State> {
           onValueChange={this._onPickerValueChange}
         >
           <Item label={strings.PICK_EVENT_IOS_HEADER} value="" key="" />
-          {this.props.events.map((event, key) => (
-            <Item
-              label={`${event.name} (${to_NL_be_DateString(
-                new Date(event.fromDate)
-              )})`}
-              value={event._id}
-              key={event._id}
-            />
-          ))}
+          {this.props.events.map((event, key) => {
+            let type =
+              event.type === "production"
+                ? strings.PICKER_PRODUCTION
+                : strings.PICKER_EVENT;
+
+            return (
+              <Item
+                label={`${event.name} (${type})`}
+                value={event._id}
+                key={event._id}
+              />
+            );
+          })}
         </Picker>
       );
     },
@@ -213,15 +217,20 @@ class EventScreen extends Component<Props, State> {
           selectedValue={this.state.eventId}
           onValueChange={this._onPickerValueChange}
         >
-          {this.props.events.map((event, key) => (
-            <Item
-              label={`${event.name} (${to_NL_be_DateString(
-                new Date(event.fromDate)
-              )})`}
-              value={event._id}
-              key={event._id}
-            />
-          ))}
+          {this.props.events.map((event, key) => {
+            let type =
+              event.type === "production"
+                ? strings.PICKER_PRODUCTION
+                : strings.PICKER_EVENT;
+
+            return (
+              <Item
+                label={`${event.name} (${type})`}
+                value={event._id}
+                key={event._id}
+              />
+            );
+          })}
         </Picker>
       );
     }
@@ -229,41 +238,58 @@ class EventScreen extends Component<Props, State> {
 
   _renderEventInfo = () => {
     let event = this.props.events.find(e => e._id === this.state.eventId);
-    let fromDateString = to_NL_be_DateString(new Date(event.fromDate));
-    let toDateString = to_NL_be_DateString(new Date(event.toDate));
-    let subscriptionFeeString = event.subscriptionFee
-      ? toStringWithDecimals(event.subscriptionFee, 2) + " €"
-      : "0.00 €";
+
+    let renderFeeInfo = event.type === "event";
+    let typeString =
+      event.type === "production"
+        ? strings.PICKER_PRODUCTION
+        : strings.PICKER_EVENT;
+    let fromDateString = moment
+      .tz(event.fromDate, "Europe/Berlin")
+      .format("DD/MM/YYYY");
+    let toDateString = moment
+      .tz(event.toDate, "Europe/Berlin")
+      .format("DD/MM/YYYY");
 
     return (
-      <Card>
+      <View>
         <CardItem header>
           <Text>{event.name}</Text>
         </CardItem>
         <CardItem>
           <Grid>
-            <Col style={{ width: 150, marginRight: 10 }}>
-              <Row>
-                <Text style={styles.label}>{strings.FROM}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.TO}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.label}>{strings.SUBSCRIPTIONFEE}</Text>
-              </Row>
-            </Col>
-            <Col>
-              <Row>
-                <Text style={styles.value}>{fromDateString}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{toDateString}</Text>
-              </Row>
-              <Row>
-                <Text style={styles.value}>{subscriptionFeeString}</Text>
-              </Row>
-            </Col>
+            <Row>
+              <Text style={styles.label}>{strings.TYPE_LABEL}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{typeString}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.FROM_LABEL}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{fromDateString}</Text>
+            </Row>
+            <Row>
+              <Text style={styles.label}>{strings.TO_LABEL}</Text>
+            </Row>
+            <Row style={styles.valueRow}>
+              <Text style={styles.value}>{toDateString}</Text>
+            </Row>
+            {renderFeeInfo && (
+              <View>
+                <Row>
+                  <Text style={styles.label}>
+                    {strings.SUBSCRIPTIONFEE_LABEL}
+                  </Text>
+                </Row>
+                <Row style={styles.valueRow}>
+                  <Text style={styles.value}>
+                    {event.subscriptionFee.toFixed(2)} €
+                  </Text>
+                </Row>
+              </View>
+            )}
           </Grid>
         </CardItem>
         <CardItem>
@@ -277,7 +303,7 @@ class EventScreen extends Component<Props, State> {
             </Button>
           </Body>
         </CardItem>
-      </Card>
+      </View>
     );
   };
 
@@ -293,11 +319,28 @@ class EventScreen extends Component<Props, State> {
 }
 
 const mapStateToProps = state => {
+  // show events/productions (sorted by date)
+  // that are current, i.e.:
+  // today > start of fromDate
+  // && today < end of toDate + 1 day => party till midnight the day after for events!
+  let events = state.EventReducer.events
+    .filter(e => {
+      return (
+        moment().isSameOrAfter(moment(e.fromDate)) &&
+        moment().isSameOrBefore(
+          moment(e.toDate)
+            .add(1, "d")
+            .endOf("day")
+        )
+      );
+    })
+    .sort((a, b) => {
+      return new Date(a.fromDate) - new Date(b.fromDate);
+    });
+
   return {
     //events sorted chronologically
-    events: state.EventReducer.events.sort((a, b) => {
-      return new Date(a.fromDate) - new Date(b.fromDate);
-    }),
+    events: events,
     cashierId: state.CashierReducer.cashierId,
     eventId: state.EventReducer.eventId,
     message: state.MessageReducer.message,
