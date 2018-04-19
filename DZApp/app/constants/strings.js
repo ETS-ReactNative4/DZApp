@@ -79,6 +79,7 @@ export const INSUFFICIENT_STOCK = "Onvoldoende voorraad!";
 //Error messages
 export const SERVER_TIMEOUT = "Timeout van verbinding met de server";
 export const UNABLE_TO_SYNC = "Kon niet synchroniseren met de server";
+export const NO_CONNECTION = "Geen netwerkverbinding";
 
 //Success messages
 export const SYNCED = "Gesynchroniseerd met server";

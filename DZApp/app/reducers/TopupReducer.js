@@ -2,6 +2,8 @@
 import * as types from "../actions/types";
 import * as strings from "../constants/strings";
 
+let historyCount = 5;
+
 const initialState = {
   isSyncing: false,
   isProcessed: false,
@@ -30,14 +32,25 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       let topup = action.data.topup;
       let previousBalance = action.data.previousBalance;
       let amount = topup.amount;
+
+      //clone the unsynced topup array and add new topup to the cloned unsynced array
       let newTopups = state.topups.slice(0);
       newTopups.push(topup);
+
+      //clone the history topup array and add new topup to the cloned history array
+      //respecting the max history count
+      let newHistory = state.topups.slice(0);
+      newHistory.unshift(topup);
+      if (newHistory.length > historyCount)
+        newHistory = newHistory.slice(0, historyCount - 1);
+
       return Object.assign({}, state, {
         topups: newTopups,
         cashInRegister: state.cashInRegister + amount,
         lastTopup: topup,
         isProcessed: true,
-        previousBalance: previousBalance
+        previousBalance: previousBalance,
+        history: newHistory
       });
     case types.TOPUP_SYNC_STARTED: {
       return Object.assign({}, state, {

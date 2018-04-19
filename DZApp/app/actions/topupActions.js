@@ -11,8 +11,6 @@ import { fetchCustomers } from "./customerActions";
 import { Store } from "../store/store";
 import { sendMessage, sendError } from "./messageActions";
 
-import { toStringWithDecimals } from "../functions/number";
-
 /************ Synchronous Actions ***************/
 
 //API request for product list started
@@ -67,11 +65,18 @@ export const topupBalance = (topup: {}) => {
   return function(dispatch) {
     dispatch(localTopup(topup));
     let connectionType;
-    NetInfo.isConnected.fetch().then(isConnected => {
-      if (isConnected) {
-        dispatch(syncTopups());
-      }
-    });
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          dispatch(syncTopups());
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };
 
@@ -95,29 +100,29 @@ export const syncTopups = () => {
           dispatch(topupSyncComplete());
           dispatch(fetchCustomers());
         } else {
-          dispatch(sendError(strings.SYNCED));
+          dispatch(sendError(strings.UNABLE_TO_SYNC));
           dispatch(topupSyncFailed());
         }
       })
       .catch(err => {
-        dispatch(sendError(string.SYNCED));
+        dispatch(sendError(strings.UNABLE_TO_SYNC));
         dispatch(topupSyncFailed());
       });
   };
 };
 
-const _getTopupInfo = topup => {
-  let customers = Store.getState().CustomerReducer.customers;
-  let customer = customer.find(c => c._id === topup.customerId);
-  let fullname = `${customer.firstName} ${customer.lastName}`;
+// const _getTopupInfo = topup => {
+//   let customers = Store.getState().CustomerReducer.customers;
+//   let customer = customer.find(c => c._id === topup.customerId);
+//   let fullname = `${customer.firstName} ${customer.lastName}`;
 
-  let previousBalance = customer.creditBalance;
-  let amount = topup.amount;
-  let nextBalance = previousBalance + amount;
-  return {
-    fullname: fullname,
-    previousBalance: toStringWithDecimals(previousBalance, 2) + " €",
-    amount: toStringWithDecimals(amount, 2) + " €",
-    currentBalance: toStringWithDecimals(currentBalance, 2) + " €"
-  };
-};
+//   let previousBalance = customer.creditBalance;
+//   let amount = topup.amount;
+//   let nextBalance = previousBalance + amount;
+//   return {
+//     fullname: fullname,
+//     previousBalance: previousBalance.toFixed(2) + " €",
+//     amount: amount.toFixed(2) + " €",
+//     currentBalance: currentBalance.toFixed(2) + " €"
+//   };
+// };
