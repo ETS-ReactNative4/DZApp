@@ -60,7 +60,6 @@ export const resetTopupProcessed = () => {
 export const topupBalance = (topup: {}) => {
   return function(dispatch) {
     dispatch(localTopup(topup));
-    let connectionType;
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {

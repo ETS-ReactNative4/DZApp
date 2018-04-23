@@ -17,6 +17,7 @@ import { Root } from "native-base";
 import { fetchEvents } from "./actions/eventActions";
 import { fetchCustomers } from "./actions/customerActions";
 import { fetchProducts } from "./actions/productActions";
+import { fetchSubscriptions } from "./actions/subscriptionActions";
 
 type Props = {};
 type State = {};
@@ -46,6 +47,7 @@ export default class App extends Component {
     this._fetchEvents(store);
     this._fetchCustomers(store);
     this._fetchProducts(store);
+    this._fetchSubscriptions(store);
   }
 
   async _fetchEvents(store) {
@@ -58,5 +60,9 @@ export default class App extends Component {
 
   async _fetchProducts(store) {
     return await store.dispatch(fetchProducts());
+  }
+
+  async _fetchSubscriptions(store) {
+    return await store.dispatch(fetchSubscriptions());
   }
 }

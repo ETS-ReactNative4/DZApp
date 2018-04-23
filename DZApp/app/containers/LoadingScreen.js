@@ -81,13 +81,15 @@ const mapStateToProps = state => {
   let customersFetched = !state.CustomerReducer.isFetching;
   let eventsFetched = !state.EventReducer.isFetching;
   let productsFetched = !state.ProductReducer.isFetching;
+  let subscriptionsFetched = !state.SubscriptionReducer.isFetching;
 
-  let allFetched = customersFetched && eventsFetched && productsFetched;
+  let allFetched = customersFetched && eventsFetched && productsFetched && subscriptionsFetched;
 
   let synchronizedSuccessfully =
     state.CustomerReducer.errorMessage === null &&
     state.ProductReducer.errorMessage === null &&
-    state.EventReducer.errorMessage === null;
+    state.EventReducer.errorMessage === null
+    state.SubscriptionReducer.errorMessage === null;
 
   if (!state._persist.rehydrated) {
     message = strings.LOCAL_LOADING;

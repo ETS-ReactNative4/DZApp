@@ -6,6 +6,7 @@ import CustomerReducer from "./CustomerReducer";
 import ProductReducer from "./ProductReducer";
 import OrderReducer from "./OrderReducer";
 import TopupReducer from "./TopupReducer";
+import SubscriptionReducer from "./SubscriptionReducer"
 import MessageReducer from "./MessageReducer";
 
 import { AsyncStorage } from "react-native";
@@ -26,6 +27,7 @@ const rootPersistConfig = {
     "ProductReducer",
     "OrderReducer",
     "TopupReducer",
+    "SubscriptionReducer",
     "MessageReducer"
   ]
 };
@@ -72,6 +74,13 @@ const topupPersistConfig = {
   stateReconciler: autoMergeLevel2
 };
 
+const subscriptionPersistConfig = {
+  key: "SubscriptionReducer",
+  storage: AsyncStorage,
+  whitelist: ["subscriptions"],
+  stateReconciler: autoMergeLevel2
+};
+
 //combined reducer => each reducer manages a part of the global state
 //these different reducers are combined in a RootReducer, which we
 //will use to create our global state store (see store.js)
@@ -82,6 +91,7 @@ const RootReducer = combineReducers({
   ProductReducer: persistReducer(productPersistConfig, ProductReducer),
   OrderReducer: persistReducer(orderPersistConfig, OrderReducer),
   TopupReducer: persistReducer(topupPersistConfig, TopupReducer),
+  SubscriptionReducer: persistReducer(subscriptionPersistConfig,SubscriptionReducer),
   MessageReducer: MessageReducer
 });
 

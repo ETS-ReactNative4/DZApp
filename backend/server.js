@@ -7,7 +7,7 @@ const db = require("./config/db");
 const app = express();
 
 //android
-const port = 80;
+const port = 3000;
 //const ip = "192.168.0.132";
 //const ip = "10.3.208.75";
 
