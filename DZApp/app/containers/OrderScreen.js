@@ -32,6 +32,11 @@ import * as strings from "../constants/strings";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setProductQuantity } from "../actions/orderActions";
+import {
+  setTopupAmount,
+  setTopupCustomer,
+  resetPreviousBalance
+} from "../actions/topupActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
@@ -45,6 +50,7 @@ class OrderScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {};
+
     this._onProductThumbnailPress = this._onProductThumbnailPress.bind(this);
     this._onProductThumbnailLongPress = this._onProductThumbnailLongPress.bind(
       this
@@ -56,6 +62,15 @@ class OrderScreen extends Component<Props, State> {
 
     this._checkLoginState();
     this._checkEventState();
+
+    //reset the topup state when arriving here from the TopupSuccessScreen
+    const { params } = this.props.navigation.state;
+    let resetTopupState = params ? params.resetTopupState : false;
+    if (resetTopupState) {
+      this.props.setTopupAmount(null);
+      this.props.setTopupCustomer(null);
+      this.props.resetPreviousBalance();
+    }
   }
 
   render() {
@@ -216,7 +231,16 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setProductQuantity, sendError }, dispatch);
+  return bindActionCreators(
+    {
+      setProductQuantity,
+      sendError,
+      setTopupAmount,
+      setTopupCustomer,
+      resetPreviousBalance
+    },
+    dispatch
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderScreen);

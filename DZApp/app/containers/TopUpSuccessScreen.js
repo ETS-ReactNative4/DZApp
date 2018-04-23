@@ -33,7 +33,6 @@ import colors from "../styles/colors";
 import * as strings from "../constants/strings";
 
 //functions
-import { toStringWithDecimals } from "../functions/number";
 import { showInfoToast, showErrorToast } from "../functions/toast";
 
 //redux
@@ -65,13 +64,6 @@ class TopupSuccessScreen extends Component<Props, State> {
   }
 
   render() {
-    // let fullname = this.props.fullname;
-    // let previousBalance = this.props.previousBalance.toFixed(2) + " €";
-
-    // let currentBalance = this.props.currentBalance.toFixed(2) + " €";
-
-    // let amount = this.props.amount.toFixed(2) + " €";
-
     return (
       <Container>
         <Header style={styles.primaryBackground}>
@@ -222,8 +214,15 @@ class TopupSuccessScreen extends Component<Props, State> {
     );
   };
 
+  //The cashier is given the option to execute another topup from this
+  //screen or to go back to the OrderScreen.
+  //In both cases a reset flag is included in the navigation params, that allows
+  //chosen screen to reset the topup state (i.e. previousBalance, currentAmount and
+  //currentCustomer)
   _onPOSButtonPress = () => {
-    this.props.navigation.navigate("OrderScreen");
+    this.props.navigation.navigate("OrderScreen", {
+      resetTopupState: true
+    });
   };
 
   _onTopupButtonPress = () => {
@@ -232,7 +231,7 @@ class TopupSuccessScreen extends Component<Props, State> {
       actions: [
         NavigationActions.navigate({
           routeName: "TopupAmountScreen",
-          params: { reset: true }
+          params: { resetTopupState: true }
         })
       ]
     });

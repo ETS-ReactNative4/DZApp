@@ -44,7 +44,6 @@ import {
   setTopupAmount,
   setTopupCustomer,
   resetPreviousBalance,
-  resetTopupProcessed
 } from "../actions/topupActions";
 
 type Props = {};
@@ -61,17 +60,17 @@ class TopupAmountScreen extends Component<Props, State> {
     const { params } = this.props.navigation.state;
     this.previousRouteName =
       params && params.previousState ? params.previousState.routeName : null;
-    let reset = params ? params.reset : false;
 
-    if (reset) {
-      this.props.setTopupAmount(null),
-        this.props.setTopupCustomer(null),
-        this.props.resetPreviousBalance(null),
-        this.props.resetTopupProcessed(null);
+    //reset the topup state when arriving here from the TopupSuccessScreen
+    let resetTopupState = params ? params.resetTopupState : false;
+    if (resetTopupState) {
+      this.props.setTopupAmount(null);
+      this.props.setTopupCustomer(null);
+      this.props.resetPreviousBalance();
     }
-
+    //display the current value in the form when reset flag was false
     this.state = {
-      quantity: reset ? "" : this.props.amount || "",
+      quantity: resetTopupState ? "" : this.props.amount || "",
       error: null
     };
 
@@ -275,7 +274,6 @@ const mapDispatchToProps = dispatch => {
       setTopupAmount,
       setTopupCustomer,
       resetPreviousBalance,
-      resetTopupProcessed
     },
     dispatch
   );

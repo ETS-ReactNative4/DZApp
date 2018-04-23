@@ -6,7 +6,7 @@ let historyCount = 5;
 
 const initialState = {
   isSyncing: false,
-  isProcessed: false,
+  //isProcessed: false,
   topups: [],
   cashInRegister: 0,
   lastTopup: null,
@@ -44,14 +44,16 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       if (newHistory.length > historyCount)
         newHistory = newHistory.slice(0, historyCount - 1);
 
-      return Object.assign({}, state, {
+      let newState = Object.assign({}, state, {
         topups: newTopups,
         cashInRegister: state.cashInRegister + amount,
         lastTopup: topup,
-        isProcessed: true,
+        //isProcessed: true,
         previousBalance: previousBalance,
         history: newHistory
       });
+      console.log("topup state after local:\n" + JSON.stringify(newState));
+      return newState;
     case types.TOPUP_SYNC_STARTED: {
       return Object.assign({}, state, {
         isSyncing: true
@@ -59,21 +61,23 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
     }
     case types.TOPUP_SYNC_COMPLETE: {
       //remove all locally stored topups
-      return Object.assign({}, state, {
+      let newState = Object.assign({}, state, {
         topups: [],
         isSyncing: false
       });
+      console.log("topup state after sync:\n" + JSON.stringify(newState));
+      return newState;
     }
     case types.TOPUP_SYNC_FAILED: {
       return Object.assign({}, state, {
         isSyncing: false
       });
     }
-    case types.RESET_TOPUP_PROCESSED: {
-      return Object.assign({}, state, {
-        isProcessed: false
-      });
-    }
+    // case types.RESET_TOPUP_PROCESSED: {
+    //   return Object.assign({}, state, {
+    //     isProcessed: false
+    //   });
+    // }
     case types.RESET_PREVIOUS_BALANCE: {
       return Object.assign({}, state, {
         previousBalance: null

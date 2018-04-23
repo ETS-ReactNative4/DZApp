@@ -34,7 +34,6 @@ import colors from "../styles/colors";
 import * as strings from "../constants/strings";
 
 //functions
-import { toStringWithDecimals } from "../functions/number";
 import { showInfoToast, showErrorToast } from "../functions/toast";
 import moment from "moment-timezone";
 
@@ -62,7 +61,7 @@ class TopupConfirmScreen extends Component<Props, State> {
   }
 
   render() {
-    let amountString = toStringWithDecimals(this.props.amount, 2) + " €";
+    let amountString = this.props.amount.toFixed(2) + " €";
     let fullname =
       this.props.customer.firstName + " " + this.props.customer.lastName;
 
