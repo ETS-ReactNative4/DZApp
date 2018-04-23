@@ -73,7 +73,7 @@ class OverviewScreen extends Component<Props, State> {
           <Left>
             <Thumbnail
               square
-              source={require("../assets/images/site_dz.jpg")}
+              source={require("../assets/images/logo.gif")}
             />
           </Left>
           <Body>

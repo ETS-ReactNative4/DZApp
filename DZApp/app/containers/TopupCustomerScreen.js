@@ -1,5 +1,6 @@
 //@flow
 import React, { Component } from "react";
+import { Platform } from "react-native";
 
 //components
 import {
@@ -16,13 +17,14 @@ import {
   FooterTab,
   Icon,
   Title,
-  Item,
   Label,
   Input,
   Card,
   CardItem,
-  Subtitle
+  Subtitle,
+  Picker
 } from "native-base";
+const Item = Picker.Item;
 import Camera from "react-native-camera";
 import { Vibration } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
@@ -46,16 +48,21 @@ import { setTopupCustomer } from "../actions/topupActions";
 type Props = {};
 
 type State = {
-  customer: {},
-  error: string
+  customerId: string,
+  error: string,
+  showCam: boolean
 };
 
 class TopupCustomerScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
+
+    let customerId = this.props.customer ? this.props.customer._id : "";
+
     this.state = {
-      customer: this.props.customer || null,
-      error: null
+      customerId: customerId,
+      error: null,
+      showCam: true
     };
 
     const { params } = this.props.navigation.state;
@@ -65,7 +72,9 @@ class TopupCustomerScreen extends Component<Props, State> {
   }
 
   render() {
-    let customer = this.state.customer;
+    let customer = this.props.customers.find(
+      c => c._id === this.state.customerId
+    );
     return (
       <Container>
         <Header style={styles.primaryBackground}>
@@ -95,7 +104,9 @@ class TopupCustomerScreen extends Component<Props, State> {
           </Body>
         </Header>
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
-          {customer === null ? this._renderCam() : this._renderCustomerInfo()}
+          {this.state.customerId !== ""
+            ? this._renderCustomerInfo()
+            : this._renderInput()}
         </Content>
         <Footer>
           <FooterTab style={styles.primaryBackground}>
@@ -144,42 +155,122 @@ class TopupCustomerScreen extends Component<Props, State> {
     }
   }
 
-  _renderCam = () => {
+  _renderInput = () => {
     let error = this.state.error;
 
     return (
       <Card>
         <CardItem header>
-          <Text>{strings.SCAN_CUSTOMER_CARD}</Text>
+          <Text>
+            {this.state.showCam
+              ? strings.SCAN_CUSTOMER_CARD
+              : strings.CHOOSE_CUSTOMER_FROM_LIST}
+          </Text>
         </CardItem>
-        <CardItem>
-          <View style={styles.cameraHolder}>
-            <Camera
-              style={styles.camera}
-              aspect={Camera.constants.Aspect.fill}
-              type={Camera.constants.Type.back}
-              flashMode={Camera.constants.FlashMode.auto}
-              defaultTouchToFocus
-              // barCodeTypes={["qr"]}
-              onBarCodeRead={this._onBarCodeRead}
-              permissionDialogTitle={strings.CAM_PERMISSION_TITLE}
-              permissionDialogMessage={strings.CAM_PERMISSION_MESSAGE}
-            />
-          </View>
-        </CardItem>
+
+        {this.state.showCam ? this._renderCam() : this._renderPicker()}
+
         {error && (
           <CardItem>
             <Text style={styles.error}>{error}</Text>
           </CardItem>
         )}
+        <CardItem footer>
+          <Button transparent full small onPress={() => this._toggleCam()}>
+            <Text style={styles.smallButtonText}>
+              {this.state.showCam ? strings.COMBO_OPTION : strings.CAM_OPTION}
+            </Text>
+          </Button>
+        </CardItem>
       </Card>
     );
   };
 
+  _renderCam = () => {
+    return (
+      <CardItem>
+        <View style={styles.cameraHolder}>
+          <Camera
+            style={styles.camera}
+            aspect={Camera.constants.Aspect.fill}
+            type={Camera.constants.Type.back}
+            flashMode={Camera.constants.FlashMode.auto}
+            defaultTouchToFocus
+            // barCodeTypes={["qr"]}
+            onBarCodeRead={this._onBarCodeRead}
+            permissionDialogTitle={strings.CAM_PERMISSION_TITLE}
+            permissionDialogMessage={strings.CAM_PERMISSION_MESSAGE}
+          />
+        </View>
+      </CardItem>
+    );
+  };
+
+  _renderPicker = Platform.select({
+    android: () => {
+      return (
+        <View style={styles.cardPicker}>
+          <Picker
+            selectedValue={this.state.customerId}
+            onValueChange={value => this._onPickerValueChange(value)}
+          >
+            <Item label={strings.PICK_CUSTOMER_IOS_HEADER} value="" key="" />
+            {this.props.customers.map((customer, key) => {
+              let role =
+                customer.role === "cashier"
+                  ? strings.PICKER_CASHIER
+                  : customer.role === "external"
+                    ? strings.PICKER_EXTERNAL
+                    : strings.PICKER_MEMBER;
+
+              return (
+                <Item
+                  label={`${customer.lastName} ${customer.firstName} (${role})`}
+                  value={customer._id}
+                  key={customer._id}
+                />
+              );
+            })}
+          </Picker>
+        </View>
+      );
+    },
+    ios: () => {
+      return (
+        <View style={styles.cardPicker}>
+          <Picker
+            placeholder={strings.PICK_CUSTOMER_IOS_HEADER}
+            selectedValue={this.state.customerId}
+            onValueChange={value => this._onPickerValueChange(value)}
+          >
+            {this.props.customers.map((customer, key) => {
+              let role =
+                customer.role === "cashier"
+                  ? strings.PICKER_CASHIER
+                  : customer.role === "external"
+                    ? strings.PICKER_EXTERNAL
+                    : strings.PICKER_MEMBER;
+
+              return (
+                <Item
+                  label={`${customer.lastName} ${customer.firstname} (${role})`}
+                  value={customer._id}
+                  key={customer._id}
+                />
+              );
+            })}
+          </Picker>
+        </View>
+      );
+    }
+  });
+
   _renderCustomerInfo = () => {
-    let fullName =
-      this.state.customer.firstName + " " + this.state.customer.lastName;
-    let currentBalance = this.state.customer.creditBalance.toFixed(2) + " €";
+    let customer = this.props.customers.find(
+      c => c._id === this.state.customerId
+    );
+    let fullName = `${customer.firstName} ${customer.lastName}`;
+    let currentBalance = customer.creditBalance.toFixed(2) + " €";
 
     return (
       <Card>
@@ -229,7 +320,7 @@ class TopupCustomerScreen extends Component<Props, State> {
                 full
                 small
                 onPress={() => {
-                  this.setState({ customer: null });
+                  this.setState({ customerId: "" });
                 }}
               >
                 <Text style={styles.smallButtonText}>
@@ -268,19 +359,38 @@ class TopupCustomerScreen extends Component<Props, State> {
       let customer = this.props.customers.find(c => c._id === e.data);
       if (customer) {
         this.setState({
-          customer: customer
+          customerId: customer._id
         });
       } else this.props.sendError(strings.INVALID_QR);
     }
   };
 
+  _onPickerValueChange(value: string) {
+    this.setState({
+      customerId: value
+    });
+  }
+
   _onConfirmButtonPress = () => {
-    this.props.setTopupCustomer(this.state.customer);
+    let customer = this.props.customers.find(
+      c => c._id === this.state.customerId
+    );
+    this.props.setTopupCustomer(customer);
     this.props.navigation.navigate("TopupConfirmScreen");
+  };
+
+  _toggleCam = () => {
+    this.setState({ showCam: !this.state.showCam });
   };
 }
 
 const mapStateToProps = state => {
+  let customer = state.CustomerReducer.customers.sort((a, b) => {
+    if (a.lastName > b.lastName) return 1;
+    else if (a.lastName < b.lastName) return -1;
+    return 0;
+  });
+
   return {
     cashierId: state.CashierReducer.cashierId,
     customers: state.CustomerReducer.customers,

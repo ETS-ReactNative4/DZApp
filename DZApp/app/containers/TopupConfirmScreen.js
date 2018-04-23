@@ -35,7 +35,10 @@ import * as strings from "../constants/strings";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
+
+//libs
 import moment from "moment-timezone";
+import { v4 as uuidv4 } from "uuid";
 
 //redux
 import { bindActionCreators } from "redux";
@@ -61,9 +64,8 @@ class TopupConfirmScreen extends Component<Props, State> {
   }
 
   render() {
-    let amountString = this.props.amount.toFixed(2) + " €";
-    let fullname =
-      this.props.customer.firstName + " " + this.props.customer.lastName;
+    let fullNameString = this.props.fullNameString;
+    let amountString = this.props.amountString;
 
     return (
       <Container>
@@ -94,7 +96,7 @@ class TopupConfirmScreen extends Component<Props, State> {
           <TopupConfirmModal
             ref="modal"
             onConfirmButtonPress={() => this._onModalConfirmButtonPress()}
-            fullname={fullname}
+            fullname={fullNameString}
             amountString={amountString}
           />
         </Content>
@@ -146,12 +148,9 @@ class TopupConfirmScreen extends Component<Props, State> {
   }
 
   _renderOverview = () => {
-    let amount = this.props.amount;
-    let customer = this.props.customer;
-
-    let fullName = customer.firstName + " " + customer.lastName;
-    let currentBalanceString = customer.creditBalance.toFixed(2) + " €";
-    let amountString = amount.toFixed(2) + " €";
+    let fullNameString = this.props.fullNameString;
+    let currentBalanceString = this.props.currentBalanceString;
+    let amountString = this.props.amountString;
 
     return (
       <Card>
@@ -164,7 +163,7 @@ class TopupConfirmScreen extends Component<Props, State> {
               <Text style={styles.label}>{strings.CUSTOMER}</Text>
             </Row>
             <Row style={styles.valueRow}>
-              <Text style={styles.value}>{fullName}</Text>
+              <Text style={styles.value}>{fullNameString}</Text>
             </Row>
             <Row>
               <Text style={styles.label}>{strings.CURRENT_BALANCE}</Text>
@@ -240,6 +239,7 @@ class TopupConfirmScreen extends Component<Props, State> {
   _onModalConfirmButtonPress = () => {
     this._toggleModalVisible();
     this.props.topupBalance({
+      localId: uuidv4(),
       cashierId: this.props.cashierId,
       customerId: this.props.customer._id,
       timestamp: moment().valueOf(),
@@ -271,10 +271,24 @@ class TopupConfirmScreen extends Component<Props, State> {
 }
 
 const mapStateToProps = state => {
+  let customer = state.TopupReducer.currentCustomer;
+  let amount = state.TopupReducer.currentAmount;
+
+  let fullNameString = customer
+    ? `${customer.firstName} ${customer.lastName}`
+    : "";
+  let amountString = amount ? `${amount.toFixed(2)} €` : "0.00 €";
+  let currentBalanceString = customer
+    ? `${customer.creditBalance.toFixed(2)} €`
+    : "0.00 €";
+
   return {
     cashierId: state.CashierReducer.cashierId,
     customer: state.TopupReducer.currentCustomer,
     amount: state.TopupReducer.currentAmount,
+    fullNameString: fullNameString,
+    amountString: amountString,
+    currentBalanceString: currentBalanceString,
     message: state.MessageReducer.message,
     error: state.MessageReducer.error
   };

@@ -35,6 +35,9 @@ import * as strings from "../constants/strings";
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
 
+//actions
+import { setTopupAmount, setTopupCustomer } from "../actions/topupActions";
+
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -60,6 +63,8 @@ class TopupSuccessScreen extends Component<Props, State> {
       fullName: props.fullname,
       amount: props.amount
     };
+    this.props.setTopupAmount(null);
+    this.props.setTopupCustomer(null);
     this._checkLoginState();
   }
 
@@ -214,15 +219,8 @@ class TopupSuccessScreen extends Component<Props, State> {
     );
   };
 
-  //The cashier is given the option to execute another topup from this
-  //screen or to go back to the OrderScreen.
-  //In both cases a reset flag is included in the navigation params, that allows
-  //chosen screen to reset the topup state (i.e. previousBalance, currentAmount and
-  //currentCustomer)
   _onPOSButtonPress = () => {
-    this.props.navigation.navigate("OrderScreen", {
-      resetTopupState: true
-    });
+    this.props.navigation.navigate("OrderScreen");
   };
 
   _onTopupButtonPress = () => {
@@ -230,8 +228,7 @@ class TopupSuccessScreen extends Component<Props, State> {
       index: 0,
       actions: [
         NavigationActions.navigate({
-          routeName: "TopupAmountScreen",
-          params: { resetTopupState: true }
+          routeName: "TopupAmountScreen"
         })
       ]
     });
@@ -241,7 +238,7 @@ class TopupSuccessScreen extends Component<Props, State> {
 
 const mapStateToProps = state => {
   let topup = state.TopupReducer.lastTopup;
-  let previousBalance = state.TopupReducer.previousBalance;
+  let previousBalance = topup.previousBalance;
   let amount = topup.amount;
   let customer = state.CustomerReducer.customers.find(
     c => c._id === topup.customerId
@@ -265,7 +262,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    { setTopupAmount, setTopupCustomer },
+    dispatch
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopupSuccessScreen);

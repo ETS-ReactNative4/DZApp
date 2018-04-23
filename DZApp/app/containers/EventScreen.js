@@ -339,7 +339,6 @@ const mapStateToProps = state => {
     });
 
   return {
-    //events sorted chronologically
     events: events,
     cashierId: state.CashierReducer.cashierId,
     eventId: state.EventReducer.eventId,

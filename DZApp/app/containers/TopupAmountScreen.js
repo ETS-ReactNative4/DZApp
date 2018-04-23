@@ -40,11 +40,7 @@ import { showInfoToast, showErrorToast } from "../functions/toast";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {
-  setTopupAmount,
-  setTopupCustomer,
-  resetPreviousBalance,
-} from "../actions/topupActions";
+import { setTopupAmount, setTopupCustomer } from "../actions/topupActions";
 
 type Props = {};
 
@@ -61,16 +57,8 @@ class TopupAmountScreen extends Component<Props, State> {
     this.previousRouteName =
       params && params.previousState ? params.previousState.routeName : null;
 
-    //reset the topup state when arriving here from the TopupSuccessScreen
-    let resetTopupState = params ? params.resetTopupState : false;
-    if (resetTopupState) {
-      this.props.setTopupAmount(null);
-      this.props.setTopupCustomer(null);
-      this.props.resetPreviousBalance();
-    }
-    //display the current value in the form when reset flag was false
     this.state = {
-      quantity: resetTopupState ? "" : this.props.amount || "",
+      quantity: this.props.amount || "",
       error: null
     };
 
@@ -272,8 +260,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setTopupAmount,
-      setTopupCustomer,
-      resetPreviousBalance,
+      setTopupCustomer
     },
     dispatch
   );

@@ -50,6 +50,9 @@ export const ENTER_TOPUP_AMT = "Bedrag invoeren";
 export const CONFIRM_AMT = "Bevestig bedrag";
 export const CONFIRM_CUSTOMER = "Bevestig klant";
 export const SCAN_CUSTOMER_CARD = "Scan QR code:";
+export const CHOOSE_CUSTOMER_FROM_LIST = "Kies een klant uit de lijst";
+export const CAM_OPTION = "Scan code";
+export const COMBO_OPTION = "Toon lijst";
 export const TOPUP_FOR_CUSTOMER = "Opladen voor:";
 export const AMOUNT = "Bedrag (€)";
 export const AMOUNT_LABEL = "Bedrag:";
@@ -71,6 +74,11 @@ export const CHANGE_CUSTOMER = "Wijzig klant";
 export const CONFIRM = "Bevestig";
 export const TOPPED_UP = "Saldo Opgeladen";
 export const PREV_BALANCE = "Vorig saldo: ";
+export const PICK_CUSTOMER_IOS_HEADER = "Kies...";
+export const PICKER_EXTERNAL = "extern";
+export const PICKER_MEMBER = "lid";
+export const PICKER_CASHIER = "kassier";
+
 
 export const HISTORY = "Historiek";
 export const IN_STOCK = "Voorraad:";

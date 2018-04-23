@@ -12,7 +12,6 @@ const initialState = {
   lastTopup: null,
   currentAmount: null,
   currentCustomer: null,
-  previousBalance: null,
   history: []
 };
 
@@ -31,15 +30,17 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
     case types.LOCAL_TOPUP:
       let topup = action.data.topup;
       let previousBalance = action.data.previousBalance;
+      let lastTopup = action.data.topup;
+      lastTopup.previousBalance = previousBalance;
       let amount = topup.amount;
 
-      //clone the unsynced topup array and add new topup to the cloned unsynced array
+      //clone the unsynced topup array and add new topup
       let newTopups = state.topups.slice(0);
       newTopups.push(topup);
 
-      //clone the history topup array and add new topup to the cloned history array
+      //clone the history topup array and add new topup
       //respecting the max history count
-      let newHistory = state.topups.slice(0);
+      let newHistory = state.history.slice(0);
       newHistory.unshift(topup);
       if (newHistory.length > historyCount)
         newHistory = newHistory.slice(0, historyCount - 1);
@@ -48,8 +49,6 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
         topups: newTopups,
         cashInRegister: state.cashInRegister + amount,
         lastTopup: topup,
-        //isProcessed: true,
-        previousBalance: previousBalance,
         history: newHistory
       });
       console.log("topup state after local:\n" + JSON.stringify(newState));

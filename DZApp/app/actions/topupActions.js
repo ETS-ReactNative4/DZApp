@@ -55,10 +55,6 @@ export const resetTopupProcessed = () => {
   return { type: types.RESET_TOPUP_PROCESSED };
 };
 
-export const resetPreviousBalance = () => {
-  return { type: types.RESET_PREVIOUS_BALANCE };
-};
-
 /************ Asynchronous Actions ***************/
 
 export const topupBalance = (topup: {}) => {
@@ -110,19 +106,3 @@ export const syncTopups = () => {
       });
   };
 };
-
-// const _getTopupInfo = topup => {
-//   let customers = Store.getState().CustomerReducer.customers;
-//   let customer = customer.find(c => c._id === topup.customerId);
-//   let fullname = `${customer.firstName} ${customer.lastName}`;
-
-//   let previousBalance = customer.creditBalance;
-//   let amount = topup.amount;
-//   let nextBalance = previousBalance + amount;
-//   return {
-//     fullname: fullname,
-//     previousBalance: previousBalance.toFixed(2) + " €",
-//     amount: amount.toFixed(2) + " €",
-//     currentBalance: currentBalance.toFixed(2) + " €"
-//   };
-// };
