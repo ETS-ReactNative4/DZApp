@@ -71,7 +71,7 @@ export const localOrder = (order: {}): {} => {
     data: {
       order: order,
       previousBalance: customer.creditBalance,
-      previousSubscriptionBalance: subscription.remainingCredit
+      previousSubscriptionBalance: subscription ? subscription.remainingCredit : null
     }
   };
 };
@@ -92,18 +92,18 @@ export const orderSyncFailed = () => {
 export const processOrder = (order: {}) => {
   return function(dispatch) {
     dispatch(localOrder(order));
-    NetInfo.isConnected
-      .fetch()
-      .then(isConnected => {
-        if (isConnected) {
-          dispatch(syncOrders());
-        } else {
-          dispatch(sendError(strings.NO_CONNECTION));
-        }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+    // NetInfo.isConnected
+    //   .fetch()
+    //   .then(isConnected => {
+    //     if (isConnected) {
+    //       dispatch(syncOrders());
+    //     } else {
+    //       dispatch(sendError(strings.NO_CONNECTION));
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.warn(err);
+    //   });
   };
 };
 

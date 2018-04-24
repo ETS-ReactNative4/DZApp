@@ -26,6 +26,25 @@ const ProductReducer = (state: {} = initialState, action: {}) => {
         errorMessage: action.data
       });
     }
+    case types.LOCAL_ORDER: {
+      let orderlines = action.data.order.orderlines;
+
+      //clone the product array so we can safely change it
+      let newProducts = state.products.slice(0);
+
+      //iterate over orderlines
+      //foreach orderline, clone the corresponding product, adjust inStock
+      //and insert it back in the newProducts array at the same index
+      orderlines.forEach(o => {
+        let product = newProducts.find(p => p._id === o.productId);
+        let index = newProducts.indexOf(product);
+        let newProduct = Object.assign({}, product);
+        newProduct.inStock -= o.quantity;
+        newProducts[index] = newProduct;
+      });
+
+      return Object.assign({}, state, { products: newProducts });
+    }
     default:
       return state;
   }

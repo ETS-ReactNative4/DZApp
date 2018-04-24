@@ -45,14 +45,13 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       if (newHistory.length > historyCount)
         newHistory = newHistory.slice(0, historyCount - 1);
 
-      let newState = Object.assign({}, state, {
+      return Object.assign({}, state, {
         topups: newTopups,
         cashInRegister: state.cashInRegister + amount,
-        lastTopup: topup,
+        lastTopup: lastTopup,
         history: newHistory
       });
-      console.log("topup state after local:\n" + JSON.stringify(newState));
-      return newState;
+
     case types.TOPUP_SYNC_STARTED: {
       return Object.assign({}, state, {
         isSyncing: true
@@ -60,19 +59,17 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
     }
     case types.TOPUP_SYNC_COMPLETE: {
       //remove all locally stored topups
-      let newState = Object.assign({}, state, {
+      return Object.assign({}, state, {
         topups: [],
         isSyncing: false
       });
-      console.log("topup state after sync:\n" + JSON.stringify(newState));
-      return newState;
     }
     case types.TOPUP_SYNC_FAILED: {
       return Object.assign({}, state, {
         isSyncing: false
       });
     }
-    
+
     case types.RESET_PREVIOUS_BALANCE: {
       return Object.assign({}, state, {
         previousBalance: null

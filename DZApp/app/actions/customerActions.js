@@ -20,13 +20,13 @@ export const receiveCustomers = (customers): {} => {
   };
 };
 
-//Set the active customer in global state
-export const setCustomer = (customerId: String): {} => {
-  return {
-    type: types.SET_CUSTOMER,
-    data: customerId
-  };
-};
+// //Set the active customer in global state
+// export const setCustomer = (customerId: String): {} => {
+//   return {
+//     type: types.SET_CUSTOMER,
+//     data: customerId
+//   };
+// };
 
 //customer list fetch failed
 export const fetchCustomersFailed = (error: {}): {} => {

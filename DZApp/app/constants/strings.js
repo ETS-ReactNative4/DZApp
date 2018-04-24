@@ -41,7 +41,16 @@ export const BIGGER_THAN_MIN_ERROR = min =>
   `Gelieve een waarde >= ${min.toFixed(2)} € in te geven`;
 export const TO_PAY = "Te betalen: ";
 export const FINISH_ORDER = "Bestelling afronden";
-export const CONFIRM_ORDER = "Bestelling bevestigen";
+export const CONFIRM_ORDER = "Bevestig bestelling";
+export const ORDER_PROCESSED = "Bestelling verwerkt";
+export const PAYED_TOTAL_LABEL = "Totaal betaald: ";
+export const PREV_SUBSCRIPTION_BALANCE_LABEL = "Vorig saldo voor evenement: ";
+export const CURRENT_SUBSCRIPTION_BALANCE_LABEL =
+  "Huidig saldo voor evenement: ";
+export const PAYED_FROM_CREDIT_LABEL = "Betaald van saldo: ";
+export const PAYED_FROM_SUBSCRIPTIONFEE_LABEL =
+  "Betaald van inschrijvingsgeld: ";
+  export const BACK_TO_PRODUCT_INPUT = "Nieuwe bestelling";
 
 //OrderTopupModal
 export const INSUFFICIENT_FUNDS_HEADER = "Saldo ontoereikend";

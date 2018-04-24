@@ -133,12 +133,6 @@ class OverviewScreen extends Component<Props, State> {
           <Body>
             <Grid>
               <Row>
-                <Text style={styles.label}>{strings.TOTAL}</Text>
-              </Row>
-              <Row style={styles.valueRow}>
-                <Text style={styles.value}>{amount}</Text>
-              </Row>
-              <Row>
                 <Text style={styles.label}>{strings.EVENT}</Text>
               </Row>
               <Row style={styles.valueRow}>
@@ -149,6 +143,12 @@ class OverviewScreen extends Component<Props, State> {
               </Row>
               <Row style={styles.valueRow}>
                 <Text style={styles.value}>{cashierfullname}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.label}>{strings.TOTAL}</Text>
+              </Row>
+              <Row style={styles.valueRow}>
+                <Text style={styles.value}>{amount}</Text>
               </Row>
             </Grid>
           </Body>

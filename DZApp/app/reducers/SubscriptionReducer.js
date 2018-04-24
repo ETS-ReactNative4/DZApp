@@ -26,6 +26,27 @@ const SubscriptionReducer = (state: {} = initialState, action: {}) => {
         errorMessage: action.data
       });
     }
+    case types.LOCAL_ORDER: {
+      let order = action.data.order;
+      let amtPayedFromSubscriptionFee = order.amtPayedFromSubscriptionFee;
+
+      if (amtPayedFromSubscriptionFee && amtPayedFromSubscriptionFee > 0) {
+        let customerId = order.customerId;
+        let eventId = order.eventId;
+        //clone the subscription object and update remaining credit
+        let subscription = state.subscriptions.find(
+          s => s.customerId === customerId && s.eventId === eventId
+        );
+        let newSubscription = Object.assign({}, subscription);
+        newSubscription.remainingCredit -= amtPayedFromSubscriptionFee;
+        //clone the subscriptions array and insert new subscription
+        let newSubscriptions = state.subscriptions.slice(0);
+        let index = newSubscriptions.indexOf(subscription);
+        newSubscriptions[index] = newSubscription;
+
+        return Object.assign({}, state, { subscriptions: newSubscriptions });
+      }
+    }
     default:
       return state;
   }

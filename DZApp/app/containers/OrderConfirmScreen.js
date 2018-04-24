@@ -39,12 +39,16 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 //actions
-import { setOrderCustomer } from "../actions/orderActions";
+import { setOrderCustomer, processOrder } from "../actions/orderActions";
 
 //functions
 import { calculateTotal } from "../functions/order";
 import { getFullName, getCustomerById } from "../functions/customer";
 import { showInfoToast, showErrorToast } from "../functions/toast";
+
+//libs
+import moment from "moment-timezone";
+import { v4 as uuidv4 } from "uuid";
 
 //navigation
 import { NavigationActions } from "react-navigation";
@@ -81,7 +85,7 @@ class OrderConfirmScreen extends Component<Props, State> {
           </Left>
           <Body>
             <Title>{strings.ORDER}</Title>
-            <Subtitle>{strings.CONFIRM}</Subtitle>
+            <Subtitle>{strings.CONFIRM_ORDER}</Subtitle>
           </Body>
           <Right>
             <Button transparent onPress={() => this._onCancelButtonPress()}>
@@ -133,9 +137,9 @@ class OrderConfirmScreen extends Component<Props, State> {
     return (
       <View>
         <CardItem header>
-          <Text>{strings.OVERVIEW}</Text>
+          <Text>{strings.CONFIRM_ORDER}</Text>
         </CardItem>
-        <CardItem>
+        <CardItem bordered>
           <Grid>
             <Row>
               <Text style={styles.label}>{strings.EVENT}</Text>
@@ -151,7 +155,7 @@ class OrderConfirmScreen extends Component<Props, State> {
             </Row>
           </Grid>
         </CardItem>
-        <CardItem>
+        <CardItem bordered>
           <Grid>
             <Row>
               <Text style={styles.label}>{strings.CUSTOMER}</Text>
@@ -175,6 +179,10 @@ class OrderConfirmScreen extends Component<Props, State> {
                 </Row>
               </View>
             )}
+          </Grid>
+        </CardItem>
+        <CardItem bordered>
+          <Grid>
             <Row>
               <Text style={styles.label}>{strings.TO_PAY}</Text>
             </Row>
@@ -196,7 +204,7 @@ class OrderConfirmScreen extends Component<Props, State> {
             </Button>
           </Body>
         </CardItem>
-        <CardItem footer bordered>
+        <CardItem footer>
           <Grid>
             <Col>
               <Button
@@ -262,10 +270,40 @@ class OrderConfirmScreen extends Component<Props, State> {
   };
 
   _onModalConfirmButtonPress = (value: number) => {
-    // let modal = this.refs.modal;
-    // let product = modal.state.product;
-    // this.props.setProductQuantity(product._id, value);
-    // this._toggleModalVisible();
+    this._toggleModalVisible();
+
+    //construct the order object
+    let amtPayedFromCredit;
+    let amtPayedFromSubscriptionFee;
+    let toPay = calculateTotal(this.props.orderlines, this.props.products);
+    let eventBalance = this.props.eventBalance;
+    let creditBalance = this.props.creditBalance;
+    if (this.props.event.type === "event" && eventBalance && eventBalance > 0) {
+      let remaining = toPay - eventBalance;
+      amtPayedFromSubscriptionFee =
+        remaining > 0 ? eventBalance : eventBalance + remaining;
+      amtPayedFromCredit = remaining > 0 ? remaining : 0;
+    } else {
+      amtPayedFromCredit = toPay;
+    }
+
+    //process the order
+    this.props.processOrder({
+      localId: uuidv4(),
+      cashierId: this.props.cashier._id,
+      eventId: this.props.event._id,
+      customerId: this.props.customer._id,
+      timestamp: moment().valueOf(),
+      amtPayedFromCredit: amtPayedFromCredit,
+      amtPayedFromSubscriptionFee: amtPayedFromSubscriptionFee,
+      orderlines: this.props.orderlines
+    });
+
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: "OrderSuccessScreen" })]
+    });
+    this.props.navigation.dispatch(resetAction);
   };
 
   _onCancelButtonPress = () => {
@@ -304,7 +342,7 @@ const mapStateToProps = state => {
   let customer = state.OrderReducer.currentCustomer;
   //customer credit
   let creditBalance = customer ? customer.creditBalance : 0;
-  let eventBalance = null;
+  let eventBalance = 0;
   if (event.type === "event" && customer) {
     let subscription = state.SubscriptionReducer.subscriptions.find(
       s => s.customerId === customer._id && s.eventId === event._id
@@ -314,18 +352,20 @@ const mapStateToProps = state => {
 
   return {
     totalAmount: totalAmount,
+    orderlines: orderlines,
     event: event,
     cashier: cashier,
     customer: customer,
     creditBalance: creditBalance,
     eventBalance: eventBalance,
+    products: state.ProductReducer.products,
     message: state.MessageReducer.message,
     error: state.MessageReducer.error
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setOrderCustomer }, dispatch);
+  return bindActionCreators({ setOrderCustomer, processOrder }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderConfirmScreen);

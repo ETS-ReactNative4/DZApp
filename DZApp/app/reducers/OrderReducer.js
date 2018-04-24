@@ -1,11 +1,16 @@
 //@flow
 import * as types from "../actions/types";
 
+let historyCount = 5;
+
 const initialState = {
   orderlines: {},
   currentCustomer: null,
   minTopupAmount: null,
-  topupAmount: null
+  topupAmount: null,
+  orders: [],
+  history: [],
+  lastOrder: null
 };
 
 const OrderReducer = (state: {} = initialState, action: {}) => {
@@ -32,6 +37,34 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
     }
     case types.SET_ORDER_TOPUP_AMOUNT: {
       return Object.assign({}, state, { topupAmount: action.data });
+    }
+    case types.LOCAL_ORDER: {
+      let order = action.data.order;
+      let previousBalance = action.data.previousBalance;
+      let previousSubscriptionBalance = action.data.previousSubscriptionBalance;
+
+      //construct the lastOrder object for display in OrderSuccessScreen
+      let lastOrder = action.data.order;
+      lastOrder.previousBalance = previousBalance;
+      lastOrder.previousSubscriptionBalance = previousSubscriptionBalance;
+
+      //clone the unsynced order array and add new order
+      let newOrders = state.orders.slice(0);
+      newOrders.push(order);
+
+      //clone the history order array and add new topup
+      //to start of array
+      //respecting the max history count
+      let newHistory = state.history.slice(0);
+      newHistory.unshift(order);
+      if (newHistory.length > historyCount)
+        newHistory = newHistory.slice(0, historyCount - 1);
+
+      return Object.assign({}, state, {
+        orders: newOrders,
+        lastOrder: lastOrder,
+        history: newHistory
+      });
     }
     default: {
       return state;

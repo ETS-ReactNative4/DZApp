@@ -13,7 +13,7 @@ export const FETCH_EVENTS_FAILED = "FETCH_EVENTS_FAILED";
 //customer actions
 export const REQUEST_CUSTOMERS = "REQUEST_CUSTOMERS";
 export const RECEIVE_CUSTOMERS = "RECEIVE_CUSTOMERS";
-export const SET_CUSTOMER = "SET_CUSTOMER";
+//export const SET_CUSTOMER = "SET_CUSTOMER";
 export const FETCH_CUSTOMERS_FAILED = "FETCH_CUSTOMERS_FAILED";
 
 //product actions

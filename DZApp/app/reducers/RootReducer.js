@@ -63,7 +63,7 @@ const productPersistConfig = {
 const orderPersistConfig = {
   key: "OrderReducer",
   storage: AsyncStorage,
-  whitelist: [],
+  whitelist: ["orders","lastOrder","history"],
   stateReconciler: autoMergeLevel2
 };
 

@@ -13,8 +13,6 @@ import {
   Title,
   Content,
   View,
-  Footer,
-  FooterTab,
   Button,
   Icon,
   Text,

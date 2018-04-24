@@ -14,6 +14,7 @@ import OrderAmountScreen from "./OrderAmountScreen";
 import OrderTopupConfirmScreen from "./OrderTopupConfirmScreen";
 import OrderTopupSuccessScreen from "./OrderTopupSuccessScreen";
 import OrderConfirmScreen from "./OrderConfirmScreen";
+import OrderSuccessScreen from "./OrderSuccessScreen";
 
 //TopupNavigator
 import TopupAmountScreen from "./TopupAmountScreen";
@@ -76,6 +77,9 @@ const OrderNavigator = StackNavigator(
     },
     OrderConfirmScreen: {
       screen: OrderConfirmScreen
+    },
+    OrderSuccessScreen: {
+      screen: OrderSuccessScreen
     }
   },
   {
