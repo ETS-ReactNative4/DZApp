@@ -1,8 +1,8 @@
 //@flow
 import React, { Component } from "react";
+import { Keyboard, BackHandler } from "react-native";
 
 //components
-import { Keyboard } from "react-native";
 import {
   Container,
   Text,
@@ -14,8 +14,6 @@ import {
   Left,
   Right,
   Thumbnail,
-  Footer,
-  FooterTab,
   Icon,
   Title,
   Item,
@@ -83,9 +81,20 @@ class OrderAmountScreen extends Component<Props, State> {
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name="arrow-back" style={styles.white} />
-            </Button>
+            {this.previousRouteName ? (
+              <Button
+                transparent
+                onPress={() => this.props.navigation.goBack()}
+              >
+                <Icon name="arrow-back" style={styles.white} />
+              </Button>
+            ) : (
+              <Thumbnail
+                square
+                small
+                source={require("../assets/images/logo.gif")}
+              />
+            )}
           </Left>
           <Body>
             <Title>{strings.ORDER}</Title>
@@ -96,9 +105,6 @@ class OrderAmountScreen extends Component<Props, State> {
             </Subtitle>
           </Body>
           <Right>
-            <Button transparent onPress={() => this._onBackToTopButtonPress()}>
-              <Icon name="grid" />
-            </Button>
             <Button transparent>
               <Icon name="menu" />
             </Button>
@@ -112,15 +118,6 @@ class OrderAmountScreen extends Component<Props, State> {
         {/* CONTENT END */}
       </Container>
     );
-  }
-
-  componentDidUpdate() {
-    if (this.props.message !== null) {
-      showInfoToast(this.props.message);
-    }
-    if (this.props.error !== null) {
-      showErrorToast(this.props.error);
-    }
   }
 
   _renderForm = () => {
@@ -178,7 +175,7 @@ class OrderAmountScreen extends Component<Props, State> {
               transparent
               full
               small
-              onPress={() => this._onBackToTopButtonPress()}
+              onPress={() => this._onCancelButtonPress()}
             >
               <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
             </Button>
@@ -186,6 +183,34 @@ class OrderAmountScreen extends Component<Props, State> {
         </View>
       </Card>
     );
+  };
+
+  componentDidUpdate() {
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  _onBackButtonPressAndroid = () => {
+    this._onCancelButtonPress();
+    return true;
   };
 
   _checkLoginState = () => {
@@ -218,13 +243,23 @@ class OrderAmountScreen extends Component<Props, State> {
       : this.props.navigation.goBack();
   };
 
-  _onBackToTopButtonPress = () => {
-    this.props.setOrderCustomer(null);
-    this.props.setMinimumOrderTopupAmount(null);
-    this.props.setOrderTopupAmount(null);
+  _onCancelButtonPress = () => {
+    if (this.previousRouteName) this.props.navigation.goBack();
+    else {
+      this.props.setOrderCustomer(null);
+      this.props.setMinimumOrderTopupAmount(null);
+      this.props.setOrderTopupAmount(null);
 
-    const backToTopAction = NavigationActions.popToTop();
-    this.props.navigation.dispatch(backToTopAction);
+      const returnAction = NavigationActions.reset({
+        index: 2,
+        actions: [
+          NavigationActions.navigate({ routeName: "ProductScreen" }),
+          NavigationActions.navigate({ routeName: "OverviewScreen" }),
+          NavigationActions.navigate({ routeName: "OrderCustomerScreen" })
+        ]
+      });
+      this.props.navigation.dispatch(returnAction);
+    }
   };
 }
 

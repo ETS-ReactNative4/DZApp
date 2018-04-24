@@ -57,11 +57,11 @@ class LoginScreen extends Component<Props, State> {
       {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            {/* <Thumbnail
+            <Thumbnail
               square
               small
               source={require("../assets/images/logo.gif")}
-            /> */}
+            />
           </Left>
           <Body>
             <Title>{strings.LOGIN}</Title>

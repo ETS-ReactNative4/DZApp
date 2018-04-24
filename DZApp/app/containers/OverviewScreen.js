@@ -45,6 +45,7 @@ import { setProductQuantity, resetOrder } from "../actions/orderActions";
 //functions
 import { calculateSubTotal, calculateTotal } from "../functions/order";
 import { showInfoToast, showErrorToast } from "../functions/toast";
+import { getFullName } from "../functions/customer";
 
 type Props = {};
 
@@ -74,24 +75,18 @@ class OverviewScreen extends Component<Props, State> {
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            {/* <Grid>
-              <Row> */}
             <Button transparent onPress={() => this.props.navigation.goBack()}>
               <Icon name="arrow-back" />
             </Button>
-            {/* <Thumbnail
-                  square
-                  small
-                  source={require("../assets/images/logo.gif")}
-                />
-              </Row>
-            </Grid>  */}
           </Left>
           <Body>
             <Title>{strings.ORDER}</Title>
             <Subtitle>{strings.OVERVIEW}</Subtitle>
           </Body>
           <Right>
+            <Button transparent onPress={() => this.props.navigation.goBack()}>
+              <Icon name="grid" />
+            </Button>
             <Button
               transparent
               onPress={() => {
@@ -120,46 +115,13 @@ class OverviewScreen extends Component<Props, State> {
           </Card>
         </Content>
         {/* CONTENT END */}
-        {/* FOOTER */}
-        {/* <Footer>
-          <FooterTab style={styles.primaryBackground}>
-            <Button
-              vertical
-              style={styles.secondaryBackground}
-              // onPress={() => {
-              //   this.props.navigation.navigate("OrderScreen");
-              // }}
-            >
-              <Icon name="grid" style={styles.white} />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.ORDER}
-              </Text>
-            </Button>
-           
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("TopupNavigator");
-              }}
-            >
-              <Icon name="cash" />
-              <Text style={styles.tabbarText}>{strings.TOPUP}</Text>
-            </Button>
-            <Button vertical>
-              <Icon name="clock" />
-              <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
-            </Button>
-          </FooterTab>
-        </Footer> */}
-        {/* FOOTER END */}
       </Container>
     );
   }
 
   _renderSummary = () => {
     let amount = this.props.totalAmountString;
-    let cashierfullname =
-      this.props.cashier.firstName + " " + this.props.cashier.lastName;
+    let cashierfullname = getFullName(this.props.cashier);
     let eventName = this.props.event.name;
 
     return (

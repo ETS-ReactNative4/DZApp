@@ -14,8 +14,6 @@ import {
   Title,
   Content,
   Thumbnail,
-  Footer,
-  FooterTab,
   Button,
   Icon,
   Text,
@@ -77,17 +75,18 @@ class OrderConfirmScreen extends Component<Props, State> {
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail
-              square
-              small
-              source={require("../assets/images/logo.gif")}
-            />
+            <Button transparent onPress={() => this.props.navigation.goBack()}>
+              <Icon name="arrow-back" style={styles.white} />
+            </Button>
           </Left>
           <Body>
             <Title>{strings.ORDER}</Title>
             <Subtitle>{strings.CONFIRM}</Subtitle>
           </Body>
           <Right>
+            <Button transparent onPress={() => this._onCancelButtonPress()}>
+              <Icon name="grid" />
+            </Button>
             <Button transparent>
               <Icon name="menu" />
             </Button>
@@ -197,7 +196,6 @@ class OrderConfirmScreen extends Component<Props, State> {
             </Button>
           </Body>
         </CardItem>
-
         <CardItem footer bordered>
           <Grid>
             <Col>
@@ -206,7 +204,7 @@ class OrderConfirmScreen extends Component<Props, State> {
                 full
                 small
                 onPress={() => {
-                  this._onBackButtonPress();
+                  this._onCancelButtonPress();
                 }}
               >
                 <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
@@ -243,7 +241,7 @@ class OrderConfirmScreen extends Component<Props, State> {
   }
 
   _onBackButtonPressAndroid = () => {
-    this._onBackButtonPress();
+    this.props.navigation.goBack();
     return true;
   };
 
@@ -263,12 +261,6 @@ class OrderConfirmScreen extends Component<Props, State> {
     });
   };
 
-  _onChangeEventButtonPress = (): void => {
-    this.props.navigation.navigate("EventScreen", {
-      previousState: this.props.navigation.state
-    });
-  };
-
   _onModalConfirmButtonPress = (value: number) => {
     // let modal = this.refs.modal;
     // let product = modal.state.product;
@@ -276,15 +268,11 @@ class OrderConfirmScreen extends Component<Props, State> {
     // this._toggleModalVisible();
   };
 
-  _onBackButtonPress = () => {
+  _onCancelButtonPress = () => {
     this.props.setOrderCustomer(null);
     const resetAction = NavigationActions.reset({
       index: 0,
-      actions: [
-        NavigationActions.navigate({
-          routeName: "ProductScreen"
-        })
-      ]
+      actions: [NavigationActions.navigate({ routeName: "ProductScreen" })]
     });
     this.props.navigation.dispatch(resetAction);
   };

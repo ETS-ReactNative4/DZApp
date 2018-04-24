@@ -14,8 +14,6 @@ import {
   Title,
   Content,
   View,
-  Footer,
-  FooterTab,
   Button,
   Icon,
   Text,
@@ -93,9 +91,6 @@ class OrderTopupSuccessScreen extends Component<Props, State> {
             <Subtitle>{strings.TOPPED_UP}</Subtitle>
           </Body>
           <Right>
-            <Button transparent onPress={() => this._onBackToTopButtonPress()}>
-              <Icon name="grid" />
-            </Button>
             <Button transparent>
               <Icon name="menu" />
             </Button>
@@ -147,22 +142,16 @@ class OrderTopupSuccessScreen extends Component<Props, State> {
         </CardItem>
         <CardItem>
           <Body>
-            <Button full style={styles.primaryActionButton}>
+            <Button
+              full
+              style={styles.primaryActionButton}
+              onPress={() => this._onFinishOrderButtonPress()}
+            >
               <Text style={styles.primaryButtonText}>
                 {strings.FINISH_ORDER}
               </Text>
             </Button>
           </Body>
-        </CardItem>
-        <CardItem footer>
-          <Button
-            transparent
-            full
-            small
-            onPress={() => this._onBackToTopButtonPress()}
-          >
-            <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
-          </Button>
         </CardItem>
       </Card>
     );
@@ -200,21 +189,18 @@ class OrderTopupSuccessScreen extends Component<Props, State> {
   }
 
   _onBackButtonPressAndroid = () => {
-    this._onBackToTopButtonPress();
+    this._onFinishOrderButtonPress();
     return true;
   };
 
-  _onBackToTopButtonPress = () => {
-    this.props.setOrderCustomer(null);
-    this.props.setMinimumOrderTopupAmount(null);
-    this.props.setOrderTopupAmount(null);
-
+  _onFinishOrderButtonPress = () => {
     const resetAction = NavigationActions.reset({
-      index: 0,
+      index: 3,
       actions: [
-        NavigationActions.navigate({
-          routeName: "ProductScreen"
-        })
+        NavigationActions.navigate({ routeName: "ProductScreen" }),
+        NavigationActions.navigate({ routeName: "OverviewScreen" }),
+        NavigationActions.navigate({ routeName: "OrderCustomerScreen" }),
+        NavigationActions.navigate({ routeName: "OrderConfirmScreen" })
       ]
     });
     this.props.navigation.dispatch(resetAction);

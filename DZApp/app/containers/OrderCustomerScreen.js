@@ -1,6 +1,6 @@
 //@flow
 import React, { Component } from "react";
-import { Platform } from "react-native";
+import { Platform, BackHandler } from "react-native";
 
 //components
 import {
@@ -80,9 +80,6 @@ class OrderCustomerScreen extends Component<Props, State> {
       camActive: true
     };
 
-    // const { params } = this.props.navigation.state;
-    // this.previousRouteName = params ? params.previousState.routeName : null;
-
     this._checkLoginState();
     this._checkEventState();
   }
@@ -94,7 +91,7 @@ class OrderCustomerScreen extends Component<Props, State> {
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
+            <Button transparent onPress={() => this._onBackButtonPress()}>
               <Icon name="arrow-back" style={styles.white} />
             </Button>
           </Left>
@@ -103,7 +100,7 @@ class OrderCustomerScreen extends Component<Props, State> {
             <Subtitle>{strings.CHOOSE_CUSTOMER}</Subtitle>
           </Body>
           <Right>
-            <Button transparent onPress={() => this._onBackTopTopButtonPress()}>
+            <Button transparent onPress={() => this._onBackToTopButtonPress()}>
               <Icon name="grid" />
             </Button>
             <Button transparent>
@@ -332,18 +329,14 @@ class OrderCustomerScreen extends Component<Props, State> {
               </Button>
             </Col>
             <Col>
-              {this.previousRouteName && (
-                <Button
-                  transparent
-                  full
-                  small
-                  onPress={() => {
-                    this.props.navigation.goBack();
-                  }}
-                >
-                  <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
-                </Button>
-              )}
+              <Button
+                transparent
+                full
+                small
+                onPress={() => this._onBackToTopButtonPress()}
+              >
+                <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
+              </Button>
             </Col>
           </Grid>
         </CardItem>
@@ -362,13 +355,25 @@ class OrderCustomerScreen extends Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
   }
 
-  //navigate away from screen when no cashierId or eventId is set
+  _onBackButtonPressAndroid = () => {
+    this._onBackButtonPress();
+    return true;
+  };
+
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
   };
@@ -435,7 +440,15 @@ class OrderCustomerScreen extends Component<Props, State> {
     return balance - total;
   };
 
-  _onBackTopTopButtonPress = () => {
+  _onBackButtonPress = () => {
+    this.props.setOrderCustomer(null);
+    this.props.setMinimumOrderTopupAmount(null);
+    this.props.setOrderTopupAmount(null);
+
+    this.props.navigation.goBack();
+  };
+
+  _onBackToTopButtonPress = () => {
     this.props.setOrderCustomer(null);
     this.props.setMinimumOrderTopupAmount(null);
     this.props.setOrderTopupAmount(null);
@@ -456,7 +469,12 @@ class OrderCustomerScreen extends Component<Props, State> {
     this.props.setMinimumOrderTopupAmount(
       -this._getBalanceTotalDifference(customer)
     );
-    this.props.navigation.navigate("OrderAmountScreen");
+
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: "OrderAmountScreen" })]
+    });
+    this.props.navigation.dispatch(resetAction);
   };
 
   _onModalCancelButtonPress = () => {

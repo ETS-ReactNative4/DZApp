@@ -1,5 +1,6 @@
 //@flow
 import React, { Component } from "react";
+import { BackHandler } from "react-native";
 
 //components
 import {
@@ -13,8 +14,6 @@ import {
   Left,
   Right,
   Thumbnail,
-  Footer,
-  FooterTab,
   Icon,
   Title,
   Item,
@@ -91,9 +90,6 @@ class OrderTopupConfirmScreen extends Component<Props, State> {
             <Subtitle>{strings.CONFIRM}</Subtitle>
           </Body>
           <Right>
-            <Button transparent onPress={() => this._onBackToTopButtonPress()}>
-              <Icon name="grid" />
-            </Button>
             <Button transparent>
               <Icon name="menu" />
             </Button>
@@ -168,25 +164,21 @@ class OrderTopupConfirmScreen extends Component<Props, State> {
                 full
                 small
                 onPress={() => {
-                  this._onChangeAmountButtonPress();
+                  this._onCancelButtonPress();
                 }}
               >
-                <Text style={styles.smallButtonText}>
-                  {strings.CHANGE_AMOUNT}
-                </Text>
+                <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
               </Button>
             </Col>
             <Col>
-            <Button
+              <Button
                 transparent
                 full
                 small
-                onPress={() => {
-                  this._onBackToTopButtonPress();
-                }}
+                onPress={() => this.props.navigation.goBack()}
               >
                 <Text style={styles.smallButtonText}>
-                  {strings.CANCEL}
+                  {strings.CHANGE_AMOUNT}
                 </Text>
               </Button>
             </Col>
@@ -204,6 +196,25 @@ class OrderTopupConfirmScreen extends Component<Props, State> {
       showErrorToast(this.props.error);
     }
   }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  _onBackButtonPressAndroid = () => {
+    this.props.navigation.goBack();
+    return true;
+  };
 
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
@@ -245,13 +256,20 @@ class OrderTopupConfirmScreen extends Component<Props, State> {
     });
   };
 
-  _onBackToTopButtonPress = () => {
+  _onCancelButtonPress = () => {
     this.props.setOrderCustomer(null);
     this.props.setMinimumOrderTopupAmount(null);
     this.props.setOrderTopupAmount(null);
 
-    const backToTopAction = NavigationActions.popToTop();
-    this.props.navigation.dispatch(backToTopAction);
+    const returnAction = NavigationActions.reset({
+      index: 2,
+      actions: [
+        NavigationActions.navigate({ routeName: "ProductScreen" }),
+        NavigationActions.navigate({ routeName: "OverviewScreen" }),
+        NavigationActions.navigate({ routeName: "OrderCustomerScreen" })
+      ]
+    });
+    this.props.navigation.dispatch(returnAction);
   };
 }
 
