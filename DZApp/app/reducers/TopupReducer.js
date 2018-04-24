@@ -72,11 +72,7 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
         isSyncing: false
       });
     }
-    // case types.RESET_TOPUP_PROCESSED: {
-    //   return Object.assign({}, state, {
-    //     isProcessed: false
-    //   });
-    // }
+    
     case types.RESET_PREVIOUS_BALANCE: {
       return Object.assign({}, state, {
         previousBalance: null

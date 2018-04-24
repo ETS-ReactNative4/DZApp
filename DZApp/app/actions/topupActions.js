@@ -51,9 +51,6 @@ export const topupSyncFailed = () => {
   return { type: types.TOPUP_SYNC_FAILED };
 };
 
-export const resetTopupProcessed = () => {
-  return { type: types.RESET_TOPUP_PROCESSED };
-};
 
 /************ Asynchronous Actions ***************/
 

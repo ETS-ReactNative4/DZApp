@@ -62,7 +62,7 @@ export class OrderConfirmModal extends Component<Props, State> {
 
   _renderModalContent = () => {
     return (
-      <View style={styles.topupConfirmModalContent}>
+      <View style={styles.orderTopupModalContent}>
         <Card style={styles.content}>
           <CardItem header>
             <Text>{strings.ORDER_CONFIRM_MODAL_HEADER}</Text>
@@ -70,8 +70,8 @@ export class OrderConfirmModal extends Component<Props, State> {
           <CardItem>
             <Text>
               {`${this.props.total} ${strings.ORDER_CONFIRM_MODAL_MESSAGE} ${
-                this.props.fullName
-              }`}
+                this.props.fullname
+              } ?`}
             </Text>
           </CardItem>
 

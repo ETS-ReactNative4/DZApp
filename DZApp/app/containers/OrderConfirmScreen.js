@@ -65,14 +65,23 @@ class OrderConfirmScreen extends Component<Props, State> {
   }
 
   render() {
+    let amountString = this.props.totalAmount
+      ? this.props.totalAmount.toFixed(2) + " €"
+      : "";
+    let customerName = this.props.customer
+      ? getFullName(this.props.customer)
+      : "";
+
     return (
       <Container>
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Button transparent onPress={() => this._onBackButtonPress()}>
-              <Icon name="arrow-back" />
-            </Button>
+            <Thumbnail
+              square
+              small
+              source={require("../assets/images/logo.gif")}
+            />
           </Left>
           <Body>
             <Title>{strings.ORDER}</Title>
@@ -92,7 +101,9 @@ class OrderConfirmScreen extends Component<Props, State> {
             <OrderConfirmModal
               ref="modal"
               onConfirmButtonPress={() => this._onModalConfirmButtonPress()}
-              onCancelButtonPress={() => this._onModalCancelButtonPress()}
+              onCancelButtonPress={() => this._toggleModalVisible()}
+              total={amountString}
+              fullname={customerName}
             />
           </Card>
         </Content>
@@ -166,7 +177,7 @@ class OrderConfirmScreen extends Component<Props, State> {
               </View>
             )}
             <Row>
-              <Text style={styles.label}>{strings.TOTAL}</Text>
+              <Text style={styles.label}>{strings.TO_PAY}</Text>
             </Row>
             <Row style={styles.valueRow}>
               <Text style={styles.value}>{amountString}</Text>
@@ -175,7 +186,11 @@ class OrderConfirmScreen extends Component<Props, State> {
         </CardItem>
         <CardItem>
           <Body>
-            <Button full style={styles.primaryActionButton}>
+            <Button
+              full
+              style={styles.primaryActionButton}
+              onPress={() => this._toggleModalVisible()}
+            >
               <Text style={styles.primaryButtonText}>
                 {strings.CONFIRM_ORDER}
               </Text>
