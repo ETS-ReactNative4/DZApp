@@ -5,9 +5,17 @@ import { StackNavigator, SwitchNavigator } from "react-navigation";
 import LoadingScreen from "./LoadingScreen";
 import LoginScreen from "./LoginScreen";
 import EventScreen from "./EventScreen";
+
+//OrderNavigator
 import OrderScreen from "./OrderScreen";
 import OverviewScreen from "./OverviewScreen";
-//import TopupScreen from "./TopupScreen";
+import OrderCustomerScreen from "./OrderCustomerScreen";
+import OrderAmountScreen from "./OrderAmountScreen";
+import OrderTopupConfirmScreen from "./OrderTopupConfirmScreen";
+import OrderTopupSuccessScreen from "./OrderTopupSuccessScreen";
+import OrderConfirmScreen from "./OrderConfirmScreen";
+
+//TopupNavigator
 import TopupAmountScreen from "./TopupAmountScreen";
 import TopupCustomerScreen from "./TopupCustomerScreen";
 import TopupSuccessScreen from "./TopUpSuccessScreen";
@@ -46,13 +54,40 @@ const AuthNavigator = StackNavigator(
   }
 );
 
-const MainFlowNavigator = SwitchNavigator(
+const OrderNavigator = StackNavigator(
   {
-    OrderScreen: {
+    ProductScreen: {
       screen: OrderScreen
     },
     OverviewScreen: {
       screen: OverviewScreen
+    },
+    OrderCustomerScreen: {
+      screen: OrderCustomerScreen
+    },
+    OrderAmountScreen: {
+      screen: OrderAmountScreen
+    },
+    OrderTopupConfirmScreen: {
+      screen: OrderTopupConfirmScreen
+    },
+    OrderTopupSuccessScreen: {
+      screen: OrderTopupSuccessScreen
+    },
+    OrderConfirmScreen: {
+      screen: OrderConfirmScreen
+    }
+  },
+  {
+    initialRouteName: "ProductScreen",
+    headerMode: "none"
+  }
+);
+
+const MainFlowNavigator = SwitchNavigator(
+  {
+    OrderScreen: {
+      screen: OrderNavigator
     },
     TopupNavigator: {
       screen: TopupNavigator

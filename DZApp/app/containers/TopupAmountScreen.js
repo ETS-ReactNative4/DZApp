@@ -12,6 +12,7 @@ import {
   Content,
   Body,
   Left,
+  Right,
   Thumbnail,
   Footer,
   FooterTab,
@@ -40,7 +41,7 @@ import { showInfoToast, showErrorToast } from "../functions/toast";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { setTopupAmount, setTopupCustomer } from "../actions/topupActions";
+import { setTopupAmount } from "../actions/topupActions";
 
 type Props = {};
 
@@ -68,9 +69,10 @@ class TopupAmountScreen extends Component<Props, State> {
   render() {
     return (
       <Container>
+        {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            {this.previousRouteName === null ? (
+            {/* {this.previousRouteName === null ? (
               <Thumbnail square source={require("../assets/images/logo.gif")} />
             ) : (
               <Grid>
@@ -87,6 +89,20 @@ class TopupAmountScreen extends Component<Props, State> {
                   />
                 </Row>
               </Grid>
+            )} */}
+            {this.previousRouteName ? (
+              <Button
+                transparent
+                onPress={() => this.props.navigation.goBack()}
+              >
+                <Icon name="arrow-back" style={styles.white} />
+              </Button>
+            ) : (
+              <Thumbnail
+                square
+                small
+                source={require("../assets/images/logo.gif")}
+              />
             )}
           </Left>
           <Body>
@@ -97,10 +113,19 @@ class TopupAmountScreen extends Component<Props, State> {
                 : strings.ENTER_TOPUP_AMT}
             </Subtitle>
           </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="menu" />
+            </Button>
+          </Right>
         </Header>
+        {/* HEADER END */}
+        {/* CONTENT */}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this._renderForm()}
         </Content>
+        {/* CONTENT END */}
+        {/* FOOTER */}
         <Footer>
           <FooterTab style={styles.primaryBackground}>
             <Button
@@ -112,7 +137,7 @@ class TopupAmountScreen extends Component<Props, State> {
               <Icon name="grid" />
               <Text style={styles.tabbarText}>{strings.ORDER}</Text>
             </Button>
-            <Button
+            {/* <Button
               vertical
               onPress={() => {
                 this.props.navigation.navigate("OverviewScreen");
@@ -122,7 +147,7 @@ class TopupAmountScreen extends Component<Props, State> {
               <Text style={[styles.tabbarText, styles.white]}>
                 {strings.OVERVIEW}
               </Text>
-            </Button>
+            </Button> */}
             <Button vertical style={styles.secondaryBackground}>
               <Icon name="cash" style={styles.white} />
               <Text style={[styles.tabbarText, styles.white]}>
@@ -135,6 +160,7 @@ class TopupAmountScreen extends Component<Props, State> {
             </Button>
           </FooterTab>
         </Footer>
+        {/* FOOTER END */}
       </Container>
     );
   }
@@ -259,8 +285,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      setTopupAmount,
-      setTopupCustomer
+      setTopupAmount
+      
     },
     dispatch
   );

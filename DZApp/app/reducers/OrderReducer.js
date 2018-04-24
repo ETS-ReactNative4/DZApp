@@ -2,7 +2,10 @@
 import * as types from "../actions/types";
 
 const initialState = {
-  orderlines: {}
+  orderlines: {},
+  currentCustomer: null,
+  minTopupAmount: null,
+  topupAmount: null
 };
 
 const OrderReducer = (state: {} = initialState, action: {}) => {
@@ -17,6 +20,18 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
       newOrderlines[productId] = quantity;
 
       return Object.assign({}, state, { orderlines: newOrderlines });
+    }
+    case types.RESET_ORDER: {
+      return Object.assign({}, state, { orderlines: initialState.orderlines });
+    }
+    case types.SET_ORDER_CUSTOMER: {
+      return Object.assign({}, state, { currentCustomer: action.data });
+    }
+    case types.SET_MINIMUM_ORDER_TOPUP_AMOUNT: {
+      return Object.assign({}, state, { minTopupAmount: action.data });
+    }
+    case types.SET_ORDER_TOPUP_AMOUNT: {
+      return Object.assign({}, state, { topupAmount: action.data });
     }
     default: {
       return state;

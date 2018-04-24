@@ -24,7 +24,8 @@ import {
   H3,
   Card,
   CardItem,
-  View
+  View,
+  Subtitle
 } from "native-base";
 import { Grid, Row, Col } from "react-native-easy-grid";
 
@@ -37,10 +38,12 @@ import * as strings from "../constants/strings";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { setProductQuantity } from "../actions/orderActions";
+
+//actions
+import { setProductQuantity, resetOrder } from "../actions/orderActions";
 
 //functions
-import { toStringWithDecimals } from "../functions/number";
+import { calculateSubTotal, calculateTotal } from "../functions/order";
 import { showInfoToast, showErrorToast } from "../functions/toast";
 
 type Props = {};
@@ -58,7 +61,6 @@ class OverviewScreen extends Component<Props, State> {
     };
 
     this._onTrashIconPress = this._onTrashIconPress.bind(this);
-    this._onModalSlidingComplete = this._onModalSlidingComplete.bind(this);
     this._toggleModalVisible = this._toggleModalVisible.bind(this);
     this._onEditIconPress = this._onEditIconPress.bind(this);
 
@@ -69,17 +71,42 @@ class OverviewScreen extends Component<Props, State> {
   render() {
     return (
       <Container>
+        {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail
-              square
-              source={require("../assets/images/logo.gif")}
-            />
+            {/* <Grid>
+              <Row> */}
+            <Button transparent onPress={() => this.props.navigation.goBack()}>
+              <Icon name="arrow-back" />
+            </Button>
+            {/* <Thumbnail
+                  square
+                  small
+                  source={require("../assets/images/logo.gif")}
+                />
+              </Row>
+            </Grid>  */}
           </Left>
           <Body>
-            <Title>{strings.OVERVIEW}</Title>
+            <Title>{strings.ORDER}</Title>
+            <Subtitle>{strings.OVERVIEW}</Subtitle>
           </Body>
+          <Right>
+            <Button
+              transparent
+              onPress={() => {
+                this.props.resetOrder();
+              }}
+            >
+              <Icon name="trash" />
+            </Button>
+            <Button transparent>
+              <Icon name="menu" />
+            </Button>
+          </Right>
         </Header>
+        {/* HEADER END */}
+        {/* CONTENT */}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           <Card>
             {this._renderSummary()}
@@ -88,28 +115,27 @@ class OverviewScreen extends Component<Props, State> {
               this._renderList()}
             <ProductQuantityModal
               ref="modal"
-              onSlidingComplete={this._onModalSlidingComplete}
-              onConfirmButtonPress={this._onModalConfirm}
+              onConfirmButtonPress={this._onModalConfirmButtonPress}
             />
           </Card>
         </Content>
-        <Footer>
+        {/* CONTENT END */}
+        {/* FOOTER */}
+        {/* <Footer>
           <FooterTab style={styles.primaryBackground}>
             <Button
               vertical
-              onPress={() => {
-                this.props.navigation.navigate("OrderScreen");
-              }}
+              style={styles.secondaryBackground}
+              // onPress={() => {
+              //   this.props.navigation.navigate("OrderScreen");
+              // }}
             >
-              <Icon name="grid" />
-              <Text style={styles.tabbarText}>{strings.ORDER}</Text>
-            </Button>
-            <Button vertical style={styles.secondaryBackground}>
-              <Icon name="list" style={styles.white} />
+              <Icon name="grid" style={styles.white} />
               <Text style={[styles.tabbarText, styles.white]}>
-                {strings.OVERVIEW}
+                {strings.ORDER}
               </Text>
             </Button>
+           
             <Button
               vertical
               onPress={() => {
@@ -124,7 +150,8 @@ class OverviewScreen extends Component<Props, State> {
               <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
             </Button>
           </FooterTab>
-        </Footer>
+        </Footer> */}
+        {/* FOOTER END */}
       </Container>
     );
   }
@@ -167,7 +194,11 @@ class OverviewScreen extends Component<Props, State> {
         {this.props.orderlines.length > 0 && (
           <CardItem>
             <Body>
-              <Button full style={styles.primaryActionButton}>
+              <Button
+                full
+                style={styles.primaryActionButton}
+                onPress={() => this._onChooseCustomerButtonPress()}
+              >
                 <Text style={styles.primaryButtonText}>
                   {strings.CHOOSE_CUSTOMER}
                 </Text>
@@ -233,7 +264,7 @@ class OverviewScreen extends Component<Props, State> {
 
   _renderListViewRow = (orderline: {}): {} => {
     let product = this.props.products.find(p => p._id === orderline.productId);
-    let linePrice = orderline.quantity * product.price;
+    let linePrice = calculateSubTotal(orderline, product);
     let linePriceString = linePrice.toFixed(2) + " €";
     return (
       <ListItem>
@@ -304,11 +335,12 @@ class OverviewScreen extends Component<Props, State> {
   }
 
   _checkLoginState = () => {
-    if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
+    if (!this.props.cashier._id)
+      this.props.navigation.navigate("AuthNavigator");
   };
 
   _checkEventState = () => {
-    if (!this.props.eventId) this.props.navigation.navigate("EventScreen");
+    if (!this.props.event._id) this.props.navigation.navigate("EventScreen");
   };
 
   _toggleModalVisible = (): void => {
@@ -328,13 +360,7 @@ class OverviewScreen extends Component<Props, State> {
     });
   };
 
-  _onModalSlidingComplete = (value: number) => {
-    let modal = this.refs.modal;
-    let product = modal.state.product;
-    this.props.setProductQuantity(product._id, value);
-  };
-
-  _onModalConfirm = (value: number) => {
+  _onModalConfirmButtonPress = (value: number) => {
     let modal = this.refs.modal;
     let product = modal.state.product;
     this.props.setProductQuantity(product._id, value);
@@ -357,6 +383,10 @@ class OverviewScreen extends Component<Props, State> {
     rowMap[`${secId}${rowId}`].props.closeRow();
     this.props.setProductQuantity(productId, 0);
   };
+
+  _onChooseCustomerButtonPress = () => {
+    this.props.navigation.navigate("OrderCustomerScreen");
+  };
 }
 
 const mapStateToProps = state => {
@@ -367,23 +397,16 @@ const mapStateToProps = state => {
       quantity: state.OrderReducer.orderlines[key]
     };
   });
+  let products = state.ProductReducer.products;
 
   orderlines = orderlines.filter(o => o.quantity !== 0);
-
-  let totalAmount = 0.0;
-  orderlines.forEach(o => {
-    totalAmount +=
-      o.quantity *
-      state.ProductReducer.products.find(p => p._id === o.productId).price;
-  });
-  let totalAmountString = toStringWithDecimals(totalAmount, 2) + " €";
+  let totalAmount = calculateTotal(orderlines, products);
+  let totalAmountString = totalAmount.toFixed(2) + " €";
 
   return {
-    products: state.ProductReducer.products,
+    products: products,
     orderlines: orderlines,
     totalAmountString: totalAmountString,
-    cashierId: state.CashierReducer.cashierId,
-    eventId: state.EventReducer.eventId,
     cashier: state.CustomerReducer.customers.find(
       c => c._id === state.CashierReducer.cashierId
     ),
@@ -396,7 +419,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setProductQuantity }, dispatch);
+  return bindActionCreators({ setProductQuantity, resetOrder }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OverviewScreen);

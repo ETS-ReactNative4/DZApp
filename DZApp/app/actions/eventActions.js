@@ -21,8 +21,12 @@ export const receiveEvents = (events: []): {} => {
 };
 
 //Set the active event in global state
-export const setEvent = (eventId: String, navigation: {}): {} => {
-  navigation.navigate("OrderScreen");
+export const setEvent = (
+  eventId: String,
+  navigation: {},
+  previousRouteName = null
+): {} => {
+  navigation.navigate(previousRouteName ? previousRouteName : "OrderScreen");
   return {
     type: types.SET_EVENT,
     data: eventId

@@ -18,7 +18,9 @@ import {
   Button,
   Icon,
   Text,
-  View
+  View,
+  Right,
+  Subtitle
 } from "native-base";
 import GridView from "react-native-super-grid";
 
@@ -31,12 +33,13 @@ import * as strings from "../constants/strings";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { setProductQuantity } from "../actions/orderActions";
-import { setTopupAmount, setTopupCustomer } from "../actions/topupActions";
+
+//actions
+import { setProductQuantity, resetOrder } from "../actions/orderActions";
+import { sendError } from "../actions/messageActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
-import { sendError } from "../actions/messageActions";
 
 type Props = {};
 
@@ -54,7 +57,6 @@ class OrderScreen extends Component<Props, State> {
     this._onProductThumbnailTrashButtonPress = this._onProductThumbnailTrashButtonPress.bind(
       this
     );
-    this._onModalConfirm = this._onModalConfirm.bind(this);
 
     this._checkLoginState();
     this._checkEventState();
@@ -65,11 +67,37 @@ class OrderScreen extends Component<Props, State> {
       <Container>
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail square source={require("../assets/images/logo.gif")} />
+            <Thumbnail
+              square
+              small
+              source={require("../assets/images/logo.gif")}
+            />
           </Left>
           <Body>
             <Title>{strings.ORDER}</Title>
+            <Subtitle>{strings.PRODUCT_INPUT}</Subtitle>
           </Body>
+          <Right>
+            <Button
+              transparent
+              onPress={() => {
+                this.props.navigation.navigate("OverviewScreen");
+              }}
+            >
+              <Icon name="cart" />
+            </Button>
+            <Button
+              transparent
+              onPress={() => {
+                this.props.resetOrder();
+              }}
+            >
+              <Icon name="trash" />
+            </Button>
+            <Button transparent>
+              <Icon name="menu" />
+            </Button>
+          </Right>
         </Header>
         <Content
           contentContainerStyle={[styles.content, styles.alignCenter]}
@@ -78,7 +106,9 @@ class OrderScreen extends Component<Props, State> {
           {this._renderGrid()}
           <ProductQuantityModal
             ref="modal"
-            onConfirmButtonPress={value => this._onModalConfirm(value)}
+            onConfirmButtonPress={value =>
+              this._onModalConfirmButtonPress(value)
+            }
           />
         </Content>
         <Footer>
@@ -88,15 +118,6 @@ class OrderScreen extends Component<Props, State> {
               <Text style={[styles.tabbarText, styles.white]}>
                 {strings.ORDER}
               </Text>
-            </Button>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OverviewScreen");
-              }}
-            >
-              <Icon name="list" />
-              <Text style={styles.tabbarText}>{strings.OVERVIEW}</Text>
             </Button>
             <Button
               vertical
@@ -198,7 +219,7 @@ class OrderScreen extends Component<Props, State> {
     modal.setState({ isVisible: !modal.state.isVisible });
   };
 
-  _onModalConfirm = (value: number) => {
+  _onModalConfirmButtonPress = (value: number) => {
     let modal = this.refs.modal;
     let product = modal.state.product;
     this.props.setProductQuantity(product._id, value);
@@ -221,9 +242,8 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setProductQuantity,
-      sendError,
-      setTopupAmount,
-      setTopupCustomer
+      resetOrder,
+      sendError
     },
     dispatch
   );

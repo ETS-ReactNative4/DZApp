@@ -30,9 +30,27 @@ export const CHANGE_EVENT = "Wijzig productie";
 
 //OrderScreen
 export const ORDER = "Bestellen";
+export const PRODUCT_INPUT = "Producten toevoegen";
 export const ENTER_QUANTITY = "Voer hoeveelheid in voor";
 export const QUANTITY = "Aantal";
 export const INVALID_QUANTITY = "Gelieve een geheel getal in te voeren";
+export const IS_CUSTOMER_SUBSCRIBED =
+  "Is de klant toegelaten tot dit evenement?";
+export const EVENT_BALANCE = "Saldo voor evenement:";
+export const BIGGER_THAN_MIN_ERROR = min =>
+  `Gelieve een waarde >= ${min.toFixed(2)} € in te geven`;
+export const TO_PAY = "Te betalen: ";
+export const FINISH_ORDER = "Bestelling afronden";
+export const CONFIRM_ORDER = "Bestelling bevestigen";
+
+//OrderTopupModal
+export const INSUFFICIENT_FUNDS_HEADER = "Saldo ontoereikend";
+export const INSUFFICIENT_FUNDS_MESSAGE =
+  "heeft onvoldoende saldo voor deze bestelling. Saldo opladen?";
+
+//OrderConfirmModal
+export const ORDER_CONFIRM_MODAL_HEADER = "Bestelling bevestigen";
+export const ORDER_CONFIRM_MODAL_MESSAGE = "afrekenen voor";
 
 //OverviewScreen
 export const OVERVIEW = "Overzicht";
@@ -61,7 +79,7 @@ export const CAM_PERMISSION_TITLE = "DZApp toelaten de camera te gebruiken?";
 export const CAM_PERMISSION_MESSAGE =
   "DZApp heeft de camera nodig om klanten te identificeren.";
 export const CUSTOMER = "Klant: ";
-export const CURRENT_BALANCE = "Huidig saldo: ";
+export const CURRENT_BALANCE = "Huidig saldo:";
 export const TOPUP_AMOUNT = "Bedrag:";
 export const PICK_OTHER_CUSTOMER = "Kies andere klant";
 export const TOPUP_BALANCE = "Saldo opladen";
@@ -79,8 +97,7 @@ export const PICKER_EXTERNAL = "extern";
 export const PICKER_MEMBER = "lid";
 export const PICKER_CASHIER = "kassier";
 
-
-export const HISTORY = "Historiek";
+export const HISTORY = "Geschiedenis";
 export const IN_STOCK = "Voorraad:";
 export const INSUFFICIENT_STOCK = "Onvoldoende voorraad!";
 
@@ -94,5 +111,5 @@ export const SYNCED = "Gesynchroniseerd met server";
 export const AUTHENTICATED = "Succesvol aangemeld";
 
 //navigation
-export const TO_POS = "Naar kassa";
+export const TO_POS = "Naar bestellen";
 export const TO_TOPUP = "Naar opladen";

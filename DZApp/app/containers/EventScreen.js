@@ -65,27 +65,24 @@ class EventScreen extends Component<Props, State> {
   render() {
     return (
       <Container>
+        {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
             {this.previousRouteName === null ? (
-              <Thumbnail square source={require("../assets/images/logo.gif")} />
+              <Thumbnail
+                square
+                small
+                source={require("../assets/images/logo.gif")}
+              />
             ) : (
-              <Grid>
-                <Row>
-                  <Button
-                    transparent
-                    onPress={() =>
-                      this.props.navigation.navigate(this.previousRouteName)
-                    }
-                  >
-                    <Icon name="arrow-back" style={styles.white} />
-                  </Button>
-                  <Thumbnail
-                    square
-                    source={require("../assets/images/logo.gif")}
-                  />
-                </Row>
-              </Grid>
+              <Button
+                transparent
+                onPress={() =>
+                  this.props.navigation.navigate(this.previousRouteName)
+                }
+              >
+                <Icon name="arrow-back" style={styles.white} />
+              </Button>
             )}
           </Left>
           <Body>
@@ -95,13 +92,21 @@ class EventScreen extends Component<Props, State> {
                 : strings.PICK_EVENT}
             </Title>
           </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="menu" />
+            </Button>
+          </Right>
         </Header>
+        {/* HEADER END */}
+        {/* CONTENT */}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           <Card>
             {this._renderInputForm()}
             {this.state.eventId !== "" && this._renderEventInfo()}
           </Card>
         </Content>
+        {/* CONTENT END */}
       </Container>
     );
   }
@@ -308,7 +313,7 @@ class EventScreen extends Component<Props, State> {
   };
 
   _onPickEventButtonPress() {
-    this.props.setEvent(this.state.eventId, this.props.navigation);
+    this.props.setEvent(this.state.eventId, this.props.navigation,this.previousRouteName);
   }
 
   _onPickerValueChange(value: string) {

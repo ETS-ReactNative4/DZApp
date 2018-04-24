@@ -71,52 +71,22 @@ class TopupSuccessScreen extends Component<Props, State> {
   render() {
     return (
       <Container>
+        {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail square source={require("../assets/images/logo.gif")} />
+            {/* <Thumbnail square source={require("../assets/images/logo.gif")} /> */}
           </Left>
           <Body>
-            <Title>{strings.TOPUP}</Title>
-            <Subtitle>{strings.TOPPED_UP}</Subtitle>
+            <Title>{strings.TOPPED_UP}</Title>
+            
           </Body>
         </Header>
+        {/* HEADER END */}
+        {/* CONTENT */}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this._renderTopupInfo()}
         </Content>
-        <Footer>
-          <FooterTab style={styles.primaryBackground}>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OrderScreen");
-              }}
-            >
-              <Icon name="grid" />
-              <Text style={styles.tabbarText}>{strings.ORDER}</Text>
-            </Button>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OverviewScreen");
-              }}
-            >
-              <Icon name="list" />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.OVERVIEW}
-              </Text>
-            </Button>
-            <Button vertical style={styles.secondaryBackground}>
-              <Icon name="cash" style={styles.white} />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.TOPUP}
-              </Text>
-            </Button>
-            <Button vertical>
-              <Icon name="clock" />
-              <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
+        {/* CONTENT END */}
       </Container>
     );
   }
@@ -262,10 +232,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    { setTopupAmount, setTopupCustomer },
-    dispatch
-  );
+  return bindActionCreators({ setTopupAmount, setTopupCustomer }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopupSuccessScreen);

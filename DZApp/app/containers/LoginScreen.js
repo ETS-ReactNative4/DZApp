@@ -54,20 +54,25 @@ class LoginScreen extends Component<Props, State> {
   render() {
     return (
       <Container>
+      {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Thumbnail
+            {/* <Thumbnail
               square
-              source={require("../assets/images/site_dz.jpg")}
-            />
+              small
+              source={require("../assets/images/logo.gif")}
+            /> */}
           </Left>
           <Body>
             <Title>{strings.LOGIN}</Title>
           </Body>
         </Header>
+        {/* HEADER END */}
+        {/* CONTENT */}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this._renderForm()}
         </Content>
+        {/* CONTENT END */}
       </Container>
     );
   }

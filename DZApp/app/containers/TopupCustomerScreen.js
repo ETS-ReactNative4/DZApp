@@ -50,7 +50,8 @@ type Props = {};
 type State = {
   customerId: string,
   error: string,
-  showCam: boolean
+  showCam: boolean,
+  camActive: boolean
 };
 
 class TopupCustomerScreen extends Component<Props, State> {
@@ -62,7 +63,8 @@ class TopupCustomerScreen extends Component<Props, State> {
     this.state = {
       customerId: customerId,
       error: null,
-      showCam: true
+      showCam: false,
+      camActive: true
     };
 
     const { params } = this.props.navigation.state;
@@ -77,22 +79,20 @@ class TopupCustomerScreen extends Component<Props, State> {
     );
     return (
       <Container>
+        {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            <Grid>
-              <Row>
-                <Button
-                  transparent
-                  onPress={() => this.props.navigation.goBack()}
-                >
-                  <Icon name="arrow-back" style={styles.white} />
-                </Button>
-                <Thumbnail
+            {/* <Grid>
+              <Row> */}
+            <Button transparent onPress={() => this.props.navigation.goBack()}>
+              <Icon name="arrow-back" style={styles.white} />
+            </Button>
+            {/* <Thumbnail
                   square
                   source={require("../assets/images/logo.gif")}
                 />
               </Row>
-            </Grid>
+            </Grid> */}
           </Left>
           <Body>
             <Title>{strings.TOPUP}</Title>
@@ -103,45 +103,14 @@ class TopupCustomerScreen extends Component<Props, State> {
             </Subtitle>
           </Body>
         </Header>
+        {/* HEADER END */}
+        {/* CONTENT */}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this.state.customerId !== ""
             ? this._renderCustomerInfo()
             : this._renderInput()}
         </Content>
-        <Footer>
-          <FooterTab style={styles.primaryBackground}>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OrderScreen");
-              }}
-            >
-              <Icon name="grid" />
-              <Text style={styles.tabbarText}>{strings.ORDER}</Text>
-            </Button>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OverviewScreen");
-              }}
-            >
-              <Icon name="list" />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.OVERVIEW}
-              </Text>
-            </Button>
-            <Button vertical style={styles.secondaryBackground}>
-              <Icon name="cash" style={styles.white} />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.TOPUP}
-              </Text>
-            </Button>
-            <Button vertical>
-              <Icon name="clock" />
-              <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
+        {/* CONTENT END */}
       </Container>
     );
   }
@@ -153,6 +122,14 @@ class TopupCustomerScreen extends Component<Props, State> {
     if (this.props.error !== null) {
       showErrorToast(this.props.error);
     }
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   _renderInput = () => {
@@ -197,7 +174,7 @@ class TopupCustomerScreen extends Component<Props, State> {
             flashMode={Camera.constants.FlashMode.auto}
             defaultTouchToFocus
             // barCodeTypes={["qr"]}
-            onBarCodeRead={this._onBarCodeRead}
+            onBarCodeRead={this.state.camActive ? this._onBarCodeRead : null}
             permissionDialogTitle={strings.CAM_PERMISSION_TITLE}
             permissionDialogMessage={strings.CAM_PERMISSION_MESSAGE}
           />
@@ -353,7 +330,7 @@ class TopupCustomerScreen extends Component<Props, State> {
   };
 
   _onBarCodeRead = e => {
-    if (e.type === "QR_CODE") {
+    if (this.state.camActive && e.type === "QR_CODE") {
       Vibration.vibrate(500);
       //barcode only contains customerId in plain text format
       let customer = this.props.customers.find(c => c._id === e.data);
@@ -363,6 +340,12 @@ class TopupCustomerScreen extends Component<Props, State> {
         });
       } else this.props.sendError(strings.INVALID_QR);
     }
+
+    //disable camera for 5 seconds
+    this.setState({ camActive: false });
+    setTimeout(() => {
+      if (this && this.mounted) this.setState({ camActive: true });
+    }, 5000);
   };
 
   _onPickerValueChange(value: string) {
@@ -385,7 +368,7 @@ class TopupCustomerScreen extends Component<Props, State> {
 }
 
 const mapStateToProps = state => {
-  let customer = state.CustomerReducer.customers.sort((a, b) => {
+  let customers = state.CustomerReducer.customers.sort((a, b) => {
     if (a.lastName > b.lastName) return 1;
     else if (a.lastName < b.lastName) return -1;
     return 0;
@@ -393,7 +376,7 @@ const mapStateToProps = state => {
 
   return {
     cashierId: state.CashierReducer.cashierId,
-    customers: state.CustomerReducer.customers,
+    customers: customers,
     message: state.MessageReducer.message,
     error: state.MessageReducer.error,
     customer: state.TopupReducer.currentCustomer

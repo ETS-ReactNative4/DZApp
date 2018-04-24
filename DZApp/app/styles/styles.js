@@ -183,21 +183,24 @@ const styles = StyleSheet.create({
   topupConfirmModalContent: {
     height: 200
   },
-  quantitySliderTrackStyle: {
-    height: 2,
-    borderRadius: 5,
-    backgroundColor: colors.PRIMARY_COLOR
+  orderTopupModalContent: {
+    height: 300
   },
-  quantitySliderThumbStyle: {
-    width: 20,
-    height: 20,
-    borderRadius: 20 / 2,
-    backgroundColor: colors.SECONDARY_COLOR
-  },
-  quantitySliderStyle: {
-    width: "100%",
-    marginBottom: 20
-  },
+  // quantitySliderTrackStyle: {
+  //   height: 2,
+  //   borderRadius: 5,
+  //   backgroundColor: colors.PRIMARY_COLOR
+  // },
+  // quantitySliderThumbStyle: {
+  //   width: 20,
+  //   height: 20,
+  //   borderRadius: 20 / 2,
+  //   backgroundColor: colors.SECONDARY_COLOR
+  // },
+  // quantitySliderStyle: {
+  //   width: "100%",
+  //   marginBottom: 20
+  // },
 
   //TopupScreen:
   cameraHolder: {
