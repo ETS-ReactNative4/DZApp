@@ -5,7 +5,8 @@ import * as strings from "../constants/strings";
 import { NetInfo } from "react-native";
 import { URL } from "../constants/serversettings";
 
-import { fetchWrapper } from "../functions/fetch";
+//import { fetchWrapper } from "../functions/fetch";
+const fetch = require("react-native-cancelable-fetch");
 
 import { fetchCustomers } from "./customerActions";
 import { Store } from "../store/store";
@@ -35,7 +36,7 @@ export const localTopup = (topup: {}, rollback: boolean = false): {} => {
 
   return {
     type: types.LOCAL_TOPUP,
-    data: { topup: topup, previousBalance: previousBalance, rollback:rollback }
+    data: { topup: topup, previousBalance: previousBalance, rollback: rollback }
   };
 };
 
@@ -50,7 +51,6 @@ export const topupSyncComplete = () => {
 export const topupSyncFailed = () => {
   return { type: types.TOPUP_SYNC_FAILED };
 };
-
 
 /************ Asynchronous Actions ***************/
 
@@ -76,18 +76,22 @@ export const syncTopups = () => {
   return function(dispatch) {
     dispatch(topupSyncStarted());
     let topups = Store.getState().TopupReducer.topups;
-    return fetchWrapper(
-      5000,
-      fetch(URL + "/topups", {
+    let success;
+
+    fetch(
+      URL + "/topups",
+      {
         method: "POST",
         body: JSON.stringify(topups),
         headers: new Headers({
           "Content-Type": "application/json"
         })
-      })
+      },
+      "topups"
     )
       .then(response => {
         if (response.status === 200) {
+          success = true;
           dispatch(sendMessage(strings.SYNCED));
           dispatch(topupSyncComplete());
           dispatch(fetchCustomers());
@@ -100,5 +104,16 @@ export const syncTopups = () => {
         dispatch(sendError(strings.UNABLE_TO_SYNC));
         dispatch(topupSyncFailed());
       });
+
+    //cancel the request after x seconds
+    //and send appropriate error messages
+    //when unsuccessfull  
+    setTimeout(() => {
+      fetch.abort("topups");
+      if (!success) {
+        dispatch(sendError(strings.UNABLE_TO_SYNC));
+        dispatch(topupSyncFailed());
+      }
+    }, 5000);
   };
 };
