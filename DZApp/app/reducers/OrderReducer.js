@@ -84,6 +84,10 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
         isSyncing: false
       });
     }
+    case types.LOCAL_ROLLBACK:{
+      let rollback = action.data;
+      
+    }
     default: {
       return state;
     }

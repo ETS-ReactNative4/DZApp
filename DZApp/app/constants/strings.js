@@ -106,9 +106,19 @@ export const PICKER_EXTERNAL = "extern";
 export const PICKER_MEMBER = "lid";
 export const PICKER_CASHIER = "kassier";
 
+//HistoryScreen
 export const HISTORY = "Geschiedenis";
+export const ORDERS = "Bestellingen";
+export const TOPUPS = "Opladingen";
+
+
+
+
+//misc
 export const IN_STOCK = "Voorraad:";
 export const INSUFFICIENT_STOCK = "Onvoldoende voorraad!";
+
+
 
 //Error messages
 export const SERVER_TIMEOUT = "Timeout van verbinding met de server";

@@ -22,6 +22,9 @@ import TopupCustomerScreen from "./TopupCustomerScreen";
 import TopupSuccessScreen from "./TopUpSuccessScreen";
 import TopupConfirmScreen from "./TopupConfirmScreen";
 
+//HistoryNavigator
+import HistoryScreen from "./HistoryScreen";
+
 const TopupNavigator = StackNavigator(
   {
     TopupAmountScreen: {
@@ -39,6 +42,18 @@ const TopupNavigator = StackNavigator(
   },
   {
     initialRouteName: "TopupAmountScreen",
+    headerMode: "none"
+  }
+);
+
+const HistoryNavigator = StackNavigator(
+  {
+    HistoryScreen: {
+      screen: HistoryScreen
+    }
+  },
+  {
+    initialRouteName: "HistoryScreen",
     headerMode: "none"
   }
 );
@@ -95,10 +110,13 @@ const MainFlowNavigator = SwitchNavigator(
     },
     TopupNavigator: {
       screen: TopupNavigator
+    },
+    HistoryNavigator: {
+      screen: HistoryNavigator
     }
   },
   {
-    initialRouteName: "TopupNavigator",
+    initialRouteName: "HistoryNavigator",
     headerMode: "none"
   }
 );

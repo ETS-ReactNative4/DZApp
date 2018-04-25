@@ -6,7 +6,8 @@ import CustomerReducer from "./CustomerReducer";
 import ProductReducer from "./ProductReducer";
 import OrderReducer from "./OrderReducer";
 import TopupReducer from "./TopupReducer";
-import SubscriptionReducer from "./SubscriptionReducer"
+import SubscriptionReducer from "./SubscriptionReducer";
+import RollbackReducer from "./RollbackReducer";
 import MessageReducer from "./MessageReducer";
 
 import { AsyncStorage } from "react-native";
@@ -28,6 +29,7 @@ const rootPersistConfig = {
     "OrderReducer",
     "TopupReducer",
     "SubscriptionReducer",
+    "RollbackReducer",
     "MessageReducer"
   ]
 };
@@ -42,7 +44,7 @@ const cashierPersistConfig = {
 const eventPersistConfig = {
   key: "EventReducer",
   storage: AsyncStorage,
-  whitelist: ["events"],
+  whitelist: ["events", "eventId"],
   stateReconciler: autoMergeLevel2
 };
 
@@ -63,19 +65,26 @@ const productPersistConfig = {
 const orderPersistConfig = {
   key: "OrderReducer",
   storage: AsyncStorage,
-  whitelist: ["orders","lastOrder","history"],
+  whitelist: ["orders", "lastOrder", "history"],
   stateReconciler: autoMergeLevel2
 };
 
 const topupPersistConfig = {
   key: "TopupReducer",
   storage: AsyncStorage,
-  whitelist: ["topups", "cashInRegister", "lastTopup","history"],
+  whitelist: ["topups", "cashInRegister", "lastTopup", "history"],
   stateReconciler: autoMergeLevel2
 };
 
 const subscriptionPersistConfig = {
   key: "SubscriptionReducer",
+  storage: AsyncStorage,
+  whitelist: ["subscriptions"],
+  stateReconciler: autoMergeLevel2
+};
+
+const rollbackPersistConfig = {
+  key: "RollbackReducer",
   storage: AsyncStorage,
   whitelist: ["subscriptions"],
   stateReconciler: autoMergeLevel2
@@ -91,7 +100,11 @@ const RootReducer = combineReducers({
   ProductReducer: persistReducer(productPersistConfig, ProductReducer),
   OrderReducer: persistReducer(orderPersistConfig, OrderReducer),
   TopupReducer: persistReducer(topupPersistConfig, TopupReducer),
-  SubscriptionReducer: persistReducer(subscriptionPersistConfig,SubscriptionReducer),
+  SubscriptionReducer: persistReducer(
+    subscriptionPersistConfig,
+    SubscriptionReducer
+  ),
+  RollbackReducer: persistReducer(rollbackPersistConfig,RollbackReducer),
   MessageReducer: MessageReducer
 });
 

@@ -217,6 +217,22 @@ const styles = StyleSheet.create({
   //tabbar
   tabbarText: {
     fontSize: 9
+  },
+  //HistoryScreen
+  segment: {
+    borderColor: colors.PRIMARY_COLOR,
+    borderWidth: 2,
+    backgroundColor: colors.PRIMARY_COLOR
+  },
+  segmentButton: {
+    borderColor: colors.TITLE_COLOR
+  },
+  segmentButtonActive: {
+    borderColor: colors.TILE_COLOR
+  },
+  segmentButtonText: {},
+  segmentButtonTextActive: {
+    color: colors.SECONDARY_COLOR
   }
 });
 

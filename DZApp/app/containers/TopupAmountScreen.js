@@ -137,24 +137,18 @@ class TopupAmountScreen extends Component<Props, State> {
               <Icon name="grid" />
               <Text style={styles.tabbarText}>{strings.ORDER}</Text>
             </Button>
-            {/* <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OverviewScreen");
-              }}
-            >
-              <Icon name="list" />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.OVERVIEW}
-              </Text>
-            </Button> */}
             <Button vertical style={styles.secondaryBackground}>
               <Icon name="cash" style={styles.white} />
               <Text style={[styles.tabbarText, styles.white]}>
                 {strings.TOPUP}
               </Text>
             </Button>
-            <Button vertical>
+            <Button
+              vertical
+              onPress={() => {
+                this.props.navigation.navigate("HistoryNavigator");
+              }}
+            >
               <Icon name="clock" />
               <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
             </Button>
@@ -286,7 +280,6 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       setTopupAmount
-      
     },
     dispatch
   );
