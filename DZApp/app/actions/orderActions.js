@@ -9,8 +9,9 @@ import { URL } from "../constants/serversettings";
 //functions
 import { getCustomerById } from "../functions/customer";
 import { getEventById } from "../functions/event";
-import { fetchWrapper } from "../functions/fetch";
-
+// import { fetchWrapper } from "../functions/fetch";
+//import { fetchWrapper } from "../functions/fetch";
+const fetch = require("react-native-cancelable-fetch");
 //actions
 import { fetchCustomers } from "./customerActions";
 import { fetchProducts } from "./productActions";
@@ -100,50 +101,71 @@ export const processOrder = (order: {}) => {
   return function(dispatch) {
     //console.log(order);
     dispatch(localOrder(order));
+    dispatch(syncOrders());
+  };
+};
+
+export const syncOrders = () => {
+  return function(dispatch) {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
         if (isConnected) {
-          dispatch(syncOrders());
+          let orders = Store.getState().OrderReducer.orders;
+
+          if (orders.length > 0) {
+            dispatch(orderSyncStarted());
+
+            let fetched;
+
+            fetch(
+              URL + "/orders",
+              {
+                method: "POST",
+                body: JSON.stringify(orders),
+                headers: new Headers({
+                  "Content-Type": "application/json"
+                })
+              },
+              "orders"
+            )
+              .then(response => {
+                if (response.status === 200) {
+                  fetched = true;
+                  dispatch(sendMessage(strings.SYNCED));
+                  dispatch(orderSyncComplete());
+                  dispatch(fetchCustomers());
+                  dispatch(fetchProducts());
+                  dispatch(fetchSubscriptions());
+                } else {
+                  fetched = true;
+                  dispatch(sendError(strings.UNABLE_TO_SYNC));
+                  dispatch(orderSyncFailed());
+                }
+              })
+              .catch(err => {
+                fetched = true;
+                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(orderSyncFailed());
+              });
+
+            //cancel the request after x seconds
+            //and send appropriate error messages
+            //when unsuccessfull
+            setTimeout(() => {
+              fetch.abort("orders");
+              if (!fetched) {
+                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(orderSyncFailed());
+              }
+            }, 5000);
+          }
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
         }
       })
       .catch(err => {
         console.warn(err);
-      });
-  };
-};
-
-export const syncOrders = () => {
-  return function(dispatch) {
-    dispatch(orderSyncStarted());
-    let orders = Store.getState().OrderReducer.orders;
-    return fetchWrapper(
-      5000,
-      fetch(URL + "/orders", {
-        method: "POST",
-        body: JSON.stringify(orders),
-        headers: new Headers({
-          "Content-Type": "application/json"
-        })
-      })
-    )
-      .then(response => {
-        if (response.status === 200) {
-          dispatch(sendMessage(strings.SYNCED));
-          dispatch(orderSyncComplete());
-          dispatch(fetchCustomers());
-          dispatch(fetchProducts());
-          dispatch(fetchSubscriptions());
-        } else {
-          dispatch(sendError(strings.UNABLE_TO_SYNC));
-          dispatch(orderSyncFailed());
-        }
-      })
-      .catch(err => {
-        dispatch(sendError(strings.UNABLE_TO_SYNC));
-        dispatch(orderSyncFailed());
       });
   };
 };
