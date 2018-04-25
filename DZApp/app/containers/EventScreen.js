@@ -198,7 +198,7 @@ class EventScreen extends Component<Props, State> {
           onValueChange={this._onPickerValueChange}
         >
           <Item label={strings.PICK_EVENT_IOS_HEADER} value="" key="" />
-          {this.props.events.map((event, key) => {
+          {this.props.listEvents.map((event, key) => {
             let type =
               event.type === "production"
                 ? strings.PICKER_PRODUCTION
@@ -222,7 +222,7 @@ class EventScreen extends Component<Props, State> {
           selectedValue={this.state.eventId}
           onValueChange={this._onPickerValueChange}
         >
-          {this.props.events.map((event, key) => {
+          {this.props.listEvents.map((event, key) => {
             let type =
               event.type === "production"
                 ? strings.PICKER_PRODUCTION
@@ -242,7 +242,9 @@ class EventScreen extends Component<Props, State> {
   });
 
   _renderEventInfo = () => {
+    console.log(this.props.events);
     let event = this.props.events.find(e => e._id === this.state.eventId);
+    
 
     let renderFeeInfo = event.type === "event";
     let typeString =
@@ -313,7 +315,11 @@ class EventScreen extends Component<Props, State> {
   };
 
   _onPickEventButtonPress() {
-    this.props.setEvent(this.state.eventId, this.props.navigation,this.previousRouteName);
+    this.props.setEvent(
+      this.state.eventId,
+      this.props.navigation,
+      this.previousRouteName
+    );
   }
 
   _onPickerValueChange(value: string) {
@@ -328,7 +334,9 @@ const mapStateToProps = state => {
   // that are current, i.e.:
   // today > start of fromDate
   // && today < end of toDate + 1 day => party till midnight the day after for events!
-  let events = state.EventReducer.events
+  let events = state.EventReducer.events;
+
+  let listEvents = events
     .filter(e => {
       return (
         moment().isSameOrAfter(moment(e.fromDate)) &&
@@ -345,6 +353,7 @@ const mapStateToProps = state => {
 
   return {
     events: events,
+    listEvents: listEvents,
     cashierId: state.CashierReducer.cashierId,
     eventId: state.EventReducer.eventId,
     message: state.MessageReducer.message,

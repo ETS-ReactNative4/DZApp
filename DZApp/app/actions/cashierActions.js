@@ -6,6 +6,7 @@ import { URL } from "../constants/serversettings";
 const fetch = require("react-native-cancelable-fetch");
 import { sendError, sendMessage } from "./messageActions";
 import { NetInfo } from "react-native";
+import { Store } from "../store/store";
 
 /************ Synchronous Actions ***************/
 export const requestLogin = () => {
@@ -36,7 +37,7 @@ export const login = (userCredentials: {}, navigation: {}) => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
+        if (isConnected && !Store.getState().CashierReducer.isAuthenticating) {
           dispatch(requestLogin());
           let fetched;
 

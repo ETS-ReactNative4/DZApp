@@ -6,7 +6,7 @@ module.exports = function(app, db) {
   app.post("/topups", (req, res) => {
     const topups = req.body;
 
-    console.log(topups);
+    console.log("post: " + topups);
 
     if (!Array.isArray(topups)) {
       res.status(400);

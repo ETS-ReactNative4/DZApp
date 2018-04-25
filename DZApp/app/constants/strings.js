@@ -50,7 +50,7 @@ export const CURRENT_SUBSCRIPTION_BALANCE_LABEL =
 export const PAYED_FROM_CREDIT_LABEL = "Betaald van saldo: ";
 export const PAYED_FROM_SUBSCRIPTIONFEE_LABEL =
   "Betaald van inschrijvingsgeld: ";
-  export const BACK_TO_PRODUCT_INPUT = "Nieuwe bestelling";
+export const BACK_TO_PRODUCT_INPUT = "Naar bestellen";
 
 //OrderTopupModal
 export const INSUFFICIENT_FUNDS_HEADER = "Saldo ontoereikend";
@@ -111,14 +111,9 @@ export const HISTORY = "Geschiedenis";
 export const ORDERS = "Bestellingen";
 export const TOPUPS = "Opladingen";
 
-
-
-
 //misc
 export const IN_STOCK = "Voorraad:";
 export const INSUFFICIENT_STOCK = "Onvoldoende voorraad!";
-
-
 
 //Error messages
 export const SERVER_TIMEOUT = "Timeout van verbinding met de server";

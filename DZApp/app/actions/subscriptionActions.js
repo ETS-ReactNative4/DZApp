@@ -6,6 +6,7 @@ import { URL } from "../constants/serversettings";
 const fetch = require("react-native-cancelable-fetch");
 import { sendMessage, sendError } from "./messageActions";
 import * as strings from "../constants/strings";
+import { Store } from "../store/store";
 
 /************ Synchronous Actions ***************/
 
@@ -40,7 +41,7 @@ export const fetchSubscriptions = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
+        if (isConnected && !Store.getState().SubscriptionReducer.isFetching) {
           dispatch(requestSubscriptions);
 
           let fetched;

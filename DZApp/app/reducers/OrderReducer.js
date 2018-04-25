@@ -44,6 +44,8 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
       let order = action.data.order;
 
       if (!rollback) {
+        console.warn("order: " + JSON.stringify(order));
+
         let previousBalance = action.data.previousBalance;
         let previousSubscriptionBalance =
           action.data.previousSubscriptionBalance;
@@ -75,8 +77,8 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
         let newHistory = state.history.slice(0);
         let orderToRemove = newHistory.find(o => o.localId === order.localId);
         let index = newHistory.indexOf(orderToRemove);
-        newHistory.splice(index,1);
-        return Object.assign({},state,{history: newHistory})
+        newHistory.splice(index, 1);
+        return Object.assign({}, state, { history: newHistory });
       }
     }
     case types.ORDER_SYNC_STARTED: {

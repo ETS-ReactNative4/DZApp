@@ -31,7 +31,7 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       let rollback = action.data.rollback;
       let topup = action.data.topup;
       if (!rollback) {
-        console.log("topups before: " + state.topups);
+        console.warn("topup: " + JSON.stringify(topup));
 
         let previousBalance = action.data.previousBalance;
         let lastTopup = Object.assign({}, topup);
@@ -49,7 +49,6 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
         if (newHistory.length > historyCount)
           newHistory = newHistory.slice(0, historyCount - 1);
 
-        console.log("topups after: " + newTopups);
         return Object.assign({}, state, {
           topups: newTopups,
           cashInRegister: state.cashInRegister + amount,

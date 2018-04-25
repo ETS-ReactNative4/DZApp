@@ -41,6 +41,7 @@ export const localTopup = (topup: {}, rollback: boolean = false): {} => {
 };
 
 export const topupSyncStarted = () => {
+  console.log("TOPUP SYNC STARTED");
   return { type: types.TOPUP_SYNC_STARTED };
 };
 
@@ -66,7 +67,7 @@ export const syncTopups = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
+        if (isConnected && !Store.getState().TopupReducer.isSyncing) {
           let topups = Store.getState().TopupReducer.topups;
           if (topups.length > 0) {
             dispatch(topupSyncStarted());

@@ -108,7 +108,7 @@ export const syncOrders = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
+        if (isConnected && !Store.getState().OrderReducer.isSyncing) {
           let orders = Store.getState().OrderReducer.orders;
 
           if (orders.length > 0) {

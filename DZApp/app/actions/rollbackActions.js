@@ -12,10 +12,11 @@ const fetch = require("react-native-cancelable-fetch");
 
 //actions
 import { localOrder } from "./orderActions";
-import { localTopup } from "./topupActions";
+import { localTopup, syncTopups } from "./topupActions";
 import { fetchCustomers } from "./customerActions";
 import { fetchProducts } from "./productActions";
 import { fetchSubscriptions } from "./subscriptionActions";
+import { syncOrders } from "./orderActions";
 
 import { sendMessage, sendError } from "./messageActions";
 
@@ -70,11 +71,16 @@ export const syncRollbacks = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
+        if (isConnected && !Store.getState().RollbackReducer.isSyncing) {
           let rollbacks = Store.getState().RollbackReducer.rollbacks;
 
           if (rollbacks.length > 0) {
             dispatch(rollbackSyncStarted);
+
+            //sync o/t first in case we want to rollback
+            //a previously unsynced o/t
+            dispatch(syncOrders());
+            dispatch(syncTopups());
 
             let fetched;
 

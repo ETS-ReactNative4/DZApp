@@ -6,6 +6,7 @@ const fetch = require("react-native-cancelable-fetch");
 import { NetInfo } from "react-native";
 import { sendError, sendMessage } from "./messageActions";
 import * as strings from "../constants/strings";
+import { Store } from "../store/store";
 
 /************ Synchronous Actions ***************/
 
@@ -40,7 +41,7 @@ export const fetchProducts = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
+        if (isConnected && !Store.getState().ProductReducer.isFetching) {
           dispatch(requestProducts);
 
           let fetched;
