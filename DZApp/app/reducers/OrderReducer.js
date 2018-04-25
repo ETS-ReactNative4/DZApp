@@ -10,7 +10,8 @@ const initialState = {
   topupAmount: null,
   orders: [],
   history: [],
-  lastOrder: null
+  lastOrder: null,
+  isSyncing: false
 };
 
 const OrderReducer = (state: {} = initialState, action: {}) => {
@@ -64,6 +65,23 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
         orders: newOrders,
         lastOrder: lastOrder,
         history: newHistory
+      });
+    }
+    case types.ORDER_SYNC_STARTED: {
+      return Object.assign({}, state, {
+        isSyncing: true
+      });
+    }
+    case types.ORDER_SYNC_COMPLETE: {
+      //remove all locally stored orders
+      return Object.assign({}, state, {
+        orders: [],
+        isSyncing: false
+      });
+    }
+    case types.ORDER_SYNC_FAILED: {
+      return Object.assign({}, state, {
+        isSyncing: false
       });
     }
     default: {

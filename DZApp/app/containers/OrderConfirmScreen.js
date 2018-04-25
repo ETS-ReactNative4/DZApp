@@ -126,12 +126,12 @@ class OrderConfirmScreen extends Component<Props, State> {
       : "";
     let creditBalanceString = this.props.creditBalance
       ? this.props.creditBalance.toFixed(2) + " €"
-      : "";
+      : "0.00 €";
     let eventBalanceString;
     if (this.props.event.type === "event") {
       eventBalanceString = this.props.eventBalance
         ? this.props.eventBalance.toFixed(2) + " €"
-        : "";
+        : "0.00 €";
     }
 
     return (

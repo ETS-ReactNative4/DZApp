@@ -14,7 +14,11 @@ import { fetchWrapper } from "../functions/fetch";
 //actions
 import { fetchCustomers } from "./customerActions";
 import { fetchProducts } from "./productActions";
+import { fetchSubscriptions } from "./subscriptionActions";
 import { sendMessage, sendError } from "./messageActions";
+
+//constants
+import * as strings from "../constants/strings";
 
 /************ Synchronous Actions ***************/
 export const setProductQuantity = (productId: number, quantity: number): {} => {
@@ -71,7 +75,9 @@ export const localOrder = (order: {}): {} => {
     data: {
       order: order,
       previousBalance: customer.creditBalance,
-      previousSubscriptionBalance: subscription ? subscription.remainingCredit : null
+      previousSubscriptionBalance: subscription
+        ? subscription.remainingCredit
+        : null
     }
   };
 };
@@ -91,19 +97,20 @@ export const orderSyncFailed = () => {
 /************ Asynchronous Actions ***************/
 export const processOrder = (order: {}) => {
   return function(dispatch) {
+    //console.log(order);
     dispatch(localOrder(order));
-    // NetInfo.isConnected
-    //   .fetch()
-    //   .then(isConnected => {
-    //     if (isConnected) {
-    //       dispatch(syncOrders());
-    //     } else {
-    //       dispatch(sendError(strings.NO_CONNECTION));
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.warn(err);
-    //   });
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          dispatch(syncOrders());
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };
 
@@ -127,6 +134,7 @@ export const syncOrders = () => {
           dispatch(orderSyncComplete());
           dispatch(fetchCustomers());
           dispatch(fetchProducts());
+          dispatch(fetchSubscriptions());
         } else {
           dispatch(sendError(strings.UNABLE_TO_SYNC));
           dispatch(orderSyncFailed());
