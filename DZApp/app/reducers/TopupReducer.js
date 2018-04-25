@@ -28,29 +28,39 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       });
     }
     case types.LOCAL_TOPUP:
+      let rollback = action.data.rollback;
       let topup = action.data.topup;
-      let previousBalance = action.data.previousBalance;
-      let lastTopup = action.data.topup;
-      lastTopup.previousBalance = previousBalance;
-      let amount = topup.amount;
+      if (!rollback) {
+        let previousBalance = action.data.previousBalance;
+        let lastTopup = Object.assign({}, topup);
+        lastTopup.previousBalance = previousBalance;
+        let amount = topup.amount;
 
-      //clone the unsynced topup array and add new topup
-      let newTopups = state.topups.slice(0);
-      newTopups.push(topup);
+        //clone the unsynced topup array and add new topup
+        let newTopups = state.topups.slice(0);
+        newTopups.push(topup);
 
-      //clone the history topup array and add new topup
-      //respecting the max history count
-      let newHistory = state.history.slice(0);
-      newHistory.unshift(topup);
-      if (newHistory.length > historyCount)
-        newHistory = newHistory.slice(0, historyCount - 1);
+        //clone the history topup array and add new topup
+        //respecting the max history count
+        let newHistory = state.history.slice(0);
+        newHistory.unshift(topup);
+        if (newHistory.length > historyCount)
+          newHistory = newHistory.slice(0, historyCount - 1);
 
-      return Object.assign({}, state, {
-        topups: newTopups,
-        cashInRegister: state.cashInRegister + amount,
-        lastTopup: lastTopup,
-        history: newHistory
-      });
+        return Object.assign({}, state, {
+          topups: newTopups,
+          cashInRegister: state.cashInRegister + amount,
+          lastTopup: lastTopup,
+          history: newHistory
+        });
+      } else {
+        //remove topup from history in case of a rollback
+        let newHistory = state.history.slice(0);
+        let topupToRemove = newHistory.find(t => t.localId === topup.localId);
+        let index = newHistory.indexOf(topupToRemove);
+        newHistory.splice(index, 1);
+        return Object.assign({}, state, { history: newHistory });
+      }
 
     case types.TOPUP_SYNC_STARTED: {
       return Object.assign({}, state, {

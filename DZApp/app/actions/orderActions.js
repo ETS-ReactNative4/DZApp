@@ -58,7 +58,7 @@ export const setOrderTopupAmount = (amount: number): {} => {
   };
 };
 
-export const localOrder = (order: {}): {} => {
+export const localOrder = (order: {}, rollback: boolean = false): {} => {
   let customer = getCustomerById(
     order.customerId,
     Store.getState().CustomerReducer.customers
@@ -77,7 +77,8 @@ export const localOrder = (order: {}): {} => {
       previousBalance: customer.creditBalance,
       previousSubscriptionBalance: subscription
         ? subscription.remainingCredit
-        : null
+        : null,
+      rollback: rollback
     }
   };
 };

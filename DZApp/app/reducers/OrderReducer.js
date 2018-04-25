@@ -40,32 +40,44 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
       return Object.assign({}, state, { topupAmount: action.data });
     }
     case types.LOCAL_ORDER: {
+      let rollback = action.data.rollback;
       let order = action.data.order;
-      let previousBalance = action.data.previousBalance;
-      let previousSubscriptionBalance = action.data.previousSubscriptionBalance;
 
-      //construct the lastOrder object for display in OrderSuccessScreen
-      let lastOrder = action.data.order;
-      lastOrder.previousBalance = previousBalance;
-      lastOrder.previousSubscriptionBalance = previousSubscriptionBalance;
+      if (!rollback) {
+        let previousBalance = action.data.previousBalance;
+        let previousSubscriptionBalance =
+          action.data.previousSubscriptionBalance;
 
-      //clone the unsynced order array and add new order
-      let newOrders = state.orders.slice(0);
-      newOrders.push(order);
+        //construct the lastOrder object for display in OrderSuccessScreen
+        let lastOrder = Object.assign({}, order);
+        lastOrder.previousBalance = previousBalance;
+        lastOrder.previousSubscriptionBalance = previousSubscriptionBalance;
 
-      //clone the history order array and add new topup
-      //to start of array
-      //respecting the max history count
-      let newHistory = state.history.slice(0);
-      newHistory.unshift(order);
-      if (newHistory.length > historyCount)
-        newHistory = newHistory.slice(0, historyCount - 1);
+        //clone the unsynced order array and add new order
+        let newOrders = state.orders.slice(0);
+        newOrders.push(order);
 
-      return Object.assign({}, state, {
-        orders: newOrders,
-        lastOrder: lastOrder,
-        history: newHistory
-      });
+        //clone the history order array and add new topup
+        //to start of array
+        //respecting the max history count
+        let newHistory = state.history.slice(0);
+        newHistory.unshift(order);
+        if (newHistory.length > historyCount)
+          newHistory = newHistory.slice(0, historyCount - 1);
+
+        return Object.assign({}, state, {
+          orders: newOrders,
+          lastOrder: lastOrder,
+          history: newHistory
+        });
+      } else {
+        //remove order from history in case of a rollback
+        let newHistory = state.history.slice(0);
+        let orderToRemove = newHistory.find(o => o.localId === order.localId);
+        let index = newHistory.indexOf(orderToRemove);
+        newHistory.splice(index,1);
+        return Object.assign({},state,{history: newHistory})
+      }
     }
     case types.ORDER_SYNC_STARTED: {
       return Object.assign({}, state, {
@@ -84,9 +96,8 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
         isSyncing: false
       });
     }
-    case types.LOCAL_ROLLBACK:{
-      let rollback = action.data;
-      
+    case types.ROLLBACK_ORDER: {
+      let order = action.data;
     }
     default: {
       return state;

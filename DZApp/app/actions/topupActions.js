@@ -28,14 +28,14 @@ export const setTopupCustomer = (customer: {}): {} => {
   };
 };
 
-export const localTopup = (topup: {}): {} => {
+export const localTopup = (topup: {}, rollback: boolean = false): {} => {
   let customers = Store.getState().CustomerReducer.customers;
   let customer = customers.find(c => c._id === topup.customerId);
   let previousBalance = customer.creditBalance;
 
   return {
     type: types.LOCAL_TOPUP,
-    data: { topup: topup, previousBalance: previousBalance }
+    data: { topup: topup, previousBalance: previousBalance, rollback:rollback }
   };
 };
 

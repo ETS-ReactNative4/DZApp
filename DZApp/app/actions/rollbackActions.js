@@ -13,8 +13,9 @@ import { fetchWrapper } from "../functions/fetch";
 import { fetchCustomers } from "./customerActions";
 import { fetchProducts } from "./productActions";
 import { fetchSubscriptions } from "./subscriptionActions";
-import { syncOrders } from "./orderActions";
-import { syncTopups } from "./topupActions";
+import { syncOrders, localOrder } from "./orderActions";
+import { syncTopups, localTopup } from "./topupActions";
+
 import { sendMessage, sendError } from "./messageActions";
 
 //constants
@@ -44,8 +45,23 @@ export const rollbackSyncFailed = () => {
 
 export const processRollback = (rollback: {}) => {
   return function(dispatch) {
-    //console.log(order);
+    //adds a rollback to the unsynced rollbacks global state
     dispatch(localRollback(rollback));
+    if (rollback.orderId) {
+      //performs a negative order locally
+      let order = Store.getState().OrderReducer.history.find(
+        o => o.localId === rollback.orderId
+      );
+      dispatch(localOrder(negativeOrder(order), true));
+    } else {
+      //performs a negative topup locally
+      let topup = Store.getState().TopupReducer.history.find(
+        t => t.localId === rollback.topupId
+      );
+      dispatch(localTopup(negativeTopup(topup), true));
+    }
+
+    //attemp to sync rollbacks with backend
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
@@ -66,6 +82,8 @@ export const processRollback = (rollback: {}) => {
 };
 
 export const syncRollbacks = () => {
+  console.log("sync rollbacks...");
+
   return function(dispatch) {
     dispatch(rollbackSyncStarted());
     let rollbacks = Store.getState().RollbackReducer.rollbacks;
@@ -97,4 +115,20 @@ export const syncRollbacks = () => {
         dispatch(rollbackSyncFailed());
       });
   };
+};
+
+const negativeOrder = order => {
+  let negativeOrder = Object.assign({}, order);
+  negativeOrder.amtPayedFromCredit = -negativeOrder.amtPayedFromCredit;
+  negativeOrder.amtPayedFromSubscriptionFee = -negativeOrder.amtPayedFromSubscriptionFee;
+  negativeOrder.orderlines.forEach(ol => {
+    ol.quantity = -ol.quantity;
+  });
+  return negativeOrder;
+};
+
+const negativeTopup = topup => {
+  let negativeTopup = Object.assign({}, topup);
+  negativeTopup.amount = -negativeTopup.amount;
+  return negativeTopup;
 };

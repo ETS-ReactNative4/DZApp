@@ -41,8 +41,8 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 //actions
-
 import { sendError } from "../actions/messageActions";
+import { processRollback } from "../actions/rollbackActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
@@ -51,6 +51,7 @@ import { calculateTotal } from "../functions/order";
 
 //libs
 import moment from "moment-timezone";
+import { v4 as uuidv4 } from "uuid";
 
 type Props = {};
 
@@ -303,7 +304,16 @@ class HistoryScreen extends Component<Props, State> {
 
   _onRollBackIconPress(itemId, secId, rowId, rowMap) {
     rowMap[`${secId}${rowId}`].props.closeRow();
-    //TODO rollback
+
+    let rollback = {
+      localId: uuidv4(),
+      orderId: this.state.ordersActive ? itemId : null,
+      topupId: !this.state.ordersActive ? itemId : null,
+      cashierId: this.props.cashierId,
+      timestamp: moment().valueOf()
+    };
+
+    this.props.processRollback(rollback);
   }
 }
 
@@ -322,7 +332,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ processRollback }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryScreen);
