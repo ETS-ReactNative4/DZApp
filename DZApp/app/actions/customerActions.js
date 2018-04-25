@@ -1,7 +1,11 @@
 //@flow
 import * as types from "./types";
 import { URL } from "../constants/serversettings";
-import { fetchWrapper } from "../functions/fetch";
+//import { fetchWrapper } from "../functions/fetch";
+const fetch = require("react-native-cancelable-fetch");
+import { NetInfo } from "react-native";
+import { sendError, sendMessage } from "./messageActions";
+import * as strings from "../constants/strings";
 
 /************ Synchronous Actions ***************/
 
@@ -20,14 +24,6 @@ export const receiveCustomers = (customers): {} => {
   };
 };
 
-// //Set the active customer in global state
-// export const setCustomer = (customerId: String): {} => {
-//   return {
-//     type: types.SET_CUSTOMER,
-//     data: customerId
-//   };
-// };
-
 //customer list fetch failed
 export const fetchCustomersFailed = (error: {}): {} => {
   return {
@@ -41,10 +37,44 @@ export const fetchCustomersFailed = (error: {}): {} => {
 //request Customer list from API
 export const fetchCustomers = () => {
   return function(dispatch) {
-    dispatch(requestCustomers());
-    return fetchWrapper(5000, fetch(URL + "/customers"))
-      .then(response => response.json())
-      .then(json => dispatch(receiveCustomers(json)))
-      .catch(error => dispatch(fetchCustomersFailed(error)));
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          dispatch(requestCustomers);
+
+          let fetched;
+
+          fetch(URL + "/customers", {}, "customers")
+            .then(response => {
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              dispatch(receiveCustomers(json));
+              dispatch(sendMessage(strings.SYNCED));
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(fetchCustomersFailed(error));
+              dispatch(sendError(error.message));
+            });
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            if (!fetched) {
+              fetch.abort("customers");
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(fetchCustomersFailed(strings.SERVER_TIMEOUT));
+            }
+          }, 5000);
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };

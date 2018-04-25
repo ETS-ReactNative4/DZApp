@@ -2,8 +2,10 @@
 import * as types from "./types";
 import { NetInfo } from "react-native";
 import { URL } from "../constants/serversettings";
-import { fetchWrapper } from "../functions/fetch";
+//import { fetchWrapper } from "../functions/fetch";
+const fetch = require("react-native-cancelable-fetch");
 import { sendMessage, sendError } from "./messageActions";
+import * as strings from "../constants/strings";
 
 /************ Synchronous Actions ***************/
 
@@ -35,18 +37,38 @@ export const fetchSubscriptionsFailed = (error: {}): {} => {
 //request subscription list from API
 export const fetchSubscriptions = () => {
   return function(dispatch) {
-    //check network connection
-    //send an error if not connected
-    //perform api call if connected
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
         if (isConnected) {
-          dispatch(requestSubscriptions());
-          return fetchWrapper(5000, fetch(URL + "/subscriptions"))
-            .then(response => response.json())
-            .then(json => dispatch(receiveSubscriptions(json)))
-            .catch(error => dispatch(fetchSubscriptionsFailed(error)));
+          dispatch(requestSubscriptions);
+
+          let fetched;
+
+          fetch(URL + "/subscriptions", {}, "subscriptions")
+            .then(response => {
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              dispatch(receiveSubscriptions(json));
+              dispatch(sendMessage(strings.SYNCED));
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(fetchSubscriptionsFailed(error));
+              dispatch(sendError(error.message));
+            });
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            if (!fetched) {
+              fetch.abort("subscriptions");
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(fetchSubscriptionsFailed(strings.SERVER_TIMEOUT));
+            }
+          }, 5000);
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
         }

@@ -1,7 +1,11 @@
 //@flow
 import * as types from "./types";
 import { URL } from "../constants/serversettings";
-import { fetchWrapper } from "../functions/fetch";
+//import { fetchWrapper } from "../functions/fetch";
+const fetch = require("react-native-cancelable-fetch");
+import { NetInfo } from "react-native";
+import { sendError, sendMessage } from "./messageActions";
+import * as strings from "../constants/strings";
 
 /************ Synchronous Actions ***************/
 
@@ -45,10 +49,44 @@ export const fetchEventsFailed = (error: {}): {} => {
 //request event list from API
 export const fetchEvents = () => {
   return function(dispatch) {
-    dispatch(requestEvents());
-    return fetchWrapper(5000, fetch(URL + "/events"))
-      .then(response => response.json())
-      .then(json => dispatch(receiveEvents(json)))
-      .catch(error => dispatch(fetchEventsFailed(error)));
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          dispatch(requestEvents);
+
+          let fetched;
+
+          fetch(URL + "/events", {}, "events")
+            .then(response => {
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              dispatch(receiveEvents(json));
+              dispatch(sendMessage(strings.SYNCED));
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(fetchEventsFailed(error));
+              dispatch(sendError(error.message));
+            });
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            if (!fetched) {
+              fetch.abort("events");
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(fetchEventsFailed(strings.SERVER_TIMEOUT));
+            }
+          }, 5000);
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };

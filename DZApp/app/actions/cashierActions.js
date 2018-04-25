@@ -76,8 +76,8 @@ export const login = (userCredentials: {}, navigation: {}) => {
           //and send appropriate error messages
           //when unsuccessfull
           setTimeout(() => {
-            fetch.abort("login");
             if (!fetched) {
+              fetch.abort("login");
               dispatch(sendError(strings.SERVER_TIMEOUT));
               dispatch(loginError(strings.SERVER_TIMEOUT));
             }

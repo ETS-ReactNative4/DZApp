@@ -28,5 +28,3 @@ export const removeError = (): {} => {
     type: types.REMOVE_ERROR
   };
 };
-
-/************ Asynchronous Actions ***************/

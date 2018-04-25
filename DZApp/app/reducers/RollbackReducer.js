@@ -18,14 +18,14 @@ const RollbackReducer = (state: {} = initialState, action: {}) => {
         isSyncing: true
       });
     }
-    case types.ORDER_SYNC_COMPLETE: {
+    case types.ROLLBACK_SYNC_COMPLETE: {
       //remove all locally stored orders
       return Object.assign({}, state, {
         rollbacks: [],
         isSyncing: false
       });
     }
-    case types.ORDER_SYNC_FAILED: {
+    case types.ROLLBACK_SYNC_FAILED: {
       return Object.assign({}, state, {
         isSyncing: false
       });

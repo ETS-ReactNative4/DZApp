@@ -106,8 +106,8 @@ export const syncTopups = () => {
             //and send appropriate error messages
             //when unsuccessfull
             setTimeout(() => {
-              fetch.abort("topups");
               if (!fetched) {
+                fetch.abort("topups");
                 dispatch(sendError(strings.UNABLE_TO_SYNC));
                 dispatch(topupSyncFailed());
               }

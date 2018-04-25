@@ -5,7 +5,7 @@ import * as colors from "../styles/colors";
 
 export const showInfoToast = message => {
   Toast.show(message, {
-    duration: Toast.durations.LONG,
+    duration: Toast.durations.SHORT,
     position: Toast.positions.BOTTOM,
     shadow: true,
     animation: true,
@@ -22,7 +22,7 @@ export const showInfoToast = message => {
 
 export const showErrorToast = error => {
   Toast.show(error, {
-    duration: Toast.durations.LONG,
+    duration: Toast.durations.SHORT,
     position: Toast.positions.BOTTOM,
     shadow: true,
     animation: true,

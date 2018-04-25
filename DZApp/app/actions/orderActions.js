@@ -1,5 +1,4 @@
 //@flow
-
 import * as types from "./types";
 
 import { Store } from "../store/store";
@@ -10,7 +9,6 @@ import { URL } from "../constants/serversettings";
 import { getCustomerById } from "../functions/customer";
 import { getEventById } from "../functions/event";
 // import { fetchWrapper } from "../functions/fetch";
-//import { fetchWrapper } from "../functions/fetch";
 const fetch = require("react-native-cancelable-fetch");
 //actions
 import { fetchCustomers } from "./customerActions";
@@ -153,8 +151,8 @@ export const syncOrders = () => {
             //and send appropriate error messages
             //when unsuccessfull
             setTimeout(() => {
-              fetch.abort("orders");
               if (!fetched) {
+                fetch.abort("orders");
                 dispatch(sendError(strings.UNABLE_TO_SYNC));
                 dispatch(orderSyncFailed());
               }
