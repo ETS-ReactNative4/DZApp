@@ -57,11 +57,62 @@ export const topupSyncFailed = () => {
 export const topupBalance = (topup: {}) => {
   return function(dispatch) {
     dispatch(localTopup(topup));
+    dispatch(syncTopups());
+  };
+};
+
+export const syncTopups = () => {
+  return function(dispatch) {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
         if (isConnected) {
-          dispatch(syncTopups());
+          let topups = Store.getState().TopupReducer.topups;
+          if (topups.length > 0) {
+            dispatch(topupSyncStarted());
+
+            let fetched;
+
+            fetch(
+              URL + "/topups",
+              {
+                method: "POST",
+                body: JSON.stringify(topups),
+                headers: new Headers({
+                  "Content-Type": "application/json"
+                })
+              },
+              "topups"
+            )
+              .then(response => {
+                if (response.status === 200) {
+                  fetched = true;
+                  dispatch(sendMessage(strings.SYNCED));
+                  dispatch(topupSyncComplete());
+                  dispatch(fetchCustomers());
+                } else {
+                  fetched = true;
+                  dispatch(sendError(strings.UNABLE_TO_SYNC));
+                  dispatch(topupSyncFailed());
+                }
+              })
+              .catch(err => {
+                fetched = true;
+                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(topupSyncFailed());
+              });
+
+            //cancel the request after x seconds
+            //and send appropriate error messages
+            //when unsuccessfull
+            setTimeout(() => {
+              fetch.abort("topups");
+              if (!fetched) {
+                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(topupSyncFailed());
+              }
+            }, 5000);
+          }
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
         }
@@ -69,51 +120,5 @@ export const topupBalance = (topup: {}) => {
       .catch(err => {
         console.warn(err);
       });
-  };
-};
-
-export const syncTopups = () => {
-  return function(dispatch) {
-    dispatch(topupSyncStarted());
-    let topups = Store.getState().TopupReducer.topups;
-    let success;
-
-    fetch(
-      URL + "/topups",
-      {
-        method: "POST",
-        body: JSON.stringify(topups),
-        headers: new Headers({
-          "Content-Type": "application/json"
-        })
-      },
-      "topups"
-    )
-      .then(response => {
-        if (response.status === 200) {
-          success = true;
-          dispatch(sendMessage(strings.SYNCED));
-          dispatch(topupSyncComplete());
-          dispatch(fetchCustomers());
-        } else {
-          dispatch(sendError(strings.UNABLE_TO_SYNC));
-          dispatch(topupSyncFailed());
-        }
-      })
-      .catch(err => {
-        dispatch(sendError(strings.UNABLE_TO_SYNC));
-        dispatch(topupSyncFailed());
-      });
-
-    //cancel the request after x seconds
-    //and send appropriate error messages
-    //when unsuccessfull  
-    setTimeout(() => {
-      fetch.abort("topups");
-      if (!success) {
-        dispatch(sendError(strings.UNABLE_TO_SYNC));
-        dispatch(topupSyncFailed());
-      }
-    }, 5000);
   };
 };

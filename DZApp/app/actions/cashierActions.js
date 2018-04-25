@@ -2,8 +2,10 @@
 import * as types from "./types";
 import * as strings from "../constants/strings";
 import { URL } from "../constants/serversettings";
-import { fetchWrapper } from "../functions/fetch";
+//import { fetchWrapper } from "../functions/fetch";
+const fetch = require("react-native-cancelable-fetch");
 import { sendError, sendMessage } from "./messageActions";
+import { NetInfo } from "react-native";
 
 /************ Synchronous Actions ***************/
 export const requestLogin = () => {
@@ -31,34 +33,62 @@ export const loginError = (error: String) => {
 //on mobile device
 export const login = (userCredentials: {}, navigation: {}) => {
   return function(dispatch) {
-    dispatch(requestLogin());
-    
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          dispatch(requestLogin());
+          let fetched;
 
-    return fetchWrapper(
-      5000,
-      fetch(URL + "/customers/login", {
-        method: "POST",
-        body: JSON.stringify(userCredentials),
-        headers: new Headers({
-          "Content-Type": "application/json"
-        })
-      })
-    )
-      .then(response => response.json())
-      .then(json => {
-        if (json.error) {
-          dispatch(sendError(json.error));
-          dispatch(loginError(json.error));
+          fetch(
+            URL + "/customers/login",
+            {
+              method: "POST",
+              body: JSON.stringify(userCredentials),
+              headers: new Headers({
+                "Content-Type": "application/json"
+              })
+            },
+            "login"
+          )
+            .then(response => {
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              if (json.error) {
+                dispatch(sendError(json.error));
+                dispatch(loginError(json.error));
+              } else {
+                navigation.navigate("OrderScreen");
+                dispatch(sendMessage(strings.AUTHENTICATED));
+                dispatch(loginSuccess(json.id));
+                navigation.navigate("MainFlowNavigator");
+              }
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(sendError(error.message));
+              dispatch(loginError(error.message));
+            });
+
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            fetch.abort("login");
+            if (!fetched) {
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(loginError(strings.SERVER_TIMEOUT));
+            }
+          }, 5000);
         } else {
-          navigation.navigate("OrderScreen");
-          dispatch(sendMessage(strings.AUTHENTICATED));
-          dispatch(loginSuccess(json.id));
-          navigation.navigate("MainFlowNavigator");
+          dispatch(sendError(strings.NO_CONNECTION));
+          dispatch(loginError(strings.NO_CONNECTION));
         }
       })
-      .catch(error => {
-        dispatch(sendError(error.message));
-        dispatch(loginError(error.message));
+      .catch(err => {
+        console.warn(err);
       });
   };
 };

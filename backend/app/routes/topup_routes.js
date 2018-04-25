@@ -30,7 +30,7 @@ module.exports = function(app, db) {
                 { $inc: { creditBalance: amount } },
                 (err, result) => {
                   if (err) res.status(503);
-                  else console.log(result);
+                  //else console.log(result);
                 }
               );
           }
