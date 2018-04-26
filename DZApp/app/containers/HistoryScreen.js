@@ -3,8 +3,6 @@ import React, { Component } from "react";
 import { ListView } from "react-native";
 
 //components
-import { ProductThumbnail } from "../components/ProductThumbnail";
-import { ProductQuantityModal } from "../components/ProductQuantityModal";
 import {
   Container,
   Header,
@@ -29,6 +27,7 @@ import {
   CardItem
 } from "native-base";
 import { Grid, Row, Col } from "react-native-easy-grid";
+import { RollbackConfirmModal } from "../components/RollbackConfirmModal";
 
 //styles
 import styles from "../styles/styles";
@@ -58,7 +57,8 @@ type Props = {};
 type State = {
   ordersActive: boolean,
   orderData: {},
-  topupDate: {}
+  topupDate: {},
+  itemId: null
 };
 
 class HistoryScreen extends Component<Props, State> {
@@ -93,7 +93,12 @@ class HistoryScreen extends Component<Props, State> {
             <Subtitle>{strings.OVERVIEW}</Subtitle>
           </Body>
           <Right>
-            <Button transparent>
+            <Button
+              transparent
+              onPress={() =>
+                this.props.navigation.navigate("HistorySettingsScreen")
+              }
+            >
               <Icon name="settings" />
             </Button>
             <Button transparent>
@@ -104,6 +109,11 @@ class HistoryScreen extends Component<Props, State> {
         {this._renderSegment()}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           <Card>{this._renderList()}</Card>
+          <RollbackConfirmModal
+            transactionType={this.state.ordersActive ? "order" : "topup"}
+            onConfirmButtonPress={() => this._onModalConfirmButtonPress()}
+            ref="modal"
+          />
         </Content>
         <Footer>
           <FooterTab style={styles.primaryBackground}>
@@ -298,13 +308,24 @@ class HistoryScreen extends Component<Props, State> {
     if (!this.props.eventId) this.props.navigation.navigate("EventScreen");
   };
 
+  _toggleModalVisible = () => {
+    let modal = this.refs.modal;
+    modal.setState({ isVisible: !modal.state.isVisible });
+  };
+
   _onSegmentButtonPress = ordersActive => {
     this.setState({ ordersActive: ordersActive });
   };
 
   _onRollBackIconPress(itemId, secId, rowId, rowMap) {
     rowMap[`${secId}${rowId}`].props.closeRow();
+    this.setState({ itemId: itemId });
+    this._toggleModalVisible();
+  }
 
+  _onModalConfirmButtonPress() {
+    this._toggleModalVisible();
+    let itemId = this.state.itemId;
     let rollback = {
       localId: uuidv4(),
       orderId: this.state.ordersActive ? itemId : null,
@@ -314,6 +335,7 @@ class HistoryScreen extends Component<Props, State> {
     };
 
     this.props.processRollback(rollback);
+    this.setState({ itemId: null });
   }
 }
 

@@ -78,7 +78,8 @@ export const syncRollbacks = () => {
             dispatch(rollbackSyncStarted);
 
             //sync o/t first in case we want to rollback
-            //a previously unsynced o/t
+            //a previously unsynced o/t remotely 
+            // (localid not known in backend)
             dispatch(syncOrders());
             dispatch(syncTopups());
 
@@ -100,9 +101,9 @@ export const syncRollbacks = () => {
                   fetched = true;
                   dispatch(sendMessage(strings.SYNCED));
                   dispatch(rollbackSyncComplete());
-                  dispatch(fetchCustomers());
-                  dispatch(fetchProducts());
-                  dispatch(fetchSubscriptions());
+                  // dispatch(fetchCustomers());
+                  // dispatch(fetchProducts());
+                  // dispatch(fetchSubscriptions());
                 } else {
                   fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
@@ -121,7 +122,7 @@ export const syncRollbacks = () => {
             setTimeout(() => {
               if (!fetched) {
                 fetch.abort("rollbacks");
-                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(sendError(strings.SERVER_TIMEOUT));
                 dispatch(rollbackSyncFailed());
               }
             }, 5000);

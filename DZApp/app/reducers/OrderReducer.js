@@ -1,8 +1,6 @@
 //@flow
 import * as types from "../actions/types";
 
-let historyCount = 5;
-
 const initialState = {
   orderlines: {},
   currentCustomer: null,
@@ -11,7 +9,8 @@ const initialState = {
   orders: [],
   history: [],
   lastOrder: null,
-  isSyncing: false
+  isSyncing: false,
+  historyCount: 5
 };
 
 const OrderReducer = (state: {} = initialState, action: {}) => {
@@ -44,8 +43,6 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
       let order = action.data.order;
 
       if (!rollback) {
-        console.warn("order: " + JSON.stringify(order));
-
         let previousBalance = action.data.previousBalance;
         let previousSubscriptionBalance =
           action.data.previousSubscriptionBalance;
@@ -64,14 +61,18 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
         //respecting the max history count
         let newHistory = state.history.slice(0);
         newHistory.unshift(order);
-        if (newHistory.length > historyCount)
-          newHistory = newHistory.slice(0, historyCount - 1);
+        if (newHistory.length > state.historyCount)
+          newHistory = newHistory.slice(0, state.historyCount);
 
-        return Object.assign({}, state, {
+        let newState = Object.assign({}, state, {
           orders: newOrders,
           lastOrder: lastOrder,
           history: newHistory
         });
+
+        console.log("unsynced orders length: " + newState.orders.length);
+
+        return newState;
       } else {
         //remove order from history in case of a rollback
         let newHistory = state.history.slice(0);
@@ -98,8 +99,16 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
         isSyncing: false
       });
     }
-    case types.ROLLBACK_ORDER: {
-      let order = action.data;
+
+    case types.SET_HISTORY_COUNT: {
+      let newHistory = state.history.slice(0);
+      if (newHistory.length > action.data)
+        newHistory = newHistory.slice(0, action.data);
+
+      return Object.assign({}, state, {
+        historyCount: action.data,
+        history: newHistory
+      });
     }
     default: {
       return state;

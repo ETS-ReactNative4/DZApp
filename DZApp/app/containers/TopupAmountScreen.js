@@ -43,6 +43,9 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { setTopupAmount } from "../actions/topupActions";
 
+//libs
+import { NavigationActions } from "react-navigation";
+
 type Props = {};
 
 type State = {
@@ -72,24 +75,6 @@ class TopupAmountScreen extends Component<Props, State> {
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            {/* {this.previousRouteName === null ? (
-              <Thumbnail square source={require("../assets/images/logo.gif")} />
-            ) : (
-              <Grid>
-                <Row>
-                  <Button
-                    transparent
-                    onPress={() => this.props.navigation.goBack()}
-                  >
-                    <Icon name="arrow-back" style={styles.white} />
-                  </Button>
-                  <Thumbnail
-                    square
-                    source={require("../assets/images/logo.gif")}
-                  />
-                </Row>
-              </Grid>
-            )} */}
             {this.previousRouteName ? (
               <Button
                 transparent
@@ -114,9 +99,18 @@ class TopupAmountScreen extends Component<Props, State> {
             </Subtitle>
           </Body>
           <Right>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
+            {this.previousRouteName ? (
+              <Button
+                transparent
+                onPress={() => this._onBackToTopButtonPress()}
+              >
+                <Icon name="cash" />
+              </Button>
+            ) : (
+              <Button transparent>
+                <Icon name="menu" />
+              </Button>
+            )}
           </Right>
         </Header>
         {/* HEADER END */}
@@ -126,34 +120,36 @@ class TopupAmountScreen extends Component<Props, State> {
         </Content>
         {/* CONTENT END */}
         {/* FOOTER */}
-        <Footer>
-          <FooterTab style={styles.primaryBackground}>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OrderScreen");
-              }}
-            >
-              <Icon name="grid" />
-              <Text style={styles.tabbarText}>{strings.ORDER}</Text>
-            </Button>
-            <Button vertical style={styles.secondaryBackground}>
-              <Icon name="cash" style={styles.white} />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.TOPUP}
-              </Text>
-            </Button>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("HistoryNavigator");
-              }}
-            >
-              <Icon name="clock" />
-              <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
+        {!this.previousRouteName && (
+          <Footer>
+            <FooterTab style={styles.primaryBackground}>
+              <Button
+                vertical
+                onPress={() => {
+                  this.props.navigation.navigate("OrderScreen");
+                }}
+              >
+                <Icon name="grid" />
+                <Text style={styles.tabbarText}>{strings.ORDER}</Text>
+              </Button>
+              <Button vertical style={styles.secondaryBackground}>
+                <Icon name="cash" style={styles.white} />
+                <Text style={[styles.tabbarText, styles.white]}>
+                  {strings.TOPUP}
+                </Text>
+              </Button>
+              <Button
+                vertical
+                onPress={() => {
+                  this.props.navigation.navigate("HistoryNavigator");
+                }}
+              >
+                <Icon name="clock" />
+                <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
+              </Button>
+            </FooterTab>
+          </Footer>
+        )}
         {/* FOOTER END */}
       </Container>
     );
@@ -264,7 +260,12 @@ class TopupAmountScreen extends Component<Props, State> {
       : this.props.navigation.goBack();
   };
 
-  _navigateToPreviousRoute = () => {};
+  _onBackToTopButtonPress = () => {
+    this.props.setTopupAmount(null);
+
+    const backToTopAction = NavigationActions.popToTop();
+    this.props.navigation.dispatch(backToTopAction);
+  };
 }
 
 const mapStateToProps = state => {

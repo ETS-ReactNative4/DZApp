@@ -6,8 +6,6 @@ module.exports = function(app, db) {
   app.post("/topups", (req, res) => {
     const topups = req.body;
 
-    console.log("post: " + topups);
-
     if (!Array.isArray(topups)) {
       res.status(400);
       res.send({ error: "Request body not an array" });
@@ -15,6 +13,8 @@ module.exports = function(app, db) {
     }
 
     if (topups.length > 0) {
+      console.log("POST TOPUPS");
+
       db.collection("topups").insertMany(topups, (err, result) => {
         if (err) res.status(503);
         else {
@@ -30,7 +30,6 @@ module.exports = function(app, db) {
                 { $inc: { creditBalance: amount } },
                 (err, result) => {
                   if (err) res.status(503);
-                  //else console.log(result);
                 }
               );
           }

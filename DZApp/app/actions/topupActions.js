@@ -41,7 +41,6 @@ export const localTopup = (topup: {}, rollback: boolean = false): {} => {
 };
 
 export const topupSyncStarted = () => {
-  console.log("TOPUP SYNC STARTED");
   return { type: types.TOPUP_SYNC_STARTED };
 };
 
@@ -86,13 +85,12 @@ export const syncTopups = () => {
               "topups"
             )
               .then(response => {
+                fetched = true;
                 if (response.status === 200) {
-                  fetched = true;
                   dispatch(sendMessage(strings.SYNCED));
                   dispatch(topupSyncComplete());
-                  dispatch(fetchCustomers());
+                  // dispatch(fetchCustomers());
                 } else {
-                  fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
                   dispatch(topupSyncFailed());
                 }
@@ -109,7 +107,7 @@ export const syncTopups = () => {
             setTimeout(() => {
               if (!fetched) {
                 fetch.abort("topups");
-                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(sendError(strings.SERVER_TIMEOUT));
                 dispatch(topupSyncFailed());
               }
             }, 5000);

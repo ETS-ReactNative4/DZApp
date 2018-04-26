@@ -91,9 +91,6 @@ class OrderConfirmScreen extends Component<Props, State> {
             <Button transparent onPress={() => this._onCancelButtonPress()}>
               <Icon name="grid" />
             </Button>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
           </Right>
         </Header>
         {/* HEADER END */}

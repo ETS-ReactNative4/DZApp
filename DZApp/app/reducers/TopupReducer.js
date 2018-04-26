@@ -2,17 +2,15 @@
 import * as types from "../actions/types";
 import * as strings from "../constants/strings";
 
-let historyCount = 5;
-
 const initialState = {
   isSyncing: false,
-  //isProcessed: false,
   topups: [],
   cashInRegister: 0,
   lastTopup: null,
   currentAmount: null,
   currentCustomer: null,
-  history: []
+  history: [],
+  historyCount: 5
 };
 
 const TopupReducer = (state: {} = initialState, action: {}) => {
@@ -31,8 +29,6 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       let rollback = action.data.rollback;
       let topup = action.data.topup;
       if (!rollback) {
-        console.warn("topup: " + JSON.stringify(topup));
-
         let previousBalance = action.data.previousBalance;
         let lastTopup = Object.assign({}, topup);
         lastTopup.previousBalance = previousBalance;
@@ -46,15 +42,18 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
         //respecting the max history count
         let newHistory = state.history.slice(0);
         newHistory.unshift(topup);
-        if (newHistory.length > historyCount)
-          newHistory = newHistory.slice(0, historyCount - 1);
+        if (newHistory.length > state.historyCount)
+          newHistory = newHistory.slice(0, state.historyCount);
 
-        return Object.assign({}, state, {
+        let newState = Object.assign({}, state, {
           topups: newTopups,
           cashInRegister: state.cashInRegister + amount,
           lastTopup: lastTopup,
           history: newHistory
         });
+
+        console.log("unsynced topups length: " + newState.topups.length);
+        return newState;
       } else {
         //remove topup from history in case of a rollback
         let newHistory = state.history.slice(0);
@@ -85,6 +84,16 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
     case types.RESET_PREVIOUS_BALANCE: {
       return Object.assign({}, state, {
         previousBalance: null
+      });
+    }
+    case types.SET_HISTORY_COUNT: {
+      let newHistory = state.history.slice(0);
+      if (newHistory.length > action.data)
+        newHistory = newHistory.slice(0, action.data);
+
+      return Object.assign({}, state, {
+        historyCount: action.data,
+        history: newHistory
       });
     }
     default:

@@ -17,14 +17,15 @@ export const SERVER_SYNC_SUCCESS = "Gesynchroniseerd met server";
 export const SERVER_SYNC_FAILURE = "Probleem met synchronisatie: offline modus";
 
 //EventScreen
-export const EVENT_HEADER = "Kies een productie of evenement";
-export const PICK_EVENT = "Kies Productie";
+//export const EVENT_HEADER = "Kies een productie of evenement";
+export const PICK_EVENT = "Kies Productie of Evenement";
 export const PICK_EVENT_IOS_HEADER = "Kies...";
 export const FROM_LABEL = "Van: ";
 export const TO_LABEL = "Tot: ";
 export const SUBSCRIPTIONFEE_LABEL = "Inschrijvingsgeld: ";
 export const PICKER_PRODUCTION = "productie";
 export const PICKER_EVENT = "evenement";
+
 export const TYPE_LABEL = "Type: ";
 export const CHANGE_EVENT = "Wijzig productie";
 
@@ -33,14 +34,12 @@ export const ORDER = "Bestellen";
 export const PRODUCT_INPUT = "Producten toevoegen";
 export const ENTER_QUANTITY = "Voer hoeveelheid in voor";
 export const QUANTITY = "Aantal";
-export const INVALID_QUANTITY = "Gelieve een geheel getal in te voeren";
 export const IS_CUSTOMER_SUBSCRIBED =
   "Is de klant toegelaten tot dit evenement?";
 export const EVENT_BALANCE = "Saldo voor evenement:";
 export const BIGGER_THAN_MIN_ERROR = min =>
   `Gelieve een waarde >= ${min.toFixed(2)} € in te geven`;
 export const TO_PAY = "Te betalen: ";
-export const FINISH_ORDER = "Bestelling afronden";
 export const CONFIRM_ORDER = "Bevestig bestelling";
 export const ORDER_PROCESSED = "Bestelling verwerkt";
 export const PAYED_TOTAL_LABEL = "Totaal betaald: ";
@@ -50,7 +49,6 @@ export const CURRENT_SUBSCRIPTION_BALANCE_LABEL =
 export const PAYED_FROM_CREDIT_LABEL = "Betaald van saldo: ";
 export const PAYED_FROM_SUBSCRIPTIONFEE_LABEL =
   "Betaald van inschrijvingsgeld: ";
-export const BACK_TO_PRODUCT_INPUT = "Naar bestellen";
 
 //OrderTopupModal
 export const INSUFFICIENT_FUNDS_HEADER = "Saldo ontoereikend";
@@ -83,7 +81,7 @@ export const COMBO_OPTION = "Toon lijst";
 export const TOPUP_FOR_CUSTOMER = "Opladen voor:";
 export const AMOUNT = "Bedrag (€)";
 export const AMOUNT_LABEL = "Bedrag:";
-export const INVALID_QR = "Ongeldige QR code!";
+
 export const CAM_PERMISSION_TITLE = "DZApp toelaten de camera te gebruiken?";
 export const CAM_PERMISSION_MESSAGE =
   "DZApp heeft de camera nodig om klanten te identificeren.";
@@ -94,8 +92,7 @@ export const PICK_OTHER_CUSTOMER = "Kies andere klant";
 export const TOPUP_BALANCE = "Saldo opladen";
 export const TOPUP_CONFIRM = "Saldo opladen?";
 export const TOPUP_FOR = " opladen voor ";
-export const INVALID_AMOUNT =
-  "Gelieve een bedrag > 0 en <= 100 € in te voeren!";
+
 export const CHANGE_AMOUNT = "Wijzig bedrag";
 export const CHANGE_CUSTOMER = "Wijzig klant";
 export const CONFIRM = "Bevestig";
@@ -110,20 +107,36 @@ export const PICKER_CASHIER = "kassier";
 export const HISTORY = "Geschiedenis";
 export const ORDERS = "Bestellingen";
 export const TOPUPS = "Opladingen";
+export const ORDER_TRANSACTION_TYPE = "Bestelling";
+export const TOPUP_TRANSACTION_TYPE = "Saldo oplading";
+export const ROLLBACK_CONFIRM_MODAL_HEADER = "ongedaan maken";
+export const ROLLBACK_CONFIRM_MODAL_MESSAGE =
+  "Deze transactie ongedaan maken? Deze actie is onomkeerbaar!";
+export const SETTINGS = "Instellingen";
+export const HISTORY_SETTINGS_HEADER = "Aantal transacties in geschiedenis";
+export const COUNT = "Aantal";
 
 //misc
 export const IN_STOCK = "Voorraad:";
 export const INSUFFICIENT_STOCK = "Onvoldoende voorraad!";
 
 //Error messages
-export const SERVER_TIMEOUT = "Timeout van verbinding met de server";
-export const UNABLE_TO_SYNC = "Kon niet synchroniseren met de server";
+export const SERVER_TIMEOUT = "Server timeout";
+export const UNABLE_TO_SYNC = "Fout bij synchronisatie";
 export const NO_CONNECTION = "Geen netwerkverbinding";
+export const INVALID_QUANTITY = "Gelieve een geheel getal in te voeren";
+export const INVALID_QR = "Ongeldige QR code!";
+export const INVALID_AMOUNT =
+  "Gelieve een bedrag > 0 en <= 100 € in te voeren!";
+  export const INVALID_HISTORYCOUNT = "Gelieve een geheel getal > 0 en <= 10 in te voeren!";
 
 //Success messages
 export const SYNCED = "Gesynchroniseerd met server";
 export const AUTHENTICATED = "Succesvol aangemeld";
+export const SETTINGS_CHANGED = "Instellingen aangepast";
 
 //navigation
-export const TO_POS = "Naar bestellen";
-export const TO_TOPUP = "Naar opladen";
+//export const TO_POS = "Naar bestellen";
+export const TO_TOPUP = "Naar bedraginvoer";
+export const FINISH_ORDER = "Terug naar bestelling";
+export const BACK_TO_PRODUCT_INPUT = "Naar productinvoer";

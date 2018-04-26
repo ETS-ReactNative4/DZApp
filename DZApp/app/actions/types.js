@@ -58,6 +58,9 @@ export const ROLLBACK_SYNC_COMPLETE = "ROLLBACK_SYNC_COMPLETE";
 export const ROLLBACK_SYNC_FAILED = "ROLLBACK_SYNC_FAILED";
 export const LOCAL_ROLLBACK ="LOCAL_ROLLBACK";
 
+//settings actions
+export const SET_HISTORY_COUNT = "SET_HISTORY_COUNT";
+
 
 
 

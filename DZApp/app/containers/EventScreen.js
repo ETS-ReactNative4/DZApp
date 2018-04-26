@@ -242,9 +242,7 @@ class EventScreen extends Component<Props, State> {
   });
 
   _renderEventInfo = () => {
-    console.log(this.props.events);
     let event = this.props.events.find(e => e._id === this.state.eventId);
-    
 
     let renderFeeInfo = event.type === "event";
     let typeString =
@@ -257,6 +255,9 @@ class EventScreen extends Component<Props, State> {
     let toDateString = moment
       .tz(event.toDate, "Europe/Berlin")
       .format("DD/MM/YYYY");
+    let eventType =
+      event.type === "event" ? strings.PICKER_EVENT : strings.PICKER_PRODUCTION;
+    let buttonText = `${strings.CONFIRM} ${eventType}`;
 
     return (
       <View>
@@ -306,7 +307,7 @@ class EventScreen extends Component<Props, State> {
               style={styles.primaryActionButton}
               onPress={this._onPickEventButtonPress}
             >
-              <Text style={styles.primaryButtonText}>{strings.PICK_EVENT}</Text>
+              <Text style={styles.primaryButtonText}>{buttonText}</Text>
             </Button>
           </Body>
         </CardItem>

@@ -24,6 +24,7 @@ import TopupConfirmScreen from "./TopupConfirmScreen";
 
 //HistoryNavigator
 import HistoryScreen from "./HistoryScreen";
+import HistorySettingsScreen from "./HistorySettingsScreen";
 
 const TopupNavigator = StackNavigator(
   {
@@ -50,6 +51,9 @@ const HistoryNavigator = StackNavigator(
   {
     HistoryScreen: {
       screen: HistoryScreen
+    },
+    HistorySettingsScreen: {
+      screen: HistorySettingsScreen
     }
   },
   {

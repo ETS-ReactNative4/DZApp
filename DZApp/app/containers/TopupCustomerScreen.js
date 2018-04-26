@@ -12,6 +12,7 @@ import {
   Content,
   Body,
   Left,
+  Right,
   Thumbnail,
   Footer,
   FooterTab,
@@ -43,7 +44,10 @@ import { showInfoToast, showErrorToast } from "../functions/toast";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { sendError } from "../actions/messageActions";
-import { setTopupCustomer } from "../actions/topupActions";
+import { setTopupCustomer, setTopupAmount } from "../actions/topupActions";
+
+//libs
+import { NavigationActions } from "react-navigation";
 
 type Props = {};
 
@@ -82,17 +86,9 @@ class TopupCustomerScreen extends Component<Props, State> {
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            {/* <Grid>
-              <Row> */}
             <Button transparent onPress={() => this.props.navigation.goBack()}>
               <Icon name="arrow-back" style={styles.white} />
             </Button>
-            {/* <Thumbnail
-                  square
-                  source={require("../assets/images/logo.gif")}
-                />
-              </Row>
-            </Grid> */}
           </Left>
           <Body>
             <Title>{strings.TOPUP}</Title>
@@ -102,6 +98,11 @@ class TopupCustomerScreen extends Component<Props, State> {
                 : strings.CHOOSE_CUSTOMER}
             </Subtitle>
           </Body>
+          <Right>
+            <Button transparent onPress={() => this._onBackToTopButtonPress()}>
+              <Icon name="cash" style={styles.white} />
+            </Button>
+          </Right>
         </Header>
         {/* HEADER END */}
         {/* CONTENT */}
@@ -113,23 +114,6 @@ class TopupCustomerScreen extends Component<Props, State> {
         {/* CONTENT END */}
       </Container>
     );
-  }
-
-  componentDidUpdate() {
-    if (this.props.message !== null) {
-      showInfoToast(this.props.message);
-    }
-    if (this.props.error !== null) {
-      showErrorToast(this.props.error);
-    }
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
   }
 
   _renderInput = () => {
@@ -306,24 +290,39 @@ class TopupCustomerScreen extends Component<Props, State> {
               </Button>
             </Col>
             <Col>
-              {this.previousRouteName && (
-                <Button
-                  transparent
-                  full
-                  small
-                  onPress={() => {
-                    this.props.navigation.goBack();
-                  }}
-                >
-                  <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
-                </Button>
-              )}
+              <Button
+                transparent
+                full
+                small
+                onPress={() => {
+                  this._onBackToTopButtonPress();
+                }}
+              >
+                <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
+              </Button>
             </Col>
           </Grid>
         </CardItem>
       </Card>
     );
   };
+
+  componentDidUpdate() {
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
 
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
@@ -362,6 +361,14 @@ class TopupCustomerScreen extends Component<Props, State> {
     this.props.navigation.navigate("TopupConfirmScreen");
   };
 
+  _onBackToTopButtonPress = () => {
+    this.props.setTopupCustomer(null);
+    this.props.setTopupAmount(null);
+
+    const backToTopAction = NavigationActions.popToTop();
+    this.props.navigation.dispatch(backToTopAction);
+  };
+
   _toggleCam = () => {
     this.setState({ showCam: !this.state.showCam });
   };
@@ -384,7 +391,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ sendError, setTopupCustomer }, dispatch);
+  return bindActionCreators(
+    { sendError, setTopupCustomer, setTopupAmount },
+    dispatch
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

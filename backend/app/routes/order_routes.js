@@ -12,7 +12,7 @@ module.exports = function(app, db) {
     }
 
     if (orders.length > 0) {
-      console.log("orders: " + orders);
+      console.log("POST ORDERS");
 
       orders.forEach(async o => {
         //update customer creditBalance
@@ -55,9 +55,8 @@ module.exports = function(app, db) {
               { $inc: { inStock: -ol.quantity } },
               (err, result) => {
                 if (err) {
-                  console.log(err);
                   res.status(503);
-                } else console.log(result);
+                }
               }
             );
         });
@@ -66,7 +65,7 @@ module.exports = function(app, db) {
       //insert the orders
       db.collection("orders").insertMany(orders, (err, result) => {
         if (err) res.status(503);
-        //else console.log(result);
+        
       });
     }
 

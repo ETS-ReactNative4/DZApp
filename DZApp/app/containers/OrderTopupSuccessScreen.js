@@ -91,9 +91,7 @@ class OrderTopupSuccessScreen extends Component<Props, State> {
             <Subtitle>{strings.TOPPED_UP}</Subtitle>
           </Body>
           <Right>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
+         
           </Right>
         </Header>
         {/* HEADER END */}

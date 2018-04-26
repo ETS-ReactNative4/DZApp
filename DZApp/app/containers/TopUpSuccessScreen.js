@@ -8,6 +8,7 @@ import {
   Container,
   Header,
   Left,
+  Right,
   Thumbnail,
   Body,
   Title,
@@ -72,12 +73,22 @@ class TopupSuccessScreen extends Component<Props, State> {
         {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            {/* <Thumbnail square source={require("../assets/images/logo.gif")} /> */}
+            <Thumbnail
+              square
+              small
+              source={require("../assets/images/logo.gif")}
+            />
           </Left>
           <Body>
-            <Title>{strings.TOPPED_UP}</Title>
-            
+            <Title>{strings.TOPUP}</Title>
+            <Title />
+            <Subtitle>{strings.TOPPED_UP}</Subtitle>
           </Body>
+          <Right>
+            <Button transparent onPress={() => this._onTopupButtonPress()}>
+              <Icon name="cash" style={styles.white} />
+            </Button>
+          </Right>
         </Header>
         {/* HEADER END */}
         {/* CONTENT */}
@@ -155,33 +166,16 @@ class TopupSuccessScreen extends Component<Props, State> {
             </Row>
           </Grid>
         </CardItem>
-        <CardItem footer>
-          <Grid>
-            <Col>
-              <Button
-                transparent
-                full
-                small
-                onPress={() => {
-                  this._onPOSButtonPress();
-                }}
-              >
-                <Text style={styles.smallButtonText}>{strings.TO_POS}</Text>
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                transparent
-                full
-                small
-                onPress={() => {
-                  this._onTopupButtonPress();
-                }}
-              >
-                <Text style={styles.smallButtonText}>{strings.TO_TOPUP}</Text>
-              </Button>
-            </Col>
-          </Grid>
+        <CardItem>
+          <Body>
+            <Button
+              full
+              style={styles.primaryActionButton}
+              onPress={() => this._onTopupButtonPress()}
+            >
+              <Text style={styles.primaryButtonText}>{strings.TO_TOPUP}</Text>
+            </Button>
+          </Body>
         </CardItem>
       </Card>
     );

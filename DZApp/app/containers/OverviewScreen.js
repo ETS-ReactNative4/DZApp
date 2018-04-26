@@ -40,7 +40,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 //actions
-import { setProductQuantity, resetOrder } from "../actions/orderActions";
+import { setProductQuantity } from "../actions/orderActions";
 
 //functions
 import { calculateSubTotal, calculateTotal } from "../functions/order";
@@ -86,17 +86,6 @@ class OverviewScreen extends Component<Props, State> {
           <Right>
             <Button transparent onPress={() => this.props.navigation.goBack()}>
               <Icon name="grid" />
-            </Button>
-            <Button
-              transparent
-              onPress={() => {
-                this.props.resetOrder();
-              }}
-            >
-              <Icon name="trash" />
-            </Button>
-            <Button transparent>
-              <Icon name="menu" />
             </Button>
           </Right>
         </Header>
@@ -381,7 +370,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setProductQuantity, resetOrder }, dispatch);
+  return bindActionCreators({ setProductQuantity }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OverviewScreen);

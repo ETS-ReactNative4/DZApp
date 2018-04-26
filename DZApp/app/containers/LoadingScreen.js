@@ -39,7 +39,7 @@ class LoadingScreen extends Component<Props, State> {
           <Thumbnail
             square
             large
-            source={require("../assets/images/site_dz.jpg")}
+            source={require("../assets/images/logo.gif")}
             style={[styles.center, styles.loadingThumb]}
           />
           <Spinner
@@ -64,7 +64,9 @@ class LoadingScreen extends Component<Props, State> {
         this.props.navigation.navigate(
           !this.props.cashierId
             ? "AuthNavigator"
-            : !this.props.eventId ? "EventScreen" : "MainFlowNavigator"
+            : !this.props.eventId
+              ? "EventScreen"
+              : "MainFlowNavigator"
         );
       }, 2000);
   }
@@ -83,13 +85,17 @@ const mapStateToProps = state => {
   let productsFetched = !state.ProductReducer.isFetching;
   let subscriptionsFetched = !state.SubscriptionReducer.isFetching;
 
-  let allFetched = customersFetched && eventsFetched && productsFetched && subscriptionsFetched;
+  let allFetched =
+    customersFetched &&
+    eventsFetched &&
+    productsFetched &&
+    subscriptionsFetched;
 
   let synchronizedSuccessfully =
     state.CustomerReducer.errorMessage === null &&
     state.ProductReducer.errorMessage === null &&
-    state.EventReducer.errorMessage === null
-    state.SubscriptionReducer.errorMessage === null;
+    state.EventReducer.errorMessage === null;
+  state.SubscriptionReducer.errorMessage === null;
 
   if (!state._persist.rehydrated) {
     message = strings.LOCAL_LOADING;

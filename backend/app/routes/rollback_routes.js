@@ -12,6 +12,8 @@ module.exports = function(app, db) {
     }
 
     if (rollbacks.length > 0) {
+      console.log("POST ROLLBACKS");
+
       rollbacks.forEach(async r => {
         //order or topup?
         if (r.orderId) {
@@ -26,9 +28,8 @@ module.exports = function(app, db) {
                 { $inc: { creditBalance: order.amtPayedFromCredit } },
                 (err, result) => {
                   if (err) {
-                    console.log(err);
                     res.status(503);
-                  } else console.log(result);
+                  }
                 }
               );
           }
@@ -44,14 +45,13 @@ module.exports = function(app, db) {
               },
               (err, result) => {
                 if (err) {
-                  console.log(err);
                   res.status(503);
-                } else console.log(result);
+                }
               }
             );
           }
           //update product stock
-          console.log("update products");
+
           order.orderlines.forEach(ol => {
             db
               .collection("products")
@@ -60,9 +60,8 @@ module.exports = function(app, db) {
                 { $inc: { inStock: ol.quantity } },
                 (err, result) => {
                   if (err) {
-                    console.log(err);
                     res.status(503);
-                  } else console.log(result);
+                  }
                 }
               );
           });
@@ -80,7 +79,6 @@ module.exports = function(app, db) {
               { $inc: { creditBalance: -amount } },
               (err, result) => {
                 if (err) res.status(503);
-                else console.log(result);
               }
             );
         }
@@ -90,7 +88,6 @@ module.exports = function(app, db) {
 
       db.collection("rollbacks").insertMany(rollbacks, (err, result) => {
         if (err) res.status(503);
-        else console.log(result);
       });
     }
 

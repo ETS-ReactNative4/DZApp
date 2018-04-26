@@ -89,11 +89,7 @@ class OrderTopupConfirmScreen extends Component<Props, State> {
             <Title>{strings.ORDER}</Title>
             <Subtitle>{strings.CONFIRM}</Subtitle>
           </Body>
-          <Right>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
-          </Right>
+          <Right />
         </Header>
         {/* HEADER END */}
         {/* CONTENT */}

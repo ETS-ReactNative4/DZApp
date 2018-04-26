@@ -11,6 +11,7 @@ import {
   Content,
   Body,
   Left,
+  Right,
   Thumbnail,
   Footer,
   FooterTab,
@@ -43,7 +44,11 @@ import { v4 as uuidv4 } from "uuid";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { topupBalance } from "../actions/topupActions";
+import {
+  topupBalance,
+  setTopupCustomer,
+  setTopupAmount
+} from "../actions/topupActions";
 
 //navigation
 import { NavigationActions } from "react-navigation";
@@ -69,31 +74,25 @@ class TopupConfirmScreen extends Component<Props, State> {
 
     return (
       <Container>
-      {/* HEADER */}
+        {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
-            {/* <Grid>
-              <Row> */}
-                <Button
-                  transparent
-                  onPress={() => this.props.navigation.goBack()}
-                >
-                  <Icon name="arrow-back" style={styles.white} />
-                </Button>
-                {/* <Thumbnail
-                  square
-                  source={require("../assets/images/logo.gif")}
-                />
-              </Row>
-            </Grid> */}
+            <Button transparent onPress={() => this.props.navigation.goBack()}>
+              <Icon name="arrow-back" style={styles.white} />
+            </Button>
           </Left>
           <Body>
             <Title>{strings.TOPUP}</Title>
             <Subtitle>{strings.CONFIRM}</Subtitle>
           </Body>
+          <Right>
+            <Button transparent onPress={() => this._onBackToTopButtonPress()}>
+              <Icon name="cash" style={styles.white} />
+            </Button>
+          </Right>
         </Header>
-      {/* HEADER END */}
-      {/* CONTENT */}
+        {/* HEADER END */}
+        {/* CONTENT */}
         <Content padder contentContainerStyle={styles.scrollviewCenter}>
           {this._renderOverview()}
           <TopupConfirmModal
@@ -103,43 +102,7 @@ class TopupConfirmScreen extends Component<Props, State> {
             amountString={amountString}
           />
         </Content>
-      {/* CONTENT END */}
-      {/* FOOTER */}
-        <Footer>
-          <FooterTab style={styles.primaryBackground}>
-            <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OrderScreen");
-              }}
-            >
-              <Icon name="grid" />
-              <Text style={styles.tabbarText}>{strings.ORDER}</Text>
-            </Button>
-            {/* <Button
-              vertical
-              onPress={() => {
-                this.props.navigation.navigate("OverviewScreen");
-              }}
-            >
-              <Icon name="list" />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.OVERVIEW}
-              </Text>
-            </Button> */}
-            <Button vertical style={styles.secondaryBackground}>
-              <Icon name="cash" style={styles.white} />
-              <Text style={[styles.tabbarText, styles.white]}>
-                {strings.TOPUP}
-              </Text>
-            </Button>
-            <Button vertical>
-              <Icon name="clock" />
-              <Text style={styles.tabbarText}>{strings.HISTORY}</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
-      {/* FOOTER END */}
+        {/* CONTENT END */}
       </Container>
     );
   }
@@ -200,32 +163,17 @@ class TopupConfirmScreen extends Component<Props, State> {
         </CardItem>
         <CardItem footer>
           <Grid>
+            <Col />
             <Col>
               <Button
                 transparent
                 full
                 small
                 onPress={() => {
-                  this._onChangeAmountButtonPress();
+                  this._onBackToTopButtonPress();
                 }}
               >
-                <Text style={styles.smallButtonText}>
-                  {strings.CHANGE_AMOUNT}
-                </Text>
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                transparent
-                full
-                small
-                onPress={() => {
-                  this._onChangeCustomerButtonPress();
-                }}
-              >
-                <Text style={styles.smallButtonText}>
-                  {strings.CHANGE_CUSTOMER}
-                </Text>
+                <Text style={styles.smallButtonText}>{strings.CANCEL}</Text>
               </Button>
             </Col>
           </Grid>
@@ -263,16 +211,12 @@ class TopupConfirmScreen extends Component<Props, State> {
     modal.setState({ isVisible: !modal.state.isVisible });
   };
 
-  _onChangeAmountButtonPress = () => {
-    this.props.navigation.navigate("TopupAmountScreen", {
-      previousState: this.props.navigation.state
-    });
-  };
+  _onBackToTopButtonPress = () => {
+    this.props.setTopupCustomer(null);
+    this.props.setTopupAmount(null);
 
-  _onChangeCustomerButtonPress = () => {
-    this.props.navigation.navigate("TopupCustomerScreen", {
-      previousState: this.props.navigation.state
-    });
+    const backToTopAction = NavigationActions.popToTop();
+    this.props.navigation.dispatch(backToTopAction);
   };
 }
 
@@ -301,7 +245,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ topupBalance }, dispatch);
+  return bindActionCreators(
+    { topupBalance, setTopupCustomer, setTopupAmount },
+    dispatch
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopupConfirmScreen);

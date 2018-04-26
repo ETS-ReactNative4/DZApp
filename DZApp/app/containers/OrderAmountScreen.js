@@ -105,9 +105,7 @@ class OrderAmountScreen extends Component<Props, State> {
             </Subtitle>
           </Body>
           <Right>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
+           
           </Right>
         </Header>
         {/* HEADER END */}

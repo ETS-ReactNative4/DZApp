@@ -9,6 +9,7 @@ import TopupReducer from "./TopupReducer";
 import SubscriptionReducer from "./SubscriptionReducer";
 import RollbackReducer from "./RollbackReducer";
 import MessageReducer from "./MessageReducer";
+import SettingsReducer from "./SettingsReducer";
 
 import { AsyncStorage } from "react-native";
 
@@ -30,7 +31,8 @@ const rootPersistConfig = {
     "TopupReducer",
     "SubscriptionReducer",
     "RollbackReducer",
-    "MessageReducer"
+    "MessageReducer",
+    "SettingsReducer"
   ]
 };
 
@@ -65,14 +67,14 @@ const productPersistConfig = {
 const orderPersistConfig = {
   key: "OrderReducer",
   storage: AsyncStorage,
-  whitelist: ["orders", "lastOrder", "history"],
+  whitelist: ["orders", "lastOrder", "history","historyCount"],
   stateReconciler: autoMergeLevel2
 };
 
 const topupPersistConfig = {
   key: "TopupReducer",
   storage: AsyncStorage,
-  whitelist: ["topups", "cashInRegister", "lastTopup", "history"],
+  whitelist: ["topups", "cashInRegister", "lastTopup", "history","historyCount"],
   stateReconciler: autoMergeLevel2
 };
 
@@ -90,6 +92,13 @@ const rollbackPersistConfig = {
   stateReconciler: autoMergeLevel2
 };
 
+const settingsPersistConfig = {
+  key: "SettingsReducer",
+  storage: AsyncStorage,
+  whitelist: ["historyCount"],
+  stateReconciler: autoMergeLevel2
+};
+
 //combined reducer => each reducer manages a part of the global state
 //these different reducers are combined in a RootReducer, which we
 //will use to create our global state store (see store.js)
@@ -104,7 +113,8 @@ const RootReducer = combineReducers({
     subscriptionPersistConfig,
     SubscriptionReducer
   ),
-  RollbackReducer: persistReducer(rollbackPersistConfig,RollbackReducer),
+  RollbackReducer: persistReducer(rollbackPersistConfig, RollbackReducer),
+  SettingsReducer: persistReducer(settingsPersistConfig, SettingsReducer),
   MessageReducer: MessageReducer
 });
 

@@ -132,9 +132,9 @@ export const syncOrders = () => {
                   fetched = true;
                   dispatch(sendMessage(strings.SYNCED));
                   dispatch(orderSyncComplete());
-                  dispatch(fetchCustomers());
-                  dispatch(fetchProducts());
-                  dispatch(fetchSubscriptions());
+                  // dispatch(fetchCustomers());
+                  // dispatch(fetchProducts());
+                  // dispatch(fetchSubscriptions());
                 } else {
                   fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
@@ -153,7 +153,7 @@ export const syncOrders = () => {
             setTimeout(() => {
               if (!fetched) {
                 fetch.abort("orders");
-                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(sendError(strings.SERVER_TIMEOUT));
                 dispatch(orderSyncFailed());
               }
             }, 5000);
