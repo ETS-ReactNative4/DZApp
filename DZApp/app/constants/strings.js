@@ -167,3 +167,4 @@ export const HTTP = "http";
 export const HTTPS = "https";
 export const LOGOOUT_ALERT_HEADER = "Afmelden";
 export const LOGOOUT_ALERT_MESSAGE = "Bent u zeker dat u wil afmelden?";
+export const FORCE_SYNC = "Synchroniseer";

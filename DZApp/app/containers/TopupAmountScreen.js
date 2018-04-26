@@ -53,6 +53,7 @@ import { connect } from "react-redux";
 import { setTopupAmount } from "../actions/topupActions";
 import { sendMessage } from "../actions/messageActions";
 import { logout } from "../actions/cashierActions";
+import { syncAll } from "../actions/syncActions";
 
 //libs
 import { NavigationActions } from "react-navigation";
@@ -230,6 +231,14 @@ class TopupAmountScreen extends Component<Props, State> {
             <Icon name="menu" style={styles.popupMenuIcon} />
           </MenuTrigger>
           <MenuOptions>
+            <MenuOption onSelect={() => this.props.syncAll()}>
+              <Text style={styles.popupMenuText}>{strings.FORCE_SYNC}</Text>
+            </MenuOption>
+            <MenuOption onSelect={() => this._onCloseoutMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>
+                {strings.CLOSEOUT_SCREEN_TITLE}
+              </Text>
+            </MenuOption>
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
@@ -287,6 +296,12 @@ class TopupAmountScreen extends Component<Props, State> {
     });
   };
 
+  _onCloseoutMenuOptionPress = () => {
+    this.props.navigation.navigate("CloseoutScreen", {
+      previousState: this.props.navigation.state
+    });
+  };
+
   _onLogoutMenuOptionPress = () => {
     Alert.alert(
       strings.LOGOOUT_ALERT_HEADER,
@@ -323,7 +338,8 @@ const mapDispatchToProps = dispatch => {
     {
       setTopupAmount,
       logout,
-      sendMessage
+      sendMessage,
+      syncAll
     },
     dispatch
   );

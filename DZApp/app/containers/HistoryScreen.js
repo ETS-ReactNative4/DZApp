@@ -50,6 +50,7 @@ import { connect } from "react-redux";
 import { sendMessage } from "../actions/messageActions";
 import { processRollback } from "../actions/rollbackActions";
 import { logout } from "../actions/cashierActions";
+import { syncAll } from "../actions/syncActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
@@ -304,6 +305,14 @@ class HistoryScreen extends Component<Props, State> {
             <Icon name="menu" style={styles.popupMenuIcon} />
           </MenuTrigger>
           <MenuOptions>
+            <MenuOption onSelect={() => this.props.syncAll()}>
+              <Text style={styles.popupMenuText}>{strings.FORCE_SYNC}</Text>
+            </MenuOption>
+            <MenuOption onSelect={() => this._onCloseoutMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>
+                {strings.CLOSEOUT_SCREEN_TITLE}
+              </Text>
+            </MenuOption>
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
@@ -373,6 +382,12 @@ class HistoryScreen extends Component<Props, State> {
     });
   };
 
+  _onCloseoutMenuOptionPress = () => {
+    this.props.navigation.navigate("CloseoutScreen", {
+      previousState: this.props.navigation.state
+    });
+  };
+
   _onLogoutMenuOptionPress = () => {
     Alert.alert(
       strings.LOGOOUT_ALERT_HEADER,
@@ -410,7 +425,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ processRollback, sendMessage, logout }, dispatch);
+  return bindActionCreators(
+    { processRollback, sendMessage, logout, syncAll },
+    dispatch
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryScreen);

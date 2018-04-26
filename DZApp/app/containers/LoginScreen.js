@@ -41,7 +41,12 @@ import * as strings from "../constants/strings";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+
+//actions
 import { login } from "../actions/cashierActions";
+import { syncAll } from "../actions/syncActions";
+
+//functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
 
 type Props = {};
@@ -136,9 +141,9 @@ class LoginScreen extends Component<Props, State> {
             </Body>
           </CardItem>
           <CardItem footer>
-            <Button transparent full small onPress={() => {}}>
+            {/* <Button transparent full small onPress={() => {}}>
               <Text style={styles.smallButtonText}>{strings.FORGOT_PASS}</Text>
-            </Button>
+            </Button> */}
           </CardItem>
         </View>
       </Card>
@@ -153,6 +158,9 @@ class LoginScreen extends Component<Props, State> {
             <Icon name="menu" style={styles.popupMenuIcon} />
           </MenuTrigger>
           <MenuOptions>
+            <MenuOption onSelect={() => this.props.syncAll()}>
+              <Text style={styles.popupMenuText}>{strings.FORCE_SYNC}</Text>
+            </MenuOption>
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
@@ -213,7 +221,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ login }, dispatch);
+  return bindActionCreators({ login, syncAll }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

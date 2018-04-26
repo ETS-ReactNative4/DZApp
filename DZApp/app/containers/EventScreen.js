@@ -46,6 +46,7 @@ import { connect } from "react-redux";
 import { setEvent } from "../actions/eventActions";
 import { sendMessage } from "../actions/messageActions";
 import { logout } from "../actions/cashierActions";
+import { syncAll } from "../actions/syncActions";
 
 //functions
 import { to_NL_be_DateString } from "../functions/date";
@@ -126,6 +127,9 @@ class EventScreen extends Component<Props, State> {
             <Icon name="menu" style={styles.popupMenuIcon} />
           </MenuTrigger>
           <MenuOptions>
+            <MenuOption onSelect={() => this.props.syncAll()}>
+              <Text style={styles.popupMenuText}>{strings.FORCE_SYNC}</Text>
+            </MenuOption>
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
@@ -420,7 +424,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setEvent, sendMessage, logout }, dispatch);
+  return bindActionCreators(
+    { setEvent, sendMessage, logout, syncAll },
+    dispatch
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventScreen);

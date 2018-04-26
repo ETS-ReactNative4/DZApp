@@ -46,6 +46,7 @@ import { connect } from "react-redux";
 import { setProductQuantity, resetOrder } from "../actions/orderActions";
 import { sendError, sendMessage } from "../actions/messageActions";
 import { logout } from "../actions/cashierActions";
+import { syncAll } from "../actions/syncActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
@@ -190,6 +191,9 @@ class OrderScreen extends Component<Props, State> {
             <Icon name="menu" style={styles.popupMenuIcon} />
           </MenuTrigger>
           <MenuOptions>
+            <MenuOption onSelect={() => this.props.syncAll()}>
+              <Text style={styles.popupMenuText}>{strings.FORCE_SYNC}</Text>
+            </MenuOption>
             <MenuOption onSelect={() => this._onCloseoutMenuOptionPress()}>
               <Text style={styles.popupMenuText}>
                 {strings.CLOSEOUT_SCREEN_TITLE}
@@ -318,7 +322,8 @@ const mapDispatchToProps = dispatch => {
       resetOrder,
       sendError,
       logout,
-      sendMessage
+      sendMessage,
+      syncAll
     },
     dispatch
   );
