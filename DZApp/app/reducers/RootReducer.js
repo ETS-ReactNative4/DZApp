@@ -67,7 +67,7 @@ const productPersistConfig = {
 const orderPersistConfig = {
   key: "OrderReducer",
   storage: AsyncStorage,
-  whitelist: ["orders", "lastOrder", "history", "historyCount"],
+  whitelist: ["orders", "history", "historyCount"],
   stateReconciler: autoMergeLevel2
 };
 
@@ -77,7 +77,6 @@ const topupPersistConfig = {
   whitelist: [
     "topups",
     "cashInRegister",
-    "lastTopup",
     "history",
     "historyCount"
   ],
@@ -94,7 +93,7 @@ const subscriptionPersistConfig = {
 const rollbackPersistConfig = {
   key: "RollbackReducer",
   storage: AsyncStorage,
-  whitelist: ["subscriptions"],
+  whitelist: ["rollbacks"],
   stateReconciler: autoMergeLevel2
 };
 

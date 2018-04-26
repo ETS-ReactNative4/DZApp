@@ -31,6 +31,12 @@ export const loginError = (error: String) => {
   };
 };
 
+export const logout = (): {} => {
+  return {
+    type: types.LOGOUT
+  };
+};
+
 /************ Asynchronous Actions ***************/
 //authentication against the API, since we don't want to store sensitive information
 //on mobile device

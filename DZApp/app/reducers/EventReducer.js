@@ -30,6 +30,11 @@ const EventReducer = (state: {} = initialState, action: {}) => {
         isFetching: false,
         errorMessage: action.data
       });
+      case types.LOGOUT:{
+        return Object.assign({}, state, {
+          eventId: null
+        });
+      }
     default:
       return state;
   }

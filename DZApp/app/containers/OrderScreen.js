@@ -1,5 +1,6 @@
 //@flow
 import React, { Component } from "react";
+import { Alert } from "react-native";
 
 //components
 import { ProductThumbnail } from "../components/ProductThumbnail";
@@ -43,7 +44,8 @@ import { connect } from "react-redux";
 
 //actions
 import { setProductQuantity, resetOrder } from "../actions/orderActions";
-import { sendError } from "../actions/messageActions";
+import { sendError, sendMessage } from "../actions/messageActions";
+import { logout } from "../actions/cashierActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
@@ -191,6 +193,12 @@ class OrderScreen extends Component<Props, State> {
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
+            <View style={styles.divider} />
+            <MenuOption onSelect={() => this._onLogoutMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>
+                {strings.LOGOOUT_ALERT_HEADER}
+              </Text>
+            </MenuOption>
           </MenuOptions>
         </Menu>
       </Button>
@@ -258,6 +266,27 @@ class OrderScreen extends Component<Props, State> {
       previousState: this.props.navigation.state
     });
   };
+
+  _onLogoutMenuOptionPress = () => {
+    Alert.alert(
+      strings.LOGOOUT_ALERT_HEADER,
+      strings.LOGOOUT_ALERT_MESSAGE,
+      [
+        { text: strings.CANCEL, onPress: () => {}, style: "cancel" },
+        {
+          text: strings.LOGOOUT_ALERT_HEADER,
+          onPress: () => this._onAlertConfirmation()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  _onAlertConfirmation = () => {
+    this.props.logout();
+    this.props.sendMessage(strings.LOGGED_OUT);
+    this.props.navigation.navigate("AuthNavigator");
+  };
 }
 
 const mapStateToProps = state => {
@@ -276,7 +305,9 @@ const mapDispatchToProps = dispatch => {
     {
       setProductQuantity,
       resetOrder,
-      sendError
+      sendError,
+      logout,
+      sendMessage
     },
     dispatch
   );

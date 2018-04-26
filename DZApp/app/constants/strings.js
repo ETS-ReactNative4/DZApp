@@ -134,6 +134,7 @@ export const INVALID_AMOUNT =
 export const SYNCED = "Gesynchroniseerd met server";
 export const AUTHENTICATED = "Succesvol aangemeld";
 export const SETTINGS_CHANGED = "Instellingen aangepast";
+export const LOGGED_OUT = "Afgemeld";
 
 //navigation
 //export const TO_POS = "Naar bestellen";
@@ -150,5 +151,8 @@ export const TEST_CONNECTION = "Test verbinding";
 export const SERVER_CONFIG_ALERT_TITLE = "Configuratie wijzigen?";
 export const HTTP = "http";
 export const HTTPS = "https";
+export const LOGOOUT_ALERT_HEADER = "Afmelden";
+export const LOGOOUT_ALERT_MESSAGE = "Bent u zeker dat u wil afmelden?";
+
 
 

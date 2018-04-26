@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 
 //components
-import { Keyboard } from "react-native";
+import { Keyboard, Alert } from "react-native";
 import {
   Container,
   Text,
@@ -48,7 +48,11 @@ import { showInfoToast, showErrorToast } from "../functions/toast";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+
+//actions
 import { setTopupAmount } from "../actions/topupActions";
+import { sendMessage } from "../actions/messageActions";
+import { logout } from "../actions/cashierActions";
 
 //libs
 import { NavigationActions } from "react-navigation";
@@ -229,6 +233,12 @@ class TopupAmountScreen extends Component<Props, State> {
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
+            <View style={styles.divider} />
+            <MenuOption onSelect={() => this._onLogoutMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>
+                {strings.LOGOOUT_ALERT_HEADER}
+              </Text>
+            </MenuOption>
           </MenuOptions>
         </Menu>
       </Button>
@@ -276,6 +286,27 @@ class TopupAmountScreen extends Component<Props, State> {
       previousState: this.props.navigation.state
     });
   };
+
+  _onLogoutMenuOptionPress = () => {
+    Alert.alert(
+      strings.LOGOOUT_ALERT_HEADER,
+      strings.LOGOOUT_ALERT_MESSAGE,
+      [
+        { text: strings.CANCEL, onPress: () => {}, style: "cancel" },
+        {
+          text: strings.LOGOOUT_ALERT_HEADER,
+          onPress: () => this._onAlertConfirmation()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  _onAlertConfirmation = () => {
+    this.props.logout();
+    this.props.sendMessage(strings.LOGGED_OUT);
+    this.props.navigation.navigate("AuthNavigator");
+  };
 }
 
 const mapStateToProps = state => {
@@ -290,7 +321,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      setTopupAmount
+      setTopupAmount,
+      logout,
+      sendMessage
     },
     dispatch
   );

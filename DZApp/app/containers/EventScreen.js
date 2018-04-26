@@ -1,6 +1,6 @@
 //@flow
 import React, { Component } from "react";
-import { Platform, BackHandler } from "react-native";
+import { Alert, Platform, BackHandler } from "react-native";
 
 //components
 import {
@@ -41,7 +41,11 @@ import * as strings from "../constants/strings";
 //redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+
+//actions
 import { setEvent } from "../actions/eventActions";
+import { sendMessage } from "../actions/messageActions";
+import { logout } from "../actions/cashierActions";
 
 //functions
 import { to_NL_be_DateString } from "../functions/date";
@@ -124,6 +128,12 @@ class EventScreen extends Component<Props, State> {
           <MenuOptions>
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
+            </MenuOption>
+            <View style={styles.divider} />
+            <MenuOption onSelect={() => this._onLogoutMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>
+                {strings.LOGOOUT_ALERT_HEADER}
+              </Text>
             </MenuOption>
           </MenuOptions>
         </Menu>
@@ -354,6 +364,27 @@ class EventScreen extends Component<Props, State> {
       previousState: this.props.navigation.state
     });
   };
+
+  _onLogoutMenuOptionPress = () => {
+    Alert.alert(
+      strings.LOGOOUT_ALERT_HEADER,
+      strings.LOGOOUT_ALERT_MESSAGE,
+      [
+        { text: strings.CANCEL, onPress: () => {}, style: "cancel" },
+        {
+          text: strings.LOGOOUT_ALERT_HEADER,
+          onPress: () => this._onAlertConfirmation()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  _onAlertConfirmation = () => {
+    this.props.logout();
+    this.props.sendMessage(strings.LOGGED_OUT);
+    this.props.navigation.navigate("AuthNavigator");
+  };
 }
 
 const mapStateToProps = state => {
@@ -389,7 +420,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ setEvent }, dispatch);
+  return bindActionCreators({ setEvent, sendMessage, logout }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventScreen);

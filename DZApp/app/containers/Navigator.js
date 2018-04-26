@@ -126,7 +126,7 @@ const MainFlowNavigator = SwitchNavigator(
     }
   },
   {
-    initialRouteName: "HistoryNavigator",
+    initialRouteName: "OrderScreen",
     headerMode: "none"
   }
 );

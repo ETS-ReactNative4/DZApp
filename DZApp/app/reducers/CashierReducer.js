@@ -23,6 +23,11 @@ const CashierReducer = (state: {} = initialState, action: {}) => {
         isAuthenticating: false,
         cashierId: null
       });
+      case types.LOGOUT:{
+        return Object.assign({}, state, {
+          cashierId: null
+        });
+      }
     default:
       return state;
   }

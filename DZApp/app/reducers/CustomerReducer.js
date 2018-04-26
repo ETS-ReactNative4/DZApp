@@ -4,7 +4,6 @@ import * as types from "../actions/types";
 const initialState = {
   isFetching: false,
   customers: [],
-  //customerId: null,
   errorMessage: null
 };
 
@@ -21,10 +20,6 @@ const CustomerReducer = (state: {} = initialState, action: {}) => {
         customers: action.data,
         errorMessage: null
       });
-    // case types.SET_CUSTOMER:
-    //   return Object.assign({}, state, {
-    //     customerId: action.data
-    //   });
     case types.FETCH_CUSTOMERS_FAILED: {
       return Object.assign({}, state, {
         isFetching: false,

@@ -1,6 +1,6 @@
 //@flow
 import React, { Component } from "react";
-import { ListView } from "react-native";
+import { ListView, Alert } from "react-native";
 
 //components
 import {
@@ -47,8 +47,9 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 //actions
-import { sendError } from "../actions/messageActions";
+import { sendMessage } from "../actions/messageActions";
 import { processRollback } from "../actions/rollbackActions";
+import { logout } from "../actions/cashierActions";
 
 //functions
 import { showInfoToast, showErrorToast } from "../functions/toast";
@@ -306,6 +307,12 @@ class HistoryScreen extends Component<Props, State> {
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
+            <View style={styles.divider} />
+            <MenuOption onSelect={() => this._onLogoutMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>
+                {strings.LOGOOUT_ALERT_HEADER}
+              </Text>
+            </MenuOption>
           </MenuOptions>
         </Menu>
       </Button>
@@ -365,6 +372,27 @@ class HistoryScreen extends Component<Props, State> {
       previousState: this.props.navigation.state
     });
   };
+
+  _onLogoutMenuOptionPress = () => {
+    Alert.alert(
+      strings.LOGOOUT_ALERT_HEADER,
+      strings.LOGOOUT_ALERT_MESSAGE,
+      [
+        { text: strings.CANCEL, onPress: () => {}, style: "cancel" },
+        {
+          text: strings.LOGOOUT_ALERT_HEADER,
+          onPress: () => this._onAlertConfirmation()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  _onAlertConfirmation = () => {
+    this.props.logout();
+    this.props.sendMessage(strings.LOGGED_OUT);
+    this.props.navigation.navigate("AuthNavigator");
+  };
 }
 
 const mapStateToProps = state => {
@@ -382,7 +410,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ processRollback }, dispatch);
+  return bindActionCreators({ processRollback, sendMessage, logout }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryScreen);
