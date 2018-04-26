@@ -6,6 +6,6 @@ export const getURL = () => {
   let port = Store.getState().SettingsReducer.serverConfig.port;
 
   let connectionString = `${scheme}://${address}:${port}`;
-  console.log(connectionString);
+  // console.log(connectionString);
   return connectionString;
 };

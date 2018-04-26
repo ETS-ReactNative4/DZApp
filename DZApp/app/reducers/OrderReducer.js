@@ -110,6 +110,11 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
         history: newHistory
       });
     }
+    case types.LOCAL_CLOSEOUT: {
+      return Object.assign({}, state, {
+        history: []
+      });
+    }
     default: {
       return state;
     }

@@ -1,9 +1,13 @@
-//cashier auth actions
+//cashier actions
 export const REQUEST_LOGIN = "REQUEST_LOGIN";
 export const RECEIVE_LOGIN = "RECEIVE_LOGIN";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_ERROR = "LOGIN_ERROR";
 export const LOGOUT = "LOGOUT";
+export const LOCAL_CLOSEOUT = "LOCAL_CLOSEOUT";
+export const CLOSEOUT_SYNC_STARTED = "CLOSEOUT_SYNC_STARTED";
+export const CLOSEOUT_SYNC_COMPLETE = "CLOSEOUT_SYNC_COMPLETE"
+export const CLOSEOUT_SYNC_FAILED = "CLOSEOUT_SYNC_FAILED";
 
 //event actions
 export const REQUEST_EVENTS = "REQUEST_EVENTS";

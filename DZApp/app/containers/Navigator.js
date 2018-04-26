@@ -29,6 +29,9 @@ import HistorySettingsScreen from "./HistorySettingsScreen";
 //Server config
 import ServerConfigScreen from "./ServerConfigScreen";
 
+//Closeout
+import CloseoutScreen from "./CloseoutScreen";
+
 const TopupNavigator = StackNavigator(
   {
     TopupAmountScreen: {
@@ -123,6 +126,9 @@ const MainFlowNavigator = SwitchNavigator(
     },
     ServerConfigScreen: {
       screen: ServerConfigScreen
+    },
+    CloseoutScreen: {
+      screen: CloseoutScreen
     }
   },
   {

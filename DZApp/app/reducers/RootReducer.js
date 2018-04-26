@@ -39,7 +39,7 @@ const rootPersistConfig = {
 const cashierPersistConfig = {
   key: "CashierReducer",
   storage: AsyncStorage,
-  whitelist: ["cashierId"],
+  whitelist: ["cashierId", "closeouts"],
   stateReconciler: autoMergeLevel2
 };
 
@@ -74,12 +74,7 @@ const orderPersistConfig = {
 const topupPersistConfig = {
   key: "TopupReducer",
   storage: AsyncStorage,
-  whitelist: [
-    "topups",
-    "cashInRegister",
-    "history",
-    "historyCount"
-  ],
+  whitelist: ["topups", "cashInRegister", "history", "historyCount"],
   stateReconciler: autoMergeLevel2
 };
 

@@ -5,6 +5,7 @@ const topupRoutes = require("./topup_routes");
 const subscriptionRoutes = require("./subscription_routes");
 const orderRoutes = require("./order_routes");
 const rollbackRoutes = require("./rollback_routes");
+const closeoutRoutes = require("./closeout_routes");
 
 module.exports = function(app, db) {
   customerRoutes(app, db);
@@ -14,4 +15,5 @@ module.exports = function(app, db) {
   subscriptionRoutes(app, db);
   orderRoutes(app, db);
   rollbackRoutes(app, db);
+  closeoutRoutes(app, db);
 };

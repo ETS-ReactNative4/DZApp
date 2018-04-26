@@ -60,7 +60,10 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
         let topupToRemove = newHistory.find(t => t.localId === topup.localId);
         let index = newHistory.indexOf(topupToRemove);
         newHistory.splice(index, 1);
-        return Object.assign({}, state, { history: newHistory });
+        return Object.assign({}, state, {
+          history: newHistory,
+          cashInRegister: state.cashInRegister - topupToRemove.amount
+        });
       }
 
     case types.TOPUP_SYNC_STARTED: {
@@ -94,6 +97,12 @@ const TopupReducer = (state: {} = initialState, action: {}) => {
       return Object.assign({}, state, {
         historyCount: action.data,
         history: newHistory
+      });
+    }
+    case types.LOCAL_CLOSEOUT: {
+      return Object.assign({}, state, {
+        history: [],
+        cashInRegister: 0
       });
     }
     default:

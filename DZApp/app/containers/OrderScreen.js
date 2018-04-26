@@ -190,6 +190,11 @@ class OrderScreen extends Component<Props, State> {
             <Icon name="menu" style={styles.popupMenuIcon} />
           </MenuTrigger>
           <MenuOptions>
+            <MenuOption onSelect={() => this._onCloseoutMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>
+                {strings.CLOSEOUT_SCREEN_TITLE}
+              </Text>
+            </MenuOption>
             <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
               <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
             </MenuOption>
@@ -263,6 +268,12 @@ class OrderScreen extends Component<Props, State> {
 
   _onServerConfigMenuOptionPress = () => {
     this.props.navigation.navigate("ServerConfigScreen", {
+      previousState: this.props.navigation.state
+    });
+  };
+
+  _onCloseoutMenuOptionPress = () => {
+    this.props.navigation.navigate("CloseoutScreen", {
       previousState: this.props.navigation.state
     });
   };

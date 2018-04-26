@@ -196,10 +196,6 @@ class ServerConfigScreen extends Component<Props, State> {
     );
   }
 
-  _renderSpinner() {
-    return <Spinner color={colors.PRIMARY_COLOR} />;
-  }
-
   _showConfigAlert() {
     let message = `${this.state.scheme}://${this.state.address}:${
       this.state.port
