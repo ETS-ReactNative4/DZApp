@@ -25,6 +25,13 @@ import {
   CardItem,
   Subtitle
 } from "native-base";
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from "react-native-popup-menu";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
 //styles
@@ -98,20 +105,7 @@ class TopupAmountScreen extends Component<Props, State> {
                 : strings.ENTER_TOPUP_AMT}
             </Subtitle>
           </Body>
-          <Right>
-            {this.previousRouteName ? (
-              <Button
-                transparent
-                onPress={() => this._onBackToTopButtonPress()}
-              >
-                <Icon name="cash" />
-              </Button>
-            ) : (
-              <Button transparent>
-                <Icon name="menu" />
-              </Button>
-            )}
-          </Right>
+          <Right>{this._renderPopupMenu()}</Right>
         </Header>
         {/* HEADER END */}
         {/* CONTENT */}
@@ -153,15 +147,6 @@ class TopupAmountScreen extends Component<Props, State> {
         {/* FOOTER END */}
       </Container>
     );
-  }
-
-  componentDidUpdate() {
-    if (this.props.message !== null) {
-      showInfoToast(this.props.message);
-    }
-    if (this.props.error !== null) {
-      showErrorToast(this.props.error);
-    }
   }
 
   _renderForm = () => {
@@ -233,6 +218,32 @@ class TopupAmountScreen extends Component<Props, State> {
     );
   };
 
+  _renderPopupMenu() {
+    return (
+      <Button transparent>
+        <Menu>
+          <MenuTrigger>
+            <Icon name="menu" style={styles.popupMenuIcon} />
+          </MenuTrigger>
+          <MenuOptions>
+            <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </Button>
+    );
+  }
+
+  componentDidUpdate() {
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+  }
+
   _checkLoginState = () => {
     if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
   };
@@ -260,11 +271,10 @@ class TopupAmountScreen extends Component<Props, State> {
       : this.props.navigation.goBack();
   };
 
-  _onBackToTopButtonPress = () => {
-    this.props.setTopupAmount(null);
-
-    const backToTopAction = NavigationActions.popToTop();
-    this.props.navigation.dispatch(backToTopAction);
+  _onServerConfigMenuOptionPress = () => {
+    this.props.navigation.navigate("ServerConfigScreen", {
+      previousState: this.props.navigation.state
+    });
   };
 }
 

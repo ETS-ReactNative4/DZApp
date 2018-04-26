@@ -22,6 +22,13 @@ import {
   Right,
   Subtitle
 } from "native-base";
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from "react-native-popup-menu";
 import GridView from "react-native-super-grid";
 
 //styles
@@ -94,9 +101,7 @@ class OrderScreen extends Component<Props, State> {
             >
               <Icon name="trash" />
             </Button>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
+            {this._renderPopupMenu()}
           </Right>
         </Header>
         <Content
@@ -175,6 +180,23 @@ class OrderScreen extends Component<Props, State> {
     );
   };
 
+  _renderPopupMenu() {
+    return (
+      <Button transparent>
+        <Menu>
+          <MenuTrigger>
+            <Icon name="menu" style={styles.popupMenuIcon} />
+          </MenuTrigger>
+          <MenuOptions>
+            <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </Button>
+    );
+  }
+
   componentDidUpdate() {
     if (this.props.message !== null) {
       showInfoToast(this.props.message);
@@ -229,6 +251,12 @@ class OrderScreen extends Component<Props, State> {
     let product = modal.state.product;
     this.props.setProductQuantity(product._id, value);
     this._toggleModalVisible();
+  };
+
+  _onServerConfigMenuOptionPress = () => {
+    this.props.navigation.navigate("ServerConfigScreen", {
+      previousState: this.props.navigation.state
+    });
   };
 }
 

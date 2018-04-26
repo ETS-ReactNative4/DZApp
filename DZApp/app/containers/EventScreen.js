@@ -22,6 +22,13 @@ import {
   Icon,
   Right
 } from "native-base";
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from "react-native-popup-menu";
 import { Col, Row, Grid } from "react-native-easy-grid";
 const Item = Picker.Item;
 
@@ -92,11 +99,7 @@ class EventScreen extends Component<Props, State> {
                 : strings.PICK_EVENT}
             </Title>
           </Body>
-          <Right>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
-          </Right>
+          <Right>{this._renderPopupMenu()}</Right>
         </Header>
         {/* HEADER END */}
         {/* CONTENT */}
@@ -111,57 +114,22 @@ class EventScreen extends Component<Props, State> {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.eventId) {
-      this.setState({
-        eventId: nextProps.eventId
-      });
-    }
-  }
-
-  componentWillMount() {
-    if (this.props.eventId) {
-      this.setState({
-        eventId: this.props.eventId
-      });
-    }
-  }
-
-  componentDidMount() {
-    BackHandler.addEventListener(
-      "hardwareBackPress",
-      this._onBackButtonPressAndroid
+  _renderPopupMenu() {
+    return (
+      <Button transparent>
+        <Menu>
+          <MenuTrigger>
+            <Icon name="menu" style={styles.popupMenuIcon} />
+          </MenuTrigger>
+          <MenuOptions>
+            <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </Button>
     );
   }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener(
-      "hardwareBackPress",
-      this._onBackButtonPressAndroid
-    );
-  }
-
-  componentDidUpdate() {
-    if (this.props.message !== null) {
-      showInfoToast(this.props.message);
-    }
-    if (this.props.error !== null) {
-      showErrorToast(this.props.error);
-    }
-  }
-
-  _onBackButtonPressAndroid = () => {
-    if (this.previousRouteName) {
-      this.props.navigation.navigate(this.previousRouteName);
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  _checkLoginState = () => {
-    if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
-  };
 
   _renderInputForm = () => {
     return (
@@ -315,6 +283,58 @@ class EventScreen extends Component<Props, State> {
     );
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.eventId) {
+      this.setState({
+        eventId: nextProps.eventId
+      });
+    }
+  }
+
+  componentWillMount() {
+    if (this.props.eventId) {
+      this.setState({
+        eventId: this.props.eventId
+      });
+    }
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      "hardwareBackPress",
+      this._onBackButtonPressAndroid
+    );
+  }
+
+  componentDidUpdate() {
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+  }
+
+  _onBackButtonPressAndroid = () => {
+    if (this.previousRouteName) {
+      this.props.navigation.navigate(this.previousRouteName);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  _checkLoginState = () => {
+    if (!this.props.cashierId) this.props.navigation.navigate("AuthNavigator");
+  };
+
   _onPickEventButtonPress() {
     this.props.setEvent(
       this.state.eventId,
@@ -328,6 +348,12 @@ class EventScreen extends Component<Props, State> {
       eventId: value
     });
   }
+
+  _onServerConfigMenuOptionPress = () => {
+    this.props.navigation.navigate("ServerConfigScreen", {
+      previousState: this.props.navigation.state
+    });
+  };
 }
 
 const mapStateToProps = state => {

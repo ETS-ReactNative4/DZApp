@@ -12,6 +12,7 @@ import { Store, Persistor } from "./store/store";
 import LoadingScreen from "./containers/LoadingScreen";
 import Navigator from "./containers/Navigator";
 import { Root } from "native-base";
+import { MenuProvider } from "react-native-popup-menu";
 
 //syncing actions
 import { fetchEvents } from "./actions/eventActions";
@@ -42,7 +43,9 @@ export default class App extends Component {
           }}
         >
           <Root>
-            <Navigator />
+            <MenuProvider>
+              <Navigator />
+            </MenuProvider>
           </Root>
         </PersistGate>
       </Provider>

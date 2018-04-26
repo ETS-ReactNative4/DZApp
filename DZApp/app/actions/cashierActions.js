@@ -1,12 +1,14 @@
 //@flow
 import * as types from "./types";
 import * as strings from "../constants/strings";
-import { URL } from "../constants/serversettings";
+//import { URL } from "../constants/serversettings";
+
 //import { fetchWrapper } from "../functions/fetch";
 const fetch = require("react-native-cancelable-fetch");
 import { sendError, sendMessage } from "./messageActions";
 import { NetInfo } from "react-native";
 import { Store } from "../store/store";
+import { getURL } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 export const requestLogin = () => {
@@ -42,7 +44,7 @@ export const login = (userCredentials: {}, navigation: {}) => {
           let fetched;
 
           fetch(
-            URL + "/customers/login",
+            getURL() + "/customers/login",
             {
               method: "POST",
               body: JSON.stringify(userCredentials),

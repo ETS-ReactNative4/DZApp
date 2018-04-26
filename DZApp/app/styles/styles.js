@@ -186,22 +186,6 @@ const styles = StyleSheet.create({
   orderTopupModalContent: {
     height: 300
   },
-  // quantitySliderTrackStyle: {
-  //   height: 2,
-  //   borderRadius: 5,
-  //   backgroundColor: colors.PRIMARY_COLOR
-  // },
-  // quantitySliderThumbStyle: {
-  //   width: 20,
-  //   height: 20,
-  //   borderRadius: 20 / 2,
-  //   backgroundColor: colors.SECONDARY_COLOR
-  // },
-  // quantitySliderStyle: {
-  //   width: "100%",
-  //   marginBottom: 20
-  // },
-
   //TopupScreen:
   cameraHolder: {
     height: 300,
@@ -233,6 +217,22 @@ const styles = StyleSheet.create({
   segmentButtonText: {},
   segmentButtonTextActive: {
     color: colors.SECONDARY_COLOR
+  },
+  //POPUP MENU
+  popupMenuIcon: {
+    //fontSize: 30,
+    color: colors.TITLE_COLOR
+  },
+  popupMenuText: {
+    fontSize: 16,
+    color: colors.SECONDARY_COLOR,
+    marginBottom: 5
+  },
+  divider: {
+    marginVertical: 5,
+    marginHorizontal: 2,
+    borderBottomWidth: 1,
+    borderColor: "#ccc"
   }
 });
 

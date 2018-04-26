@@ -46,11 +46,11 @@ class LoadingScreen extends Component<Props, State> {
             color={colors.TITLE_COLOR}
             style={styles.center}
             large
-            animating={!this.props.loaded}
+            // animating={!this.props.loaded}
           />
-          <Text style={[styles.white, styles.center]}>
+          {/* <Text style={[styles.white, styles.center]}>
             {this.props.message}
-          </Text>
+          </Text> */}
         </Content>
       </Container>
     );

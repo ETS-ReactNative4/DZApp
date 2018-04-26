@@ -26,6 +26,9 @@ import TopupConfirmScreen from "./TopupConfirmScreen";
 import HistoryScreen from "./HistoryScreen";
 import HistorySettingsScreen from "./HistorySettingsScreen";
 
+//Server config
+import ServerConfigScreen from "./ServerConfigScreen";
+
 const TopupNavigator = StackNavigator(
   {
     TopupAmountScreen: {
@@ -117,6 +120,9 @@ const MainFlowNavigator = SwitchNavigator(
     },
     HistoryNavigator: {
       screen: HistoryNavigator
+    },
+    ServerConfigScreen: {
+      screen: ServerConfigScreen
     }
   },
   {

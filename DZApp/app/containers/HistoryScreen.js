@@ -26,6 +26,13 @@ import {
   Card,
   CardItem
 } from "native-base";
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from "react-native-popup-menu";
 import { Grid, Row, Col } from "react-native-easy-grid";
 import { RollbackConfirmModal } from "../components/RollbackConfirmModal";
 
@@ -101,9 +108,7 @@ class HistoryScreen extends Component<Props, State> {
             >
               <Icon name="settings" />
             </Button>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
+            {this._renderPopupMenu()}
           </Right>
         </Header>
         {this._renderSegment()}
@@ -290,6 +295,23 @@ class HistoryScreen extends Component<Props, State> {
     );
   };
 
+  _renderPopupMenu() {
+    return (
+      <Button transparent>
+        <Menu>
+          <MenuTrigger>
+            <Icon name="menu" style={styles.popupMenuIcon} />
+          </MenuTrigger>
+          <MenuOptions>
+            <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </Button>
+    );
+  }
+
   componentDidUpdate() {
     if (this.props.message !== null) {
       showInfoToast(this.props.message);
@@ -337,6 +359,12 @@ class HistoryScreen extends Component<Props, State> {
     this.props.processRollback(rollback);
     this.setState({ itemId: null });
   }
+
+  _onServerConfigMenuOptionPress = () => {
+    this.props.navigation.navigate("ServerConfigScreen", {
+      previousState: this.props.navigation.state
+    });
+  };
 }
 
 const mapStateToProps = state => {

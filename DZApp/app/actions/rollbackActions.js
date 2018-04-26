@@ -4,7 +4,7 @@ import * as types from "./types";
 
 import { Store } from "../store/store";
 import { NetInfo } from "react-native";
-import { URL } from "../constants/serversettings";
+// import { URL } from "../constants/serversettings";
 
 //functions
 //import { fetchWrapper } from "../functions/fetch";
@@ -22,6 +22,7 @@ import { sendMessage, sendError } from "./messageActions";
 
 //constants
 import * as strings from "../constants/strings";
+import { getURL } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 export const localRollback = (rollback: {}): {} => {
@@ -86,7 +87,7 @@ export const syncRollbacks = () => {
             let fetched;
 
             fetch(
-              URL + "/rollbacks",
+              getURL() + "/rollbacks",
               {
                 method: "POST",
                 body: JSON.stringify(rollbacks),

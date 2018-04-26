@@ -60,6 +60,7 @@ export const LOCAL_ROLLBACK ="LOCAL_ROLLBACK";
 
 //settings actions
 export const SET_HISTORY_COUNT = "SET_HISTORY_COUNT";
+export const SET_SERVER_CONFIG = "SET_SERVER_CONFIG";
 
 
 

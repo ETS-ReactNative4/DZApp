@@ -9,3 +9,14 @@ export const setHistoryCount = (count: number): {} => {
     data: count
   };
 };
+
+export const setServerConfig = (
+  port: number,
+  address: String,
+  scheme: String
+): {} => {
+  return {
+    type: types.SET_SERVER_CONFIG,
+    data: { port: port, address: address, scheme: scheme }
+  };
+};

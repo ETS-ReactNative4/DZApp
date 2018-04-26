@@ -140,3 +140,15 @@ export const SETTINGS_CHANGED = "Instellingen aangepast";
 export const TO_TOPUP = "Naar bedraginvoer";
 export const FINISH_ORDER = "Terug naar bestelling";
 export const BACK_TO_PRODUCT_INPUT = "Naar productinvoer";
+
+//popup menu
+export const SERVER_CONFIG = "Serverinstellingen";
+export const ADDRESS = "Adres";
+export const PORT = "Poort";
+export const SCHEME = "Protocol";
+export const TEST_CONNECTION = "Test verbinding";
+export const SERVER_CONFIG_ALERT_TITLE = "Configuratie wijzigen?";
+export const HTTP = "http";
+export const HTTPS = "https";
+
+

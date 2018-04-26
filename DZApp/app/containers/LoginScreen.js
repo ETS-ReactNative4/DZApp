@@ -19,8 +19,17 @@ import {
   View,
   Spinner,
   Card,
-  CardItem
+  CardItem,
+  Right,
+  Icon
 } from "native-base";
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger
+} from "react-native-popup-menu";
 
 //styles
 import styles from "../styles/styles";
@@ -54,7 +63,7 @@ class LoginScreen extends Component<Props, State> {
   render() {
     return (
       <Container>
-      {/* HEADER */}
+        {/* HEADER */}
         <Header style={styles.primaryBackground}>
           <Left>
             <Thumbnail
@@ -66,6 +75,7 @@ class LoginScreen extends Component<Props, State> {
           <Body>
             <Title>{strings.LOGIN}</Title>
           </Body>
+          <Right>{this._renderPopupMenu()}</Right>
         </Header>
         {/* HEADER END */}
         {/* CONTENT */}
@@ -75,15 +85,6 @@ class LoginScreen extends Component<Props, State> {
         {/* CONTENT END */}
       </Container>
     );
-  }
-
-  componentDidUpdate() {
-    if (this.props.message !== null) {
-      showInfoToast(this.props.message);
-    }
-    if (this.props.error !== null) {
-      showErrorToast(this.props.error);
-    }
   }
 
   _renderForm = () => {
@@ -144,6 +145,23 @@ class LoginScreen extends Component<Props, State> {
     );
   };
 
+  _renderPopupMenu() {
+    return (
+      <Button transparent>
+        <Menu>
+          <MenuTrigger>
+            <Icon name="menu" style={styles.popupMenuIcon} />
+          </MenuTrigger>
+          <MenuOptions>
+            <MenuOption onSelect={() => this._onServerConfigMenuOptionPress()}>
+              <Text style={styles.popupMenuText}>{strings.SERVER_CONFIG}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </Button>
+    );
+  }
+
   _renderSpinner = () => {
     return (
       <Spinner
@@ -155,6 +173,15 @@ class LoginScreen extends Component<Props, State> {
     );
   };
 
+  componentDidUpdate() {
+    if (this.props.message !== null) {
+      showInfoToast(this.props.message);
+    }
+    if (this.props.error !== null) {
+      showErrorToast(this.props.error);
+    }
+  }
+
   _onLoginButtonPress = () => {
     let credentials = {
       userName: this.state.userName,
@@ -164,6 +191,12 @@ class LoginScreen extends Component<Props, State> {
     this.setState({
       userName: "",
       password: ""
+    });
+  };
+
+  _onServerConfigMenuOptionPress = () => {
+    this.props.navigation.navigate("ServerConfigScreen", {
+      previousState: this.props.navigation.state
     });
   };
 }

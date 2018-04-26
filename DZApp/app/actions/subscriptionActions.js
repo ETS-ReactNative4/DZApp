@@ -1,12 +1,13 @@
 //@flow
 import * as types from "./types";
 import { NetInfo } from "react-native";
-import { URL } from "../constants/serversettings";
+// import { URL } from "../constants/serversettings";
 //import { fetchWrapper } from "../functions/fetch";
 const fetch = require("react-native-cancelable-fetch");
 import { sendMessage, sendError } from "./messageActions";
 import * as strings from "../constants/strings";
 import { Store } from "../store/store";
+import { getURL } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 
@@ -46,7 +47,7 @@ export const fetchSubscriptions = () => {
 
           let fetched;
 
-          fetch(URL + "/subscriptions", {}, "subscriptions")
+          fetch(getURL() + "/subscriptions", {}, "subscriptions")
             .then(response => {
               fetched = true;
               return response.json();

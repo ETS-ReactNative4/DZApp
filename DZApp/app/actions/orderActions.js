@@ -3,7 +3,7 @@ import * as types from "./types";
 
 import { Store } from "../store/store";
 import { NetInfo } from "react-native";
-import { URL } from "../constants/serversettings";
+//import { URL } from "../constants/serversettings";
 
 //functions
 import { getCustomerById } from "../functions/customer";

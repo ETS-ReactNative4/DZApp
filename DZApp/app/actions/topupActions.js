@@ -3,7 +3,7 @@ import * as types from "./types";
 import * as strings from "../constants/strings";
 
 import { NetInfo } from "react-native";
-import { URL } from "../constants/serversettings";
+//import { URL } from "../constants/serversettings";
 
 //import { fetchWrapper } from "../functions/fetch";
 const fetch = require("react-native-cancelable-fetch");
@@ -11,6 +11,7 @@ const fetch = require("react-native-cancelable-fetch");
 import { fetchCustomers } from "./customerActions";
 import { Store } from "../store/store";
 import { sendMessage, sendError } from "./messageActions";
+import { getURL } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 
@@ -74,7 +75,7 @@ export const syncTopups = () => {
             let fetched;
 
             fetch(
-              URL + "/topups",
+              getURL() + "/topups",
               {
                 method: "POST",
                 body: JSON.stringify(topups),
