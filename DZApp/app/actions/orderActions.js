@@ -18,6 +18,7 @@ import { sendMessage, sendError } from "./messageActions";
 
 //constants
 import * as strings from "../constants/strings";
+import { getURL } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 export const setProductQuantity = (productId: number, quantity: number): {} => {
@@ -97,7 +98,6 @@ export const orderSyncFailed = () => {
 /************ Asynchronous Actions ***************/
 export const processOrder = (order: {}) => {
   return function(dispatch) {
-    //console.log(order);
     dispatch(localOrder(order));
     dispatch(syncOrders());
   };
@@ -112,12 +112,13 @@ export const syncOrders = () => {
           let orders = Store.getState().OrderReducer.orders;
 
           if (orders.length > 0) {
+            console.log("orders to sync: " + JSON.stringify(orders));
             dispatch(orderSyncStarted());
 
             let fetched;
 
             fetch(
-              URL + "/orders",
+              getURL() + "/orders",
               {
                 method: "POST",
                 body: JSON.stringify(orders),
@@ -132,6 +133,7 @@ export const syncOrders = () => {
                   fetched = true;
                   dispatch(sendMessage(strings.SYNCED));
                   dispatch(orderSyncComplete());
+                  console.log("orders synced");
                   // dispatch(fetchCustomers());
                   // dispatch(fetchProducts());
                   // dispatch(fetchSubscriptions());

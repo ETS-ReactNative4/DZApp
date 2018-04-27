@@ -5,7 +5,7 @@ const initialState = {
   historyCount: 5,
   serverConfig: {
     port: 3000,
-    address: "192.169.0.132",
+    address: "ec2-18-195-140-112.eu-central-1.compute.amazonaws.com",
     scheme: "http"
   }
 };

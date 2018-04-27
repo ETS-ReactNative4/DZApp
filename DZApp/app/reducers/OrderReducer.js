@@ -70,7 +70,7 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
           history: newHistory
         });
 
-        console.log("unsynced orders length: " + newState.orders.length);
+        //console.log("unsynced orders length: " + newState.orders.length);
 
         return newState;
       } else {
@@ -83,18 +83,24 @@ const OrderReducer = (state: {} = initialState, action: {}) => {
       }
     }
     case types.ORDER_SYNC_STARTED: {
+      console.log("order sync started");
+
       return Object.assign({}, state, {
         isSyncing: true
       });
     }
     case types.ORDER_SYNC_COMPLETE: {
       //remove all locally stored orders
+      console.log("order sync complete");
+
       return Object.assign({}, state, {
         orders: [],
         isSyncing: false
       });
     }
     case types.ORDER_SYNC_FAILED: {
+      console.log("order sync complete");
+
       return Object.assign({}, state, {
         isSyncing: false
       });

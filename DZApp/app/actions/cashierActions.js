@@ -138,7 +138,6 @@ export const syncCloseouts = () => {
 
           if (closeouts.length > 0) {
             dispatch(closeoutSyncedStarted());
-            console.log("closeout length > 0");
             let fetched;
 
             fetch(
@@ -167,8 +166,6 @@ export const syncCloseouts = () => {
                 dispatch(sendError(strings.UNABLE_TO_SYNC));
                 dispatch(closeoutSyncFailed());
               });
-
-            console.log("after fetch");
 
             //cancel the request after x seconds
             //and send appropriate error messages
