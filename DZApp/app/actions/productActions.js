@@ -47,7 +47,7 @@ export const fetchProducts = () => {
 
           let fetched;
 
-          fetch(getURL() + "/products", {}, "products")
+          fetch(getURL() + "/Product", {}, "Product")
             .then(response => {
               fetched = true;
               return response.json();

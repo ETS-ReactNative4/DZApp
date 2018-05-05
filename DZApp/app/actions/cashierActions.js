@@ -61,6 +61,7 @@ export const closeoutSyncFailed = () => {
 //on mobile device
 export const login = (userCredentials: {}, navigation: {}) => {
   return function(dispatch) {
+    console.log('requesting login...' + getURL() + "/api/Login" + " With body: " + JSON.stringify(userCredentials, null, 4));
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
@@ -69,28 +70,30 @@ export const login = (userCredentials: {}, navigation: {}) => {
           let fetched;
 
           fetch(
-            getURL() + "/customers/login",
+            getURL() + "/api/Login",
             {
               method: "POST",
               body: JSON.stringify(userCredentials),
               headers: new Headers({
-                "Content-Type": "application/json"
+                "Content-Type": "application/json; charset=utf-8"
               })
             },
             "login"
           )
             .then(response => {
+              console.log('logging response: ' + JSON.stringify(response, null, 4));
               fetched = true;
               return response.json();
             })
             .then(json => {
+              console.log('logging json: ' + JSON.stringify(json, null, 4));
               if (json.error) {
                 dispatch(sendError(json.error));
                 dispatch(loginError(json.error));
               } else {
                 navigation.navigate("OrderScreen");
                 dispatch(sendMessage(strings.AUTHENTICATED));
-                dispatch(loginSuccess(json.id));
+                dispatch(loginSuccess(json.customer.id));
                 navigation.navigate("MainFlowNavigator");
               }
             })
@@ -109,7 +112,7 @@ export const login = (userCredentials: {}, navigation: {}) => {
               dispatch(sendError(strings.SERVER_TIMEOUT));
               dispatch(loginError(strings.SERVER_TIMEOUT));
             }
-          }, 5000);
+          }, 50000);
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
           dispatch(loginError(strings.NO_CONNECTION));

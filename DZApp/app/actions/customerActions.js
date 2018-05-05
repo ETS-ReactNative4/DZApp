@@ -47,7 +47,7 @@ export const fetchCustomers = () => {
 
           let fetched;
 
-          fetch(getURL() + "/customers", {}, "customers")
+          fetch(getURL() + "/Customer", {}, "Customer")
             .then(response => {
               fetched = true;
               return response.json();
