@@ -59,13 +59,13 @@ export const fetchEvents = () => {
 
           let fetched;
 
-          fetch(getURL() + "/events", {}, "events")
+          fetch(getURL() + "/api/Event", {}, "events")
             .then(response => {
               fetched = true;
               return response.json();
             })
             .then(json => {
-              dispatch(receiveEvents(json));
+              dispatch(receiveEvents(json.map(event => ({...event, _id: event.id }))));
               dispatch(sendMessage(strings.SYNCED));
             })
             .catch(error => {

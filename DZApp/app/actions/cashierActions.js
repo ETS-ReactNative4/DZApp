@@ -61,7 +61,6 @@ export const closeoutSyncFailed = () => {
 //on mobile device
 export const login = (userCredentials: {}, navigation: {}) => {
   return function(dispatch) {
-    console.log('requesting login...' + getURL() + "/api/Login" + " With body: " + JSON.stringify(userCredentials, null, 4));
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
@@ -81,12 +80,10 @@ export const login = (userCredentials: {}, navigation: {}) => {
             "login"
           )
             .then(response => {
-              console.log('logging response: ' + JSON.stringify(response, null, 4));
               fetched = true;
               return response.json();
             })
             .then(json => {
-              console.log('logging json: ' + JSON.stringify(json, null, 4));
               if (json.error) {
                 dispatch(sendError(json.error));
                 dispatch(loginError(json.error));

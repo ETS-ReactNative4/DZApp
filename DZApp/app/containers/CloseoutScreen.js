@@ -256,7 +256,7 @@ class CloseoutScreen extends Component<Props, State> {
   _onAlertConfirmation() {
     let closeout = {
       cashierId: this.props.cashierId,
-      timestamp: moment().valueOf(),
+      timestamp: new Date().toISOString(),
       expectedCash: this.props.expectedAmount,
       countedCash: Number(this.state.countedAmount)
     };

@@ -112,13 +112,13 @@ export const syncOrders = () => {
           let orders = Store.getState().OrderReducer.orders;
 
           if (orders.length > 0) {
-            console.log("orders to sync: " + JSON.stringify(orders));
+            console.log("orders to sync: " + JSON.stringify(orders, null, 4));
             dispatch(orderSyncStarted());
 
             let fetched;
 
             fetch(
-              getURL() + "/orders",
+              getURL() + "/api/Order/CreateRange",
               {
                 method: "POST",
                 body: JSON.stringify(orders),
@@ -144,6 +144,7 @@ export const syncOrders = () => {
                 }
               })
               .catch(err => {
+                console.log("error post orders: " + JSON.stringify(err, null, 4));
                 fetched = true;
                 dispatch(sendError(strings.UNABLE_TO_SYNC));
                 dispatch(orderSyncFailed());

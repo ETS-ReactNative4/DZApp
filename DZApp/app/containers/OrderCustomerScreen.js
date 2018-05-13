@@ -501,7 +501,7 @@ const mapStateToProps = state => {
     customers = state.CustomerReducer.customers.filter(c => {
       let subscribed = false;
       subscriptions.forEach(s => {
-        if (s.customerId === c._id) subscribed = true;
+        if (s.customerId == c._id) subscribed = true;
       });
       return subscribed;
     });

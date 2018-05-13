@@ -47,13 +47,13 @@ export const fetchSubscriptions = () => {
 
           let fetched;
 
-          fetch(getURL() + "/subscriptions", {}, "subscriptions")
+          fetch(getURL() + "/api/EventSubscription", {}, "subscriptions")
             .then(response => {
               fetched = true;
               return response.json();
             })
             .then(json => {
-              dispatch(receiveSubscriptions(json));
+              dispatch(receiveSubscriptions(json.map(subscription => ({...subscription, _id: subscription.id }))));
               dispatch(sendMessage(strings.SYNCED));
             })
             .catch(error => {

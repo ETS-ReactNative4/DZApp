@@ -70,12 +70,13 @@ export const syncTopups = () => {
         if (isConnected && !Store.getState().TopupReducer.isSyncing) {
           let topups = Store.getState().TopupReducer.topups;
           if (topups.length > 0) {
+            console.log("topups to sync: " + JSON.stringify(topups, null, 4));
             dispatch(topupSyncStarted());
 
             let fetched;
 
             fetch(
-              getURL() + "/topups",
+              getURL() + "/api/BalanceTopup/CreateRange",
               {
                 method: "POST",
                 body: JSON.stringify(topups),

@@ -229,7 +229,7 @@ class OrderTopupConfirmScreen extends Component<Props, State> {
       localId: uuidv4(),
       cashierId: this.props.cashierId,
       customerId: this.props.customer._id,
-      timestamp: moment().valueOf(),
+      timestamp: new Date().toISOString(),
       amount: this.props.amount
     });
     const resetAction = NavigationActions.reset({

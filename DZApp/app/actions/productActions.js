@@ -47,13 +47,14 @@ export const fetchProducts = () => {
 
           let fetched;
 
-          fetch(getURL() + "/Product", {}, "Product")
+          fetch(getURL() + "/api/Product", {}, "Product")
             .then(response => {
+             
               fetched = true;
               return response.json();
             })
             .then(json => {
-              dispatch(receiveProducts(json));
+              dispatch(receiveProducts(json.map(product => ({...product, _id: product.id }))));
               dispatch(sendMessage(strings.SYNCED));
             })
             .catch(error => {

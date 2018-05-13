@@ -1,7 +1,7 @@
 export const calculateTotal = (orderlines, products) => {
   let totalAmount = 0.0;
   orderlines.forEach(o => {
-    totalAmount += o.quantity * products.find(p => p._id === o.productId).price;
+    totalAmount += o.quantity * products.find(p => p._id == o.productId).price;
   });
   return totalAmount;
 };

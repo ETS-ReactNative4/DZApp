@@ -214,7 +214,7 @@ class OverviewScreen extends Component<Props, State> {
   };
 
   _renderListViewRow = (orderline: {}): {} => {
-    let product = this.props.products.find(p => p._id === orderline.productId);
+    let product = this.props.products.find(p => p._id == orderline.productId);
     let linePrice = calculateSubTotal(orderline, product);
     let linePriceString = linePrice.toFixed(2) + " €";
     return (
@@ -319,7 +319,7 @@ class OverviewScreen extends Component<Props, State> {
   };
 
   _onEditIconPress = (orderline: {}): {} => {
-    let product = this.props.products.find(p => p._id === orderline.productId);
+    let product = this.props.products.find(p => p._id == orderline.productId);
     let quantity = orderline.quantity;
     let modal = this.refs.modal;
 
@@ -342,9 +342,12 @@ class OverviewScreen extends Component<Props, State> {
 
 const mapStateToProps = state => {
   let orderlines = Object.keys(state.OrderReducer.orderlines).map(key => {
+    console.log('logging key: ' + key);
+    console.log('logging find product: ' + state.ProductReducer.products.find(p => p._id == key));
+    
     return {
       productId: key,
-      name: state.ProductReducer.products.find(p => p._id === key).name,
+      name: state.ProductReducer.products.find(p => p._id == key).name,
       quantity: state.OrderReducer.orderlines[key]
     };
   });
@@ -359,10 +362,10 @@ const mapStateToProps = state => {
     orderlines: orderlines,
     totalAmountString: totalAmountString,
     cashier: state.CustomerReducer.customers.find(
-      c => c._id === state.CashierReducer.cashierId
+      c => c._id == state.CashierReducer.cashierId
     ),
     event: state.EventReducer.events.find(
-      e => e._id === state.EventReducer.eventId
+      e => e._id == state.EventReducer.eventId
     ),
     message: state.MessageReducer.message,
     error: state.MessageReducer.error

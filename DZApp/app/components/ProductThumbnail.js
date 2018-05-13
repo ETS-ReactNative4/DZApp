@@ -11,6 +11,8 @@ import colors from "../styles/colors";
 
 //resources
 import * as strings from "../constants/strings";
+import { getURL } from "../functions/server";
+
 
 
 
@@ -32,7 +34,7 @@ export const ProductThumbnail = ({
     >
       <Grid style={styles.productThumbnailGrid}>
         <Row size={40} style={styles.justifyCenter}>
-          <Thumbnail square source={{ uri: product.imageUrl }} />
+          <Thumbnail square source={{ uri: 'http://10.0.2.2:8883/images/' + product.imageUrl }} />
         </Row>
         <Row size={30} style={[styles.productThumbnailRow, { marginTop: 10 }]}>
           <Text style={styles.productThumbnailName}>{product.name}</Text>

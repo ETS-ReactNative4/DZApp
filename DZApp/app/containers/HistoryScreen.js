@@ -369,7 +369,7 @@ class HistoryScreen extends Component<Props, State> {
       orderId: this.state.ordersActive ? itemId : null,
       topupId: !this.state.ordersActive ? itemId : null,
       cashierId: this.props.cashierId,
-      timestamp: moment().valueOf()
+      timestamp: new Date().toISOString()
     };
 
     this.props.processRollback(rollback);

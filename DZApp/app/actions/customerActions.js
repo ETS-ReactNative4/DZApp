@@ -47,13 +47,13 @@ export const fetchCustomers = () => {
 
           let fetched;
 
-          fetch(getURL() + "/Customer", {}, "Customer")
+          fetch(getURL() + "/api/Customer", {}, "Customer")
             .then(response => {
               fetched = true;
               return response.json();
             })
             .then(json => {
-              dispatch(receiveCustomers(json));
+              dispatch(receiveCustomers(json.map(customer => ({...customer, _id: customer.id }))));
               dispatch(sendMessage(strings.SYNCED));
             })
             .catch(error => {
