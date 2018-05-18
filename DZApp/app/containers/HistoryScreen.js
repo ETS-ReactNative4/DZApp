@@ -108,7 +108,7 @@ class HistoryScreen extends Component<Props, State> {
                 this.props.navigation.navigate("HistorySettingsScreen")
               }
             >
-              <Icon name="settings" />
+              <Icon name="settings" style={styles.white} />
             </Button>
             {this._renderPopupMenu()}
           </Right>

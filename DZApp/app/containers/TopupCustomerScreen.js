@@ -214,7 +214,7 @@ class TopupCustomerScreen extends Component<Props, State> {
 
               return (
                 <Item
-                  label={`${customer.lastName} ${customer.firstname} (${role})`}
+                  label={`${customer.lastName} ${customer.firstName} (${role})`}
                   value={customer._id}
                   key={customer._id}
                 />

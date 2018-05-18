@@ -89,7 +89,7 @@ class HistorySettingsScreen extends Component<Props, State> {
           </Body>
           <Right>
             <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name="clock" />
+              <Icon name="clock" style={styles.white} />
             </Button>
           </Right>
         </Header>
@@ -127,7 +127,6 @@ class HistorySettingsScreen extends Component<Props, State> {
             <Item floatingLabel last>
               <Label>{strings.COUNT}</Label>
               <Input
-                keyboardType="numeric"
                 onChangeText={value => this._onChangeText(value)}
                 value={quantity.toString()}
               />

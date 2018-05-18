@@ -76,7 +76,7 @@ class OverviewScreen extends Component<Props, State> {
         <Header style={styles.primaryBackground}>
           <Left>
             <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name="arrow-back" />
+              <Icon name="arrow-back" style={styles.white}/>
             </Button>
           </Left>
           <Body>
@@ -85,7 +85,7 @@ class OverviewScreen extends Component<Props, State> {
           </Body>
           <Right>
             <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name="grid" />
+              <Icon name="grid" style={styles.white} />
             </Button>
           </Right>
         </Header>

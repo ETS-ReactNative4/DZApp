@@ -101,7 +101,7 @@ class OrderCustomerScreen extends Component<Props, State> {
           </Body>
           <Right>
             <Button transparent onPress={() => this._onBackToTopButtonPress()}>
-              <Icon name="grid" />
+              <Icon name="grid" style={styles.white} />
             </Button>
           </Right>
         </Header>
@@ -221,7 +221,7 @@ class OrderCustomerScreen extends Component<Props, State> {
 
               return (
                 <Item
-                  label={`${customer.lastName} ${customer.firstname} (${role})`}
+                  label={`${customer.lastName} ${customer.firstName} (${role})`}
                   value={customer._id}
                   key={customer._id}
                 />

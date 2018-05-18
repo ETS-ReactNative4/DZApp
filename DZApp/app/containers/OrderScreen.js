@@ -94,7 +94,7 @@ class OrderScreen extends Component<Props, State> {
                 this.props.navigation.navigate("OverviewScreen");
               }}
             >
-              <Icon name="cart" />
+              <Icon name="cart" style={styles.white} />
             </Button>
             <Button
               transparent
@@ -102,7 +102,7 @@ class OrderScreen extends Component<Props, State> {
                 this.props.resetOrder();
               }}
             >
-              <Icon name="trash" />
+              <Icon name="trash" style={styles.white} />
             </Button>
             {this._renderPopupMenu()}
           </Right>
