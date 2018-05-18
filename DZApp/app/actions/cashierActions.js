@@ -147,7 +147,6 @@ export const syncCloseouts = () => {
       console.log(`Is initially connected: ${isConnected}`);
       NetInfo.isConnected.removeEventListener(onInitialNetConnection);
     };
-
     NetInfo.isConnected.addEventListener(
       "connectionChange",
       onInitialNetConnection
