@@ -143,13 +143,13 @@ class OrderCustomerScreen extends Component<Props, State> {
             <Text style={styles.error}>{error}</Text>
           </CardItem>
         )}
-        <CardItem footer>
+        {/* <CardItem footer>
           <Button transparent full small onPress={() => this._toggleCam()}>
             <Text style={styles.smallButtonText}>
               {this.state.showCam ? strings.COMBO_OPTION : strings.CAM_OPTION}
             </Text>
           </Button>
-        </CardItem>
+        </CardItem> */}
       </Card>
     );
   };
