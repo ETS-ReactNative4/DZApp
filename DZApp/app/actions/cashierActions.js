@@ -61,63 +61,74 @@ export const closeoutSyncFailed = () => {
 //on mobile device
 export const login = (userCredentials: {}, navigation: {}) => {
   return function(dispatch) {
+    //fix for known ios NetInfo bug: add an eventlistener
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
+
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected && !Store.getState().CashierReducer.isAuthenticating) {
-          dispatch(requestLogin());
-          let fetched;
-
-          fetch(
-            getURL() + "/customers/login",
-            {
-              method: "POST",
-              body: JSON.stringify(userCredentials),
-              headers: new Headers({
-                "Content-Type": "application/json"
+        if (isConnected) {
+          if (!Store.getState().CashierReducer.isAuthenticating) {
+            dispatch(requestLogin());
+            let fetched;
+            fetch(
+              getURL() + "/customers/login",
+              {
+                method: "POST",
+                body: JSON.stringify(userCredentials),
+                headers: new Headers({
+                  "Content-Type": "application/json"
+                })
+              },
+              "login"
+            )
+              .then(response => {
+                fetched = true;
+                return response.json();
               })
-            },
-            "login"
-          )
-            .then(response => {
-              fetched = true;
-              return response.json();
-            })
-            .then(json => {
-              if (json.error) {
-                dispatch(sendError(json.error));
-                dispatch(loginError(json.error));
-              } else {
-                navigation.navigate("OrderScreen");
-                dispatch(sendMessage(strings.AUTHENTICATED));
-                dispatch(loginSuccess(json.id));
-                navigation.navigate("MainFlowNavigator");
-              }
-            })
-            .catch(error => {
-              fetched = true;
-              dispatch(sendError(error.message));
-              dispatch(loginError(error.message));
-            });
+              .then(json => {
+                if (json.error) {
+                  dispatch(sendError(json.error));
+                  dispatch(loginError(json.error));
+                } else {
+                  navigation.navigate("OrderScreen");
+                  dispatch(sendMessage(strings.AUTHENTICATED));
+                  dispatch(loginSuccess(json.id));
+                  navigation.navigate("MainFlowNavigator");
+                }
+              })
+              .catch(error => {
+                fetched = true;
+                dispatch(sendError(error.message));
+                dispatch(loginError(error.message));
+              });
 
-          //cancel the request after x seconds
-          //and send appropriate error messages
-          //when unsuccessfull
-          setTimeout(() => {
-            if (!fetched) {
-              fetch.abort("login");
-              dispatch(sendError(strings.SERVER_TIMEOUT));
-              dispatch(loginError(strings.SERVER_TIMEOUT));
-            }
-          }, 5000);
+            //cancel the request after x seconds
+            //and send appropriate error messages
+            //when unsuccessfull
+            setTimeout(() => {
+              if (!fetched) {
+                fetch.abort("login");
+                dispatch(sendError(strings.SERVER_TIMEOUT));
+                dispatch(loginError(strings.SERVER_TIMEOUT));
+              }
+            }, 5000);
+          }
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
           dispatch(loginError(strings.NO_CONNECTION));
         }
       })
-      .catch(err => {
-        console.warn(err);
-      });
+      .catch(err => console.warn(err));
   };
 };
 
@@ -130,10 +141,12 @@ export const processCloseout = (closeout: {}) => {
 
 export const syncCloseouts = () => {
   return function(dispatch) {
-    NetInfo.isConnected
-      .fetch()
-      .then(isConnected => {
-        if (isConnected && !Store.getState().CashierReducer.isSyncing) {
+    //fix for known ios NetInfo bug: add an eventlistener
+    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
+    NetInfo.isConnected.fetch().then();
+    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
+      if (isConnected) {
+        if (!Store.getState().CashierReducer.isSyncing) {
           let closeouts = Store.getState().CashierReducer.closeouts;
 
           if (closeouts.length > 0) {
@@ -178,12 +191,10 @@ export const syncCloseouts = () => {
               }
             }, 5000);
           }
-        } else {
-          dispatch(sendError(strings.NO_CONNECTION));
         }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+      } else {
+        dispatch(sendError(strings.NO_CONNECTION));
+      }
+    });
   };
 };

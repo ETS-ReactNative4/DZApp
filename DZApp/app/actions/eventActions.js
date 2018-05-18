@@ -51,10 +51,12 @@ export const fetchEventsFailed = (error: {}): {} => {
 //request event list from API
 export const fetchEvents = () => {
   return function(dispatch) {
-    NetInfo.isConnected
-      .fetch()
-      .then(isConnected => {
-        if (isConnected && !Store.getState().EventReducer.isFetching) {
+     //fix for known ios NetInfo bug: add an eventlistener
+    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
+    NetInfo.isConnected.fetch().then(isConnected => {});
+    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
+      if (isConnected) {
+        if (!Store.getState().EventReducer.isFetching) {
           dispatch(requestEvents);
 
           let fetched;
@@ -83,12 +85,10 @@ export const fetchEvents = () => {
               dispatch(fetchEventsFailed(strings.SERVER_TIMEOUT));
             }
           }, 5000);
-        } else {
-          dispatch(sendError(strings.NO_CONNECTION));
         }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+      } else {
+        dispatch(sendError(strings.NO_CONNECTION));
+      }
+    });
   };
 };

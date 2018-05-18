@@ -64,10 +64,12 @@ export const topupBalance = (topup: {}) => {
 
 export const syncTopups = () => {
   return function(dispatch) {
-    NetInfo.isConnected
-      .fetch()
-      .then(isConnected => {
-        if (isConnected && !Store.getState().TopupReducer.isSyncing) {
+    //fix for known ios NetInfo bug: add an eventlistener
+    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
+    NetInfo.isConnected.fetch().then(isConnected => {});
+    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
+      if (isConnected) {
+        if (!Store.getState().TopupReducer.isSyncing) {
           let topups = Store.getState().TopupReducer.topups;
           if (topups.length > 0) {
             dispatch(topupSyncStarted());
@@ -113,12 +115,10 @@ export const syncTopups = () => {
               }
             }, 5000);
           }
-        } else {
-          dispatch(sendError(strings.NO_CONNECTION));
         }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+      } else {
+        dispatch(sendError(strings.NO_CONNECTION));
+      }
+    });
   };
 };

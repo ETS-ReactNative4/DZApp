@@ -69,17 +69,19 @@ export const processRollback = (rollback: {}) => {
 
 export const syncRollbacks = () => {
   return function(dispatch) {
-    NetInfo.isConnected
-      .fetch()
-      .then(isConnected => {
-        if (isConnected && !Store.getState().RollbackReducer.isSyncing) {
+    //fix for known ios NetInfo bug: add an eventlistener
+    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
+    NetInfo.isConnected.fetch().then(isConnected => {});
+    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
+      if (isConnected) {
+        if (!Store.getState().RollbackReducer.isSyncing) {
           let rollbacks = Store.getState().RollbackReducer.rollbacks;
 
           if (rollbacks.length > 0) {
             dispatch(rollbackSyncStarted);
 
             //sync o/t first in case we want to rollback
-            //a previously unsynced o/t remotely 
+            //a previously unsynced o/t remotely
             // (localid not known in backend)
             dispatch(syncOrders());
             dispatch(syncTopups());
@@ -128,13 +130,11 @@ export const syncRollbacks = () => {
               }
             }, 5000);
           }
-        } else {
-          dispatch(sendError(strings.NO_CONNECTION));
         }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+      } else {
+        dispatch(sendError(strings.NO_CONNECTION));
+      }
+    });
   };
 };
 

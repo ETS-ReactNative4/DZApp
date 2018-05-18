@@ -105,10 +105,12 @@ export const processOrder = (order: {}) => {
 
 export const syncOrders = () => {
   return function(dispatch) {
-    NetInfo.isConnected
-      .fetch()
-      .then(isConnected => {
-        if (isConnected && !Store.getState().OrderReducer.isSyncing) {
+     //fix for known ios NetInfo bug: add an eventlistener
+    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
+    NetInfo.isConnected.fetch().then(isConnected => {});
+    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
+      if (isConnected) {
+        if (!Store.getState().OrderReducer.isSyncing) {
           let orders = Store.getState().OrderReducer.orders;
 
           if (orders.length > 0) {
@@ -160,12 +162,10 @@ export const syncOrders = () => {
               }
             }, 5000);
           }
-        } else {
-          dispatch(sendError(strings.NO_CONNECTION));
         }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+      } else {
+        dispatch(sendError(strings.NO_CONNECTION));
+      }
+    });
   };
 };
