@@ -43,20 +43,20 @@
 	<key>NSCameraUsageDescription</key>
 	<string>DZApp heeft de camera nodig om klanten te identificeren. Toelating geven om de camera te gebruiken?</string>
 	<key>NSAppTransportSecurity</key>
-	<!-- <dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>ec2-18-195-140-112.eu-central-1.compute.amazonaws.com</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
-	</dict> -->
-	<dict>
-    	<key>NSAllowsArbitraryLoads</key>
-		<true/>		
-	</dict>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>ec2-18-195-140-112.eu-central-1.compute.amazonaws.com</key>
+        <dict>
+            <key>NSExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+            <key>NSIncludesSubdomains</key>
+            <true/>
+        </dict>
+    </dict>
+</dict>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
