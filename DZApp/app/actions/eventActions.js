@@ -64,41 +64,41 @@ export const fetchEvents = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
-          if (!Store.getState().EventReducer.isFetching) {
-            dispatch(requestEvents);
+        if (isConnected && !Store.getState().EventReducer.isFetching) {
+          dispatch(requestEvents);
 
-            let fetched;
+          let fetched;
 
-            fetch(getURL() + "/events", {}, "events")
-              .then(response => {
-                fetched = true;
-                return response.json();
-              })
-              .then(json => {
-                dispatch(receiveEvents(json));
-                dispatch(sendMessage(strings.SYNCED));
-              })
-              .catch(error => {
-                fetched = true;
-                dispatch(fetchEventsFailed(error));
-                dispatch(sendError(error.message));
-              });
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("events");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(fetchEventsFailed(strings.SERVER_TIMEOUT));
-              }
-            }, 5000);
-          }
+          fetch(getURL() + "/api/Event", {}, "events")
+            .then(response => {
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              dispatch(receiveEvents(json.map(event => ({...event, _id: event.id }))));
+              dispatch(sendMessage(strings.SYNCED));
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(fetchEventsFailed(error));
+              dispatch(sendError(error.message));
+            });
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            if (!fetched) {
+              fetch.abort("events");
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(fetchEventsFailed(strings.SERVER_TIMEOUT));
+            }
+          }, 5000);
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
         }
       })
-      .catch(err => console.warn(err));
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };

@@ -53,37 +53,35 @@ export const fetchCustomers = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
-          if (!Store.getState().CustomerReducer.isFetching) {
-            dispatch(requestCustomers);
+        if (isConnected && !Store.getState().CustomerReducer.isFetching) {
+          dispatch(requestCustomers);
 
-            let fetched;
+          let fetched;
 
-            fetch(getURL() + "/customers", {}, "customers")
-              .then(response => {
-                fetched = true;
-                return response.json();
-              })
-              .then(json => {
-                dispatch(receiveCustomers(json));
-                dispatch(sendMessage(strings.SYNCED));
-              })
-              .catch(error => {
-                fetched = true;
-                dispatch(fetchCustomersFailed(error));
-                dispatch(sendError(error.message));
-              });
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("customers");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(fetchCustomersFailed(strings.SERVER_TIMEOUT));
-              }
-            }, 5000);
-          }
+          fetch(getURL() + "/api/Customer", {}, "Customer")
+            .then(response => {
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              dispatch(receiveCustomers(json.map(customer => ({...customer, _id: customer.id }))));
+              dispatch(sendMessage(strings.SYNCED));
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(fetchCustomersFailed(error));
+              dispatch(sendError(error.message));
+            });
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            if (!fetched) {
+              fetch.abort("customers");
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(fetchCustomersFailed(strings.SERVER_TIMEOUT));
+            }
+          }, 5000);
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
         }

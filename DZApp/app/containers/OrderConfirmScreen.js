@@ -290,7 +290,7 @@ class OrderConfirmScreen extends Component<Props, State> {
       cashierId: this.props.cashier._id,
       eventId: this.props.event._id,
       customerId: this.props.customer._id,
-      timestamp: moment().valueOf(),
+      timestamp: new Date().toISOString(),
       amtPayedFromCredit: amtPayedFromCredit,
       amtPayedFromSubscriptionFee: amtPayedFromSubscriptionFee,
       orderlines: this.props.orderlines

@@ -76,59 +76,60 @@ export const login = (userCredentials: {}, navigation: {}) => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
-          if (!Store.getState().CashierReducer.isAuthenticating) {
-            dispatch(requestLogin());
-            let fetched;
-            fetch(
-              getURL() + "/customers/login",
-              {
-                method: "POST",
-                body: JSON.stringify(userCredentials),
-                headers: new Headers({
-                  "Content-Type": "application/json"
-                })
-              },
-              "login"
-            )
-              .then(response => {
-                fetched = true;
-                return response.json();
-              })
-              .then(json => {
-                if (json.error) {
-                  dispatch(sendError(json.error));
-                  dispatch(loginError(json.error));
-                } else {
-                  navigation.navigate("OrderScreen");
-                  dispatch(sendMessage(strings.AUTHENTICATED));
-                  dispatch(loginSuccess(json.id));
-                  navigation.navigate("MainFlowNavigator");
-                }
-              })
-              .catch(error => {
-                fetched = true;
-                dispatch(sendError(error.message));
-                dispatch(loginError(error.message));
-              });
+        if (isConnected && !Store.getState().CashierReducer.isAuthenticating) {
+          dispatch(requestLogin());
+          let fetched;
 
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("login");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(loginError(strings.SERVER_TIMEOUT));
+          fetch(
+            getURL() + "/api/Login",
+            {
+              method: "POST",
+              body: JSON.stringify(userCredentials),
+              headers: new Headers({
+                "Content-Type": "application/json; charset=utf-8"
+              })
+            },
+            "login"
+          )
+            .then(response => {
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              if (json.error) {
+                dispatch(sendError(json.error));
+                dispatch(loginError(json.error));
+              } else {
+                navigation.navigate("OrderScreen");
+                dispatch(sendMessage(strings.AUTHENTICATED));
+                dispatch(loginSuccess(json.customer.id));
+                navigation.navigate("MainFlowNavigator");
               }
-            }, 5000);
-          }
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(sendError(error.message));
+              dispatch(loginError(error.message));
+            });
+
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            if (!fetched) {
+              fetch.abort("login");
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(loginError(strings.SERVER_TIMEOUT));
+            }
+          }, 50000);
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
           dispatch(loginError(strings.NO_CONNECTION));
         }
       })
-      .catch(err => console.warn(err));
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };
 
@@ -154,40 +155,39 @@ export const syncCloseouts = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
-          if (!Store.getState().CashierReducer.isSyncing) {
-            let closeouts = Store.getState().CashierReducer.closeouts;
+        if (isConnected && !Store.getState().CashierReducer.isSyncing) {
+          let closeouts = Store.getState().CashierReducer.closeouts;
 
-            if (closeouts.length > 0) {
-              dispatch(closeoutSyncedStarted());
-              let fetched;
+          if (closeouts.length > 0) {
+            dispatch(closeoutSyncedStarted());
+            let fetched;
 
-              fetch(
-                getURL() + "/closeouts",
-                {
-                  method: "POST",
-                  body: JSON.stringify(closeouts),
-                  headers: new Headers({
-                    "Content-Type": "application/json"
-                  })
-                },
-                "closeouts"
-              )
-                .then(response => {
-                  fetched = true;
-                  if (response.status === 200) {
-                    dispatch(sendMessage(strings.SYNCED));
-                    dispatch(closeoutSyncComplete());
-                  } else {
-                    dispatch(sendError(strings.UNABLE_TO_SYNC));
-                    dispatch(closeoutSyncFailed());
-                  }
+            fetch(
+              getURL() + "/closeouts",
+              {
+                method: "POST",
+                body: JSON.stringify(closeouts),
+                headers: new Headers({
+                  "Content-Type": "application/json"
                 })
-                .catch(err => {
-                  fetched = true;
+              },
+              "closeouts"
+            )
+              .then(response => {
+                fetched = true;
+                if (response.status === 200) {
+                  dispatch(sendMessage(strings.SYNCED));
+                  dispatch(closeoutSyncComplete());
+                } else {
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
                   dispatch(closeoutSyncFailed());
-                });
+                }
+              })
+              .catch(err => {
+                fetched = true;
+                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(closeoutSyncFailed());
+              });
 
               //cancel the request after x seconds
               //and send appropriate error messages

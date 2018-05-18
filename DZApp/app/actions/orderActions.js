@@ -118,64 +118,65 @@ export const syncOrders = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
-          if (!Store.getState().OrderReducer.isSyncing) {
-            let orders = Store.getState().OrderReducer.orders;
+        if (isConnected && !Store.getState().OrderReducer.isSyncing) {
+          let orders = Store.getState().OrderReducer.orders;
 
-            if (orders.length > 0) {
-              console.log("orders to sync: " + JSON.stringify(orders));
-              dispatch(orderSyncStarted());
+          if (orders.length > 0) {
+            console.log("orders to sync: " + JSON.stringify(orders, null, 4));
+            dispatch(orderSyncStarted());
 
               let fetched;
 
-              fetch(
-                getURL() + "/orders",
-                {
-                  method: "POST",
-                  body: JSON.stringify(orders),
-                  headers: new Headers({
-                    "Content-Type": "application/json"
-                  })
-                },
-                "orders"
-              )
-                .then(response => {
-                  if (response.status === 200) {
-                    fetched = true;
-                    dispatch(sendMessage(strings.SYNCED));
-                    dispatch(orderSyncComplete());
-                    console.log("orders synced");
-                    // dispatch(fetchCustomers());
-                    // dispatch(fetchProducts());
-                    // dispatch(fetchSubscriptions());
-                  } else {
-                    fetched = true;
-                    dispatch(sendError(strings.UNABLE_TO_SYNC));
-                    dispatch(orderSyncFailed());
-                  }
+            fetch(
+              getURL() + "/api/Order/CreateRange",
+              {
+                method: "POST",
+                body: JSON.stringify(orders),
+                headers: new Headers({
+                  "Content-Type": "application/json"
                 })
-                .catch(err => {
+              },
+              "orders"
+            )
+              .then(response => {
+                if (response.status === 200) {
+                  fetched = true;
+                  dispatch(sendMessage(strings.SYNCED));
+                  dispatch(orderSyncComplete());
+                  console.log("orders synced");
+                  // dispatch(fetchCustomers());
+                  // dispatch(fetchProducts());
+                  // dispatch(fetchSubscriptions());
+                } else {
                   fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
                   dispatch(orderSyncFailed());
-                });
-
-              //cancel the request after x seconds
-              //and send appropriate error messages
-              //when unsuccessfull
-              setTimeout(() => {
-                if (!fetched) {
-                  fetch.abort("orders");
-                  dispatch(sendError(strings.SERVER_TIMEOUT));
-                  dispatch(orderSyncFailed());
                 }
-              }, 5000);
-            }
+              })
+              .catch(err => {
+                console.log("error post orders: " + JSON.stringify(err, null, 4));
+                fetched = true;
+                dispatch(sendError(strings.UNABLE_TO_SYNC));
+                dispatch(orderSyncFailed());
+              });
+
+            //cancel the request after x seconds
+            //and send appropriate error messages
+            //when unsuccessfull
+            setTimeout(() => {
+              if (!fetched) {
+                fetch.abort("orders");
+                dispatch(sendError(strings.SERVER_TIMEOUT));
+                dispatch(orderSyncFailed());
+              }
+            }, 5000);
           }
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
         }
       })
-      .catch(err => console.warn(err));
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };

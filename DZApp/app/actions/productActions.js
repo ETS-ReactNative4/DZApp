@@ -52,41 +52,42 @@ export const fetchProducts = () => {
     NetInfo.isConnected
       .fetch()
       .then(isConnected => {
-        if (isConnected) {
-          if (!Store.getState().ProductReducer.isFetching) {
-            dispatch(requestProducts);
+        if (isConnected && !Store.getState().ProductReducer.isFetching) {
+          dispatch(requestProducts);
 
-            let fetched;
+          let fetched;
 
-            fetch(getURL() + "/products", {}, "products")
-              .then(response => {
-                fetched = true;
-                return response.json();
-              })
-              .then(json => {
-                dispatch(receiveProducts(json));
-                dispatch(sendMessage(strings.SYNCED));
-              })
-              .catch(error => {
-                fetched = true;
-                dispatch(fetchProductsFailed(error));
-                dispatch(sendError(error.message));
-              });
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("products");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(fetchProductsFailed(strings.SERVER_TIMEOUT));
-              }
-            }, 5000);
-          }
+          fetch(getURL() + "/api/Product", {}, "Product")
+            .then(response => {
+             
+              fetched = true;
+              return response.json();
+            })
+            .then(json => {
+              dispatch(receiveProducts(json.map(product => ({...product, _id: product.id }))));
+              dispatch(sendMessage(strings.SYNCED));
+            })
+            .catch(error => {
+              fetched = true;
+              dispatch(fetchProductsFailed(error));
+              dispatch(sendError(error.message));
+            });
+          //cancel the request after x seconds
+          //and send appropriate error messages
+          //when unsuccessfull
+          setTimeout(() => {
+            if (!fetched) {
+              fetch.abort("products");
+              dispatch(sendError(strings.SERVER_TIMEOUT));
+              dispatch(fetchProductsFailed(strings.SERVER_TIMEOUT));
+            }
+          }, 5000);
         } else {
           dispatch(sendError(strings.NO_CONNECTION));
         }
       })
-      .catch(err => console.warn(err));
+      .catch(err => {
+        console.warn(err);
+      });
   };
 };
