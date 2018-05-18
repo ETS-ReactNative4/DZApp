@@ -129,7 +129,6 @@ class CloseoutScreen extends Component<Props, State> {
           <Item floatingLabel last>
             <Label>{"Geteld bedrag"}</Label>
             <Input
-              keyboardType="numeric"
               onChangeText={value => this._onChangeText(value)}
               value={countedAmount.toString()}
             />

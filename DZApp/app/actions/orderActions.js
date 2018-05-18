@@ -105,67 +105,77 @@ export const processOrder = (order: {}) => {
 
 export const syncOrders = () => {
   return function(dispatch) {
-     //fix for known ios NetInfo bug: add an eventlistener
-    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
-    NetInfo.isConnected.fetch().then(isConnected => {});
-    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
-      if (isConnected) {
-        if (!Store.getState().OrderReducer.isSyncing) {
-          let orders = Store.getState().OrderReducer.orders;
+    //fix for known ios NetInfo bug: add an eventlistener
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          if (!Store.getState().OrderReducer.isSyncing) {
+            let orders = Store.getState().OrderReducer.orders;
 
-          if (orders.length > 0) {
-            console.log("orders to sync: " + JSON.stringify(orders));
-            dispatch(orderSyncStarted());
+            if (orders.length > 0) {
+              console.log("orders to sync: " + JSON.stringify(orders));
+              dispatch(orderSyncStarted());
 
-            let fetched;
+              let fetched;
 
-            fetch(
-              getURL() + "/orders",
-              {
-                method: "POST",
-                body: JSON.stringify(orders),
-                headers: new Headers({
-                  "Content-Type": "application/json"
+              fetch(
+                getURL() + "/orders",
+                {
+                  method: "POST",
+                  body: JSON.stringify(orders),
+                  headers: new Headers({
+                    "Content-Type": "application/json"
+                  })
+                },
+                "orders"
+              )
+                .then(response => {
+                  if (response.status === 200) {
+                    fetched = true;
+                    dispatch(sendMessage(strings.SYNCED));
+                    dispatch(orderSyncComplete());
+                    console.log("orders synced");
+                    // dispatch(fetchCustomers());
+                    // dispatch(fetchProducts());
+                    // dispatch(fetchSubscriptions());
+                  } else {
+                    fetched = true;
+                    dispatch(sendError(strings.UNABLE_TO_SYNC));
+                    dispatch(orderSyncFailed());
+                  }
                 })
-              },
-              "orders"
-            )
-              .then(response => {
-                if (response.status === 200) {
-                  fetched = true;
-                  dispatch(sendMessage(strings.SYNCED));
-                  dispatch(orderSyncComplete());
-                  console.log("orders synced");
-                  // dispatch(fetchCustomers());
-                  // dispatch(fetchProducts());
-                  // dispatch(fetchSubscriptions());
-                } else {
+                .catch(err => {
                   fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
                   dispatch(orderSyncFailed());
-                }
-              })
-              .catch(err => {
-                fetched = true;
-                dispatch(sendError(strings.UNABLE_TO_SYNC));
-                dispatch(orderSyncFailed());
-              });
+                });
 
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("orders");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(orderSyncFailed());
-              }
-            }, 5000);
+              //cancel the request after x seconds
+              //and send appropriate error messages
+              //when unsuccessfull
+              setTimeout(() => {
+                if (!fetched) {
+                  fetch.abort("orders");
+                  dispatch(sendError(strings.SERVER_TIMEOUT));
+                  dispatch(orderSyncFailed());
+                }
+              }, 5000);
+            }
           }
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
         }
-      } else {
-        dispatch(sendError(strings.NO_CONNECTION));
-      }
-    });
+      })
+      .catch(err => console.warn(err));
   };
 };

@@ -142,59 +142,70 @@ export const processCloseout = (closeout: {}) => {
 export const syncCloseouts = () => {
   return function(dispatch) {
     //fix for known ios NetInfo bug: add an eventlistener
-    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
-    NetInfo.isConnected.fetch().then();
-    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
-      if (isConnected) {
-        if (!Store.getState().CashierReducer.isSyncing) {
-          let closeouts = Store.getState().CashierReducer.closeouts;
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
 
-          if (closeouts.length > 0) {
-            dispatch(closeoutSyncedStarted());
-            let fetched;
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          if (!Store.getState().CashierReducer.isSyncing) {
+            let closeouts = Store.getState().CashierReducer.closeouts;
 
-            fetch(
-              getURL() + "/closeouts",
-              {
-                method: "POST",
-                body: JSON.stringify(closeouts),
-                headers: new Headers({
-                  "Content-Type": "application/json"
+            if (closeouts.length > 0) {
+              dispatch(closeoutSyncedStarted());
+              let fetched;
+
+              fetch(
+                getURL() + "/closeouts",
+                {
+                  method: "POST",
+                  body: JSON.stringify(closeouts),
+                  headers: new Headers({
+                    "Content-Type": "application/json"
+                  })
+                },
+                "closeouts"
+              )
+                .then(response => {
+                  fetched = true;
+                  if (response.status === 200) {
+                    dispatch(sendMessage(strings.SYNCED));
+                    dispatch(closeoutSyncComplete());
+                  } else {
+                    dispatch(sendError(strings.UNABLE_TO_SYNC));
+                    dispatch(closeoutSyncFailed());
+                  }
                 })
-              },
-              "closeouts"
-            )
-              .then(response => {
-                fetched = true;
-                if (response.status === 200) {
-                  dispatch(sendMessage(strings.SYNCED));
-                  dispatch(closeoutSyncComplete());
-                } else {
+                .catch(err => {
+                  fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
                   dispatch(closeoutSyncFailed());
-                }
-              })
-              .catch(err => {
-                fetched = true;
-                dispatch(sendError(strings.UNABLE_TO_SYNC));
-                dispatch(closeoutSyncFailed());
-              });
+                });
 
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("closeouts");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(closeoutSyncFailed());
-              }
-            }, 5000);
+              //cancel the request after x seconds
+              //and send appropriate error messages
+              //when unsuccessfull
+              setTimeout(() => {
+                if (!fetched) {
+                  fetch.abort("closeouts");
+                  dispatch(sendError(strings.SERVER_TIMEOUT));
+                  dispatch(closeoutSyncFailed());
+                }
+              }, 5000);
+            }
           }
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
         }
-      } else {
-        dispatch(sendError(strings.NO_CONNECTION));
-      }
-    });
+      })
+      .catch(err => console.warn(err));
   };
 };

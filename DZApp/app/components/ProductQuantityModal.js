@@ -83,7 +83,6 @@ export class ProductQuantityModal extends Component<Props, State> {
               <Item floatingLabel error last>
                 <Label>{strings.QUANTITY}</Label>
                 <Input
-                  keyboardType="numeric"
                   onChangeText={value => this._onChangeText(value)}
                   value={quantity.toString()}
                 />
@@ -92,7 +91,6 @@ export class ProductQuantityModal extends Component<Props, State> {
               <Item floatingLabel last>
                 <Label>{strings.QUANTITY}</Label>
                 <Input
-                  keyboardType="numeric"
                   onChangeText={value => this._onChangeText(value)}
                   value={quantity.toString()}
                 />

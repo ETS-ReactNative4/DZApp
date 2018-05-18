@@ -40,43 +40,53 @@ export const fetchSubscriptionsFailed = (error: {}): {} => {
 export const fetchSubscriptions = () => {
   return function(dispatch) {
     //fix for known ios NetInfo bug: add an eventlistener
-    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
-    NetInfo.isConnected.fetch().then(isConnected => {});
-    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
-      if (isConnected) {
-        if (!Store.getState().SubscriptionReducer.isFetching) {
-          dispatch(requestSubscriptions);
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          if (!Store.getState().SubscriptionReducer.isFetching) {
+            dispatch(requestSubscriptions);
 
-          let fetched;
+            let fetched;
 
-          fetch(getURL() + "/subscriptions", {}, "subscriptions")
-            .then(response => {
-              fetched = true;
-              return response.json();
-            })
-            .then(json => {
-              dispatch(receiveSubscriptions(json));
-              dispatch(sendMessage(strings.SYNCED));
-            })
-            .catch(error => {
-              fetched = true;
-              dispatch(fetchSubscriptionsFailed(error));
-              dispatch(sendError(error.message));
-            });
-          //cancel the request after x seconds
-          //and send appropriate error messages
-          //when unsuccessfull
-          setTimeout(() => {
-            if (!fetched) {
-              fetch.abort("subscriptions");
-              dispatch(sendError(strings.SERVER_TIMEOUT));
-              dispatch(fetchSubscriptionsFailed(strings.SERVER_TIMEOUT));
-            }
-          }, 5000);
+            fetch(getURL() + "/subscriptions", {}, "subscriptions")
+              .then(response => {
+                fetched = true;
+                return response.json();
+              })
+              .then(json => {
+                dispatch(receiveSubscriptions(json));
+                dispatch(sendMessage(strings.SYNCED));
+              })
+              .catch(error => {
+                fetched = true;
+                dispatch(fetchSubscriptionsFailed(error));
+                dispatch(sendError(error.message));
+              });
+            //cancel the request after x seconds
+            //and send appropriate error messages
+            //when unsuccessfull
+            setTimeout(() => {
+              if (!fetched) {
+                fetch.abort("subscriptions");
+                dispatch(sendError(strings.SERVER_TIMEOUT));
+                dispatch(fetchSubscriptionsFailed(strings.SERVER_TIMEOUT));
+              }
+            }, 5000);
+          }
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
         }
-      } else {
-        dispatch(sendError(strings.NO_CONNECTION));
-      }
-    });
+      })
+      .catch(err => console.warn(err));
   };
 };

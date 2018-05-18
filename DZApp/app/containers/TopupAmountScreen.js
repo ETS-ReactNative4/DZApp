@@ -173,7 +173,6 @@ class TopupAmountScreen extends Component<Props, State> {
             <Item floatingLabel last>
               <Label>{strings.AMOUNT}</Label>
               <Input
-                keyboardType="numeric"
                 onChangeText={value => this._onChangeText(value)}
                 value={quantity.toString()}
               />

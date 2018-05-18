@@ -40,43 +40,54 @@ export const fetchCustomersFailed = (error: {}): {} => {
 export const fetchCustomers = () => {
   return function(dispatch) {
     //fix for known ios NetInfo bug: add an eventlistener
-    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
-    NetInfo.isConnected.fetch().then(isConnected => {});
-    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
-      if (isConnected) {
-        if (!Store.getState().CustomerReducer.isFetching) {
-          dispatch(requestCustomers);
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
 
-          let fetched;
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          if (!Store.getState().CustomerReducer.isFetching) {
+            dispatch(requestCustomers);
 
-          fetch(getURL() + "/customers", {}, "customers")
-            .then(response => {
-              fetched = true;
-              return response.json();
-            })
-            .then(json => {
-              dispatch(receiveCustomers(json));
-              dispatch(sendMessage(strings.SYNCED));
-            })
-            .catch(error => {
-              fetched = true;
-              dispatch(fetchCustomersFailed(error));
-              dispatch(sendError(error.message));
-            });
-          //cancel the request after x seconds
-          //and send appropriate error messages
-          //when unsuccessfull
-          setTimeout(() => {
-            if (!fetched) {
-              fetch.abort("customers");
-              dispatch(sendError(strings.SERVER_TIMEOUT));
-              dispatch(fetchCustomersFailed(strings.SERVER_TIMEOUT));
-            }
-          }, 5000);
+            let fetched;
+
+            fetch(getURL() + "/customers", {}, "customers")
+              .then(response => {
+                fetched = true;
+                return response.json();
+              })
+              .then(json => {
+                dispatch(receiveCustomers(json));
+                dispatch(sendMessage(strings.SYNCED));
+              })
+              .catch(error => {
+                fetched = true;
+                dispatch(fetchCustomersFailed(error));
+                dispatch(sendError(error.message));
+              });
+            //cancel the request after x seconds
+            //and send appropriate error messages
+            //when unsuccessfull
+            setTimeout(() => {
+              if (!fetched) {
+                fetch.abort("customers");
+                dispatch(sendError(strings.SERVER_TIMEOUT));
+                dispatch(fetchCustomersFailed(strings.SERVER_TIMEOUT));
+              }
+            }, 5000);
+          }
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
         }
-      } else {
-        dispatch(sendError(strings.NO_CONNECTION));
-      }
-    });
+      })
+      .catch(err => console.warn(err));
   };
 };

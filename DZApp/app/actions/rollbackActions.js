@@ -70,71 +70,82 @@ export const processRollback = (rollback: {}) => {
 export const syncRollbacks = () => {
   return function(dispatch) {
     //fix for known ios NetInfo bug: add an eventlistener
-    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
-    NetInfo.isConnected.fetch().then(isConnected => {});
-    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
-      if (isConnected) {
-        if (!Store.getState().RollbackReducer.isSyncing) {
-          let rollbacks = Store.getState().RollbackReducer.rollbacks;
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
 
-          if (rollbacks.length > 0) {
-            dispatch(rollbackSyncStarted);
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          if (!Store.getState().RollbackReducer.isSyncing) {
+            let rollbacks = Store.getState().RollbackReducer.rollbacks;
 
-            //sync o/t first in case we want to rollback
-            //a previously unsynced o/t remotely
-            // (localid not known in backend)
-            dispatch(syncOrders());
-            dispatch(syncTopups());
+            if (rollbacks.length > 0) {
+              dispatch(rollbackSyncStarted);
 
-            let fetched;
+              //sync o/t first in case we want to rollback
+              //a previously unsynced o/t remotely
+              // (localid not known in backend)
+              dispatch(syncOrders());
+              dispatch(syncTopups());
 
-            fetch(
-              getURL() + "/rollbacks",
-              {
-                method: "POST",
-                body: JSON.stringify(rollbacks),
-                headers: new Headers({
-                  "Content-Type": "application/json"
+              let fetched;
+
+              fetch(
+                getURL() + "/rollbacks",
+                {
+                  method: "POST",
+                  body: JSON.stringify(rollbacks),
+                  headers: new Headers({
+                    "Content-Type": "application/json"
+                  })
+                },
+                "rollbacks"
+              )
+                .then(response => {
+                  if (response.status === 200) {
+                    fetched = true;
+                    dispatch(sendMessage(strings.SYNCED));
+                    dispatch(rollbackSyncComplete());
+                    // dispatch(fetchCustomers());
+                    // dispatch(fetchProducts());
+                    // dispatch(fetchSubscriptions());
+                  } else {
+                    fetched = true;
+                    dispatch(sendError(strings.UNABLE_TO_SYNC));
+                    dispatch(rollbackSyncFailed());
+                  }
                 })
-              },
-              "rollbacks"
-            )
-              .then(response => {
-                if (response.status === 200) {
-                  fetched = true;
-                  dispatch(sendMessage(strings.SYNCED));
-                  dispatch(rollbackSyncComplete());
-                  // dispatch(fetchCustomers());
-                  // dispatch(fetchProducts());
-                  // dispatch(fetchSubscriptions());
-                } else {
+                .catch(err => {
                   fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
+                  dispatch(ROLLBACK_SYNC_FAILED());
+                });
+
+              //cancel the request after x seconds
+              //and send appropriate error messages
+              //when unsuccessfull
+              setTimeout(() => {
+                if (!fetched) {
+                  fetch.abort("rollbacks");
+                  dispatch(sendError(strings.SERVER_TIMEOUT));
                   dispatch(rollbackSyncFailed());
                 }
-              })
-              .catch(err => {
-                fetched = true;
-                dispatch(sendError(strings.UNABLE_TO_SYNC));
-                dispatch(ROLLBACK_SYNC_FAILED());
-              });
-
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("rollbacks");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(rollbackSyncFailed());
-              }
-            }, 5000);
+              }, 5000);
+            }
           }
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
         }
-      } else {
-        dispatch(sendError(strings.NO_CONNECTION));
-      }
-    });
+      })
+      .catch(err => console.warn(err));
   };
 };
 

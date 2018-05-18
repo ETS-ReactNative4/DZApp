@@ -40,43 +40,53 @@ export const fetchProductsFailed = (error: {}): {} => {
 export const fetchProducts = () => {
   return function(dispatch) {
     //fix for known ios NetInfo bug: add an eventlistener
-    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
-    NetInfo.isConnected.fetch().then(isConnected => {});
-    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
-      if (isConnected) {
-        if (!Store.getState().ProductReducer.isFetching) {
-          dispatch(requestProducts);
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          if (!Store.getState().ProductReducer.isFetching) {
+            dispatch(requestProducts);
 
-          let fetched;
+            let fetched;
 
-          fetch(getURL() + "/products", {}, "products")
-            .then(response => {
-              fetched = true;
-              return response.json();
-            })
-            .then(json => {
-              dispatch(receiveProducts(json));
-              dispatch(sendMessage(strings.SYNCED));
-            })
-            .catch(error => {
-              fetched = true;
-              dispatch(fetchProductsFailed(error));
-              dispatch(sendError(error.message));
-            });
-          //cancel the request after x seconds
-          //and send appropriate error messages
-          //when unsuccessfull
-          setTimeout(() => {
-            if (!fetched) {
-              fetch.abort("products");
-              dispatch(sendError(strings.SERVER_TIMEOUT));
-              dispatch(fetchProductsFailed(strings.SERVER_TIMEOUT));
-            }
-          }, 5000);
+            fetch(getURL() + "/products", {}, "products")
+              .then(response => {
+                fetched = true;
+                return response.json();
+              })
+              .then(json => {
+                dispatch(receiveProducts(json));
+                dispatch(sendMessage(strings.SYNCED));
+              })
+              .catch(error => {
+                fetched = true;
+                dispatch(fetchProductsFailed(error));
+                dispatch(sendError(error.message));
+              });
+            //cancel the request after x seconds
+            //and send appropriate error messages
+            //when unsuccessfull
+            setTimeout(() => {
+              if (!fetched) {
+                fetch.abort("products");
+                dispatch(sendError(strings.SERVER_TIMEOUT));
+                dispatch(fetchProductsFailed(strings.SERVER_TIMEOUT));
+              }
+            }, 5000);
+          }
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
         }
-      } else {
-        dispatch(sendError(strings.NO_CONNECTION));
-      }
-    });
+      })
+      .catch(err => console.warn(err));
   };
 };

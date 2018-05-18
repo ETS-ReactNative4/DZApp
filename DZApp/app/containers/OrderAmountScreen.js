@@ -104,9 +104,7 @@ class OrderAmountScreen extends Component<Props, State> {
                 : strings.ENTER_TOPUP_AMT}
             </Subtitle>
           </Body>
-          <Right>
-           
-          </Right>
+          <Right />
         </Header>
         {/* HEADER END */}
         {/* CONTENT */}
@@ -137,7 +135,6 @@ class OrderAmountScreen extends Component<Props, State> {
             <Item floatingLabel last>
               <Label>{strings.AMOUNT}</Label>
               <Input
-                keyboardType="numeric"
                 onChangeText={value => this._onChangeText(value)}
                 value={quantity.toString()}
               />

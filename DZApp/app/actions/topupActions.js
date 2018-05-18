@@ -65,60 +65,70 @@ export const topupBalance = (topup: {}) => {
 export const syncTopups = () => {
   return function(dispatch) {
     //fix for known ios NetInfo bug: add an eventlistener
-    //https://stackoverflow.com/questions/48766705/ios-netinfo-isconnected-returns-always-false
-    NetInfo.isConnected.fetch().then(isConnected => {});
-    NetInfo.isConnected.addEventListener("connectionChange", isConnected => {
-      if (isConnected) {
-        if (!Store.getState().TopupReducer.isSyncing) {
-          let topups = Store.getState().TopupReducer.topups;
-          if (topups.length > 0) {
-            dispatch(topupSyncStarted());
+    //https://github.com/facebook/react-native/issues/8615
+    const onInitialNetConnection = isConnected => {
+      console.log(`Is initially connected: ${isConnected}`);
+      NetInfo.isConnected.removeEventListener(onInitialNetConnection);
+    };
+    NetInfo.isConnected.addEventListener(
+      "connectionChange",
+      onInitialNetConnection
+    );
+    NetInfo.isConnected
+      .fetch()
+      .then(isConnected => {
+        if (isConnected) {
+          if (!Store.getState().TopupReducer.isSyncing) {
+            let topups = Store.getState().TopupReducer.topups;
+            if (topups.length > 0) {
+              dispatch(topupSyncStarted());
 
-            let fetched;
+              let fetched;
 
-            fetch(
-              getURL() + "/topups",
-              {
-                method: "POST",
-                body: JSON.stringify(topups),
-                headers: new Headers({
-                  "Content-Type": "application/json"
+              fetch(
+                getURL() + "/topups",
+                {
+                  method: "POST",
+                  body: JSON.stringify(topups),
+                  headers: new Headers({
+                    "Content-Type": "application/json"
+                  })
+                },
+                "topups"
+              )
+                .then(response => {
+                  fetched = true;
+                  if (response.status === 200) {
+                    dispatch(sendMessage(strings.SYNCED));
+                    dispatch(topupSyncComplete());
+                    // dispatch(fetchCustomers());
+                  } else {
+                    dispatch(sendError(strings.UNABLE_TO_SYNC));
+                    dispatch(topupSyncFailed());
+                  }
                 })
-              },
-              "topups"
-            )
-              .then(response => {
-                fetched = true;
-                if (response.status === 200) {
-                  dispatch(sendMessage(strings.SYNCED));
-                  dispatch(topupSyncComplete());
-                  // dispatch(fetchCustomers());
-                } else {
+                .catch(err => {
+                  fetched = true;
                   dispatch(sendError(strings.UNABLE_TO_SYNC));
                   dispatch(topupSyncFailed());
-                }
-              })
-              .catch(err => {
-                fetched = true;
-                dispatch(sendError(strings.UNABLE_TO_SYNC));
-                dispatch(topupSyncFailed());
-              });
+                });
 
-            //cancel the request after x seconds
-            //and send appropriate error messages
-            //when unsuccessfull
-            setTimeout(() => {
-              if (!fetched) {
-                fetch.abort("topups");
-                dispatch(sendError(strings.SERVER_TIMEOUT));
-                dispatch(topupSyncFailed());
-              }
-            }, 5000);
+              //cancel the request after x seconds
+              //and send appropriate error messages
+              //when unsuccessfull
+              setTimeout(() => {
+                if (!fetched) {
+                  fetch.abort("topups");
+                  dispatch(sendError(strings.SERVER_TIMEOUT));
+                  dispatch(topupSyncFailed());
+                }
+              }, 5000);
+            }
           }
+        } else {
+          dispatch(sendError(strings.NO_CONNECTION));
         }
-      } else {
-        dispatch(sendError(strings.NO_CONNECTION));
-      }
-    });
+      })
+      .catch(err => console.warn(err));
   };
 };
