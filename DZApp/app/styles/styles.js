@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 //style
 import colors from "./colors";
@@ -159,14 +159,30 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   productThumbnailTrashIcon: {
-    fontSize: 20,
+    ...Platform.select({
+      ios: {
+        fontSize: 18
+      },
+      android: {
+        fontSize: 20
+      }
+    }),
+
     color: colors.SECONDARY_COLOR
   },
   productThumbnailTrashButton: {
-    borderRadius: 100,
     position: "absolute",
-    right: -10,
-    bottom: 0,
+    ...Platform.select({
+      ios: {
+        right: -5,
+        bottom: 5
+      },
+      android: {
+        borderRadius: 100,
+        right: -10,
+        bottom: 0
+      }
+    }),
     alignItems: "flex-end",
     justifyContent: "flex-end",
     height: 30,
@@ -204,19 +220,25 @@ const styles = StyleSheet.create({
   },
   //HistoryScreen
   segment: {
-    borderColor: colors.PRIMARY_COLOR,
-    borderWidth: 2,
+    borderColor: colors.LABEL_COLOR,
+    borderWidth: 1,
     backgroundColor: colors.PRIMARY_COLOR
   },
   segmentButton: {
-    borderColor: colors.TITLE_COLOR
+    borderColor: colors.LABEL_COLOR,
+    borderRadius: 5,
+    backgroundColor: colors.SECONDARY_COLOR
   },
   segmentButtonActive: {
-    borderColor: colors.TILE_COLOR
+    borderColor: colors.TITLE_COLOR,
+    borderRadius: 5,
+    backgroundColor: colors.SECONDARY_COLOR
   },
-  segmentButtonText: {},
+  segmentButtonText: {
+    color: colors.LABEL_COLOR
+  },
   segmentButtonTextActive: {
-    color: colors.SECONDARY_COLOR
+    color: colors.TITLE_COLOR
   },
   //POPUP MENU
   popupMenuIcon: {
