@@ -18,7 +18,7 @@ const CashierReducer = (state: {} = initialState, action: {}) => {
     case types.LOGIN_SUCCESS:
       return Object.assign({}, state, {
         isAuthenticating: false,
-        cashierId: action.data
+        cashierId: action.cashierId
       });
     case types.LOGIN_ERROR:
       return Object.assign({}, state, {

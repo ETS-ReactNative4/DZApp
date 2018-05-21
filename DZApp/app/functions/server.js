@@ -9,3 +9,7 @@ export const getURL = () => {
   // console.log(connectionString);
   return connectionString;
 };
+
+export const getToken = () => {
+  return Store.getState().SettingsReducer.token;
+}

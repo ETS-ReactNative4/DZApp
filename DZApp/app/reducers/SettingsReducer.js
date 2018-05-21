@@ -7,11 +7,16 @@ const initialState = {
     port: 8883,
     address: "10.0.2.2",
     scheme: "http"
-  }
+  },
+  token: null
 };
 
 const SettingsReducer = (state: {} = initialState, action: {}) => {
   switch (action.type) {
+    case types.LOGIN_SUCCESS:
+      return Object.assign({}, state, {
+        token: action.token
+      });
     case types.SET_HISTORY_COUNT:
       return Object.assign({}, state, {
         historyCount: action.data

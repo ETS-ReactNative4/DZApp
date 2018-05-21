@@ -17,10 +17,11 @@ export const requestLogin = () => {
     };
 };
 
-export const loginSuccess = (id: String) => {
+export const loginSuccess = (data: String) => {
     return {
         type: types.LOGIN_SUCCESS,
-        data: id
+        cashierId: data.customer.id,
+        token: data.token
     };
 };
 
@@ -104,7 +105,7 @@ export const login = (userCredentials: {}, navigation: {}) => {
                                 } else {
                                     navigation.navigate("OrderScreen");
                                     dispatch(sendMessage(strings.AUTHENTICATED));
-                                    dispatch(loginSuccess(json.customer.id));
+                                    dispatch(loginSuccess(json));
                                     navigation.navigate("MainFlowNavigator");
                                 }
                             })

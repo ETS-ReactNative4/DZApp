@@ -8,6 +8,7 @@ import { sendError, sendMessage } from "./messageActions";
 import * as strings from "../constants/strings";
 import { Store } from "../store/store";
 import { getURL } from "../functions/server";
+import { getToken } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 
@@ -57,8 +58,17 @@ export const fetchProducts = () => {
                         dispatch(requestProducts);
 
                         let fetched;
-
-                        fetch(getURL() + "/api/Product", {}, "Product")
+                        console.log("token: " + JSON.stringify('Bearer ' + getToken(), null, 4));
+                        fetch(
+                            getURL() + "/api/Product",
+                            {
+                                method: "GET",
+                                headers: new Headers({
+                                    'Authorization': 'Bearer ' +getToken()
+                                })
+                            },
+                            "products"
+                            )
                             .then(response => {
 
                                 fetched = true;
@@ -69,6 +79,7 @@ export const fetchProducts = () => {
                                 dispatch(sendMessage(strings.SYNCED));
                             })
                             .catch(error => {
+                                console.log("error fetching products: " + JSON.stringify(error.message, null, 4));
                                 fetched = true;
                                 dispatch(fetchProductsFailed(error));
                                 dispatch(sendError(error.message));

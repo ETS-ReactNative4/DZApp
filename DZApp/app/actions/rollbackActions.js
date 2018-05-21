@@ -88,7 +88,7 @@ export const syncRollbacks = () => {
                         let rollbacks = Store.getState().RollbackReducer.rollbacks;
 
                         if (rollbacks.length > 0) {
-                            console.log("rollbacks to sync: " + JSON.stringify(rollbacks.map(r => ({...r, topupId : r.topupId == null ? 0 : r.topupId, orderId : r.orderId == null ? 0 : r.orderId}) ), null, 4));
+                            
                             dispatch(rollbackSyncStarted);
 
                             //sync o/t first in case we want to rollback
