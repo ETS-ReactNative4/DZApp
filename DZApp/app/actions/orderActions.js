@@ -123,7 +123,7 @@ export const syncOrders = () => {
                         let orders = Store.getState().OrderReducer.orders;
 
                         if (orders.length > 0) {
-                            console.log("orders to sync: " + JSON.stringify(orders, null, 4));
+                            
                             dispatch(orderSyncStarted());
 
                             let fetched;

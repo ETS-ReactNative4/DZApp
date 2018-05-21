@@ -65,6 +65,7 @@ export const fetchCustomers = () => {
                                 return response.json();
                             })
                             .then(json => {
+                                
                                 dispatch(receiveCustomers(json.map(customer => ({ ...customer, _id: customer.id }))));
                                 dispatch(sendMessage(strings.SYNCED));
                             })

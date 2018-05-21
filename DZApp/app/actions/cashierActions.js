@@ -161,13 +161,13 @@ export const syncCloseouts = () => {
                 if (isConnected) {
                     if (!Store.getState().CashierReducer.isSyncing) {
                         let closeouts = Store.getState().CashierReducer.closeouts;
-
+                        console.log("closeouts to sync: " + JSON.stringify(closeouts, null, 4));
                         if (closeouts.length > 0) {
                             dispatch(closeoutSyncedStarted());
                             let fetched;
 
                             fetch(
-                                getURL() + "/closeouts",
+                                getURL() + "/api/Closeout/CreateRange",
                                 {
                                     method: "POST",
                                     body: JSON.stringify(closeouts),
