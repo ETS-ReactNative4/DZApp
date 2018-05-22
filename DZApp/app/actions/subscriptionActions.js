@@ -8,6 +8,7 @@ import { sendMessage, sendError } from "./messageActions";
 import * as strings from "../constants/strings";
 import { Store } from "../store/store";
 import { getURL } from "../functions/server";
+import { getToken } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 
@@ -58,7 +59,14 @@ export const fetchSubscriptions = () => {
 
                 let fetched;
 
-                fetch(getURL() + "/api/EventSubscription", {}, "subscriptions")
+                fetch(getURL() + "/api/EventSubscription", 
+                {
+                  method: "GET",
+                  headers: new Headers({
+                          'Authorization': 'Bearer ' +getToken()
+                      })
+                }, 
+                "subscriptions")
                     .then(response => {
                         fetched = true;
                         return response.json();

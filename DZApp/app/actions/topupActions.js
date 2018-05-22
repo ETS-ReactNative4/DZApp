@@ -12,6 +12,7 @@ import { fetchCustomers } from "./customerActions";
 import { Store } from "../store/store";
 import { sendMessage, sendError } from "./messageActions";
 import { getURL } from "../functions/server";
+import { getToken } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 
@@ -92,6 +93,7 @@ export const syncTopups = () => {
                                     method: "POST",
                                     body: JSON.stringify(topups),
                                     headers: new Headers({
+                                        'Authorization': 'Bearer ' +getToken(),
                                         "Content-Type": "application/json"
                                     })
                                 },

@@ -8,6 +8,7 @@ import { sendError, sendMessage } from "./messageActions";
 import * as strings from "../constants/strings";
 import { Store } from "../store/store";
 import { getURL } from "../functions/server";
+import { getToken } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 
@@ -59,14 +60,21 @@ export const fetchCustomers = () => {
 
                         let fetched;
 
-                        fetch(getURL() + "/api/Customer", {}, "Customer")
+                        fetch(getURL() + "/api/Customer", 
+                        {
+                            method: "GET",
+                            headers: new Headers({
+                                'Authorization': 'Bearer ' +getToken()
+                            })
+                        }, 
+                        "Customer")
                             .then(response => {
                                 fetched = true;
                                 return response.json();
                             })
                             .then(json => {
                                 
-                                dispatch(receiveCustomers(json.map(customer => ({ ...customer, _id: customer.id }))));
+                                dispatch(receiveCustomers(json.map(customer => ({ ...customer, _id: customer.id, role: customer.role == 'admin' ? 'cashier' : customer.role }))));
                                 dispatch(sendMessage(strings.SYNCED));
                             })
                             .catch(error => {

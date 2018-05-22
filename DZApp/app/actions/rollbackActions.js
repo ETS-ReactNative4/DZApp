@@ -23,6 +23,7 @@ import { sendMessage, sendError } from "./messageActions";
 //constants
 import * as strings from "../constants/strings";
 import { getURL } from "../functions/server";
+import { getToken } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 export const localRollback = (rollback: {}): {} => {
@@ -105,6 +106,7 @@ export const syncRollbacks = () => {
                                     method: "POST",
                                     body: JSON.stringify(rollbacks.map(r => ({...r, topupId : r.topupId == null ? 0 : r.topupId, orderId : r.orderId == null ? 0 : r.orderId}) )),
                                     headers: new Headers({
+                                        'Authorization': 'Bearer ' +getToken(),
                                         "Content-Type": "application/json"
                                     })
                                 },

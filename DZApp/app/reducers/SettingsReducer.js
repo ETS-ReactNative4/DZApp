@@ -4,9 +4,9 @@ import * as types from "../actions/types";
 const initialState = {
   historyCount: 5,
   serverConfig: {
-    port: 8883,
+    port: 8881,
     address: "10.0.2.2",
-    scheme: "http"
+    scheme: "https"
   },
   token: null
 };

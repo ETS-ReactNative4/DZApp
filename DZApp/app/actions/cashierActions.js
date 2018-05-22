@@ -9,6 +9,7 @@ import { sendError, sendMessage } from "./messageActions";
 import { NetInfo } from "react-native";
 import { Store } from "../store/store";
 import { getURL } from "../functions/server";
+import { getToken } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 export const requestLogin = () => {
@@ -173,6 +174,7 @@ export const syncCloseouts = () => {
                                     method: "POST",
                                     body: JSON.stringify(closeouts),
                                     headers: new Headers({
+                                        'Authorization': 'Bearer ' +getToken(),
                                         "Content-Type": "application/json"
                                     })
                                 },

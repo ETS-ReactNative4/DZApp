@@ -19,6 +19,7 @@ import { sendMessage, sendError } from "./messageActions";
 //constants
 import * as strings from "../constants/strings";
 import { getURL } from "../functions/server";
+import { getToken } from "../functions/server";
 
 /************ Synchronous Actions ***************/
 export const setProductQuantity = (productId: number, quantity: number): {} => {
@@ -134,6 +135,7 @@ export const syncOrders = () => {
                                     method: "POST",
                                     body: JSON.stringify(orders),
                                     headers: new Headers({
+                                        'Authorization': 'Bearer ' +getToken(),
                                         "Content-Type": "application/json"
                                     })
                                 },

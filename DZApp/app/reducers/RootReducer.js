@@ -95,7 +95,7 @@ const rollbackPersistConfig = {
 const settingsPersistConfig = {
   key: "SettingsReducer",
   storage: AsyncStorage,
-  whitelist: ["historyCount", "serverConfig"],
+  whitelist: ["historyCount", "serverConfig", "token"],
   stateReconciler: autoMergeLevel2
 };
 
