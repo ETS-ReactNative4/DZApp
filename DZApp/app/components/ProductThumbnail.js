@@ -13,9 +13,6 @@ import colors from "../styles/colors";
 import * as strings from "../constants/strings";
 import { getURL } from "../functions/server";
 
-
-
-
 export const ProductThumbnail = ({
   product,
   quantity,
@@ -26,6 +23,9 @@ export const ProductThumbnail = ({
   let priceString = product.price.toFixed(2) + " €";
   let inStockString = `${strings.IN_STOCK} ${product.inStock} `;
 
+  let source = getURL() + "/images/" + product.imageUrl;
+  console.log(source);
+
   return (
     <TouchableOpacity
       style={styles.productThumbnailHolder}
@@ -34,7 +34,7 @@ export const ProductThumbnail = ({
     >
       <Grid style={styles.productThumbnailGrid}>
         <Row size={40} style={styles.justifyCenter}>
-          <Thumbnail square source={{ uri: 'http://10.0.2.2:8883/images/' + product.imageUrl }} />
+          <Thumbnail square source={{ uri: source }} />
         </Row>
         <Row size={30} style={[styles.productThumbnailRow, { marginTop: 10 }]}>
           <Text style={styles.productThumbnailName}>{product.name}</Text>
