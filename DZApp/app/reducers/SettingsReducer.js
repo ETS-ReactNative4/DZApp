@@ -17,6 +17,7 @@ const SettingsReducer = (state: {} = initialState, action: {}) => {
     case types.LOGIN_SUCCESS:
       return Object.assign({}, state, {
         token: action.token
+        //token: "test"
       });
     case types.SET_HISTORY_COUNT:
       return Object.assign({}, state, {

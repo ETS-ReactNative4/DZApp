@@ -10,7 +10,7 @@
     "moment-timezone": "^0.5.16",
     "native-base": "^2.3.10",
     "react": "16.3.0-alpha.1",
-    "react-native": "0.54.2",
+    "react-native": "0.53.2",
     "react-native-camera": "1.0.3",
     "react-native-cancelable-fetch": "^0.1.1",
     "react-native-easy-grid": "^0.1.17",
