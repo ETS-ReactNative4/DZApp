@@ -4,9 +4,10 @@ import * as types from "../actions/types";
 const initialState = {
   historyCount: 5,
   serverConfig: {
-    port: 8881,
-    address: "10.0.2.2",
-    scheme: "https"
+    port: 8883,
+    address: "ec2-52-29-5-250.eu-central-1.compute.amazonaws.com",
+    //address: "192.168.0.132",
+    scheme: "http"
   },
   token: null
 };

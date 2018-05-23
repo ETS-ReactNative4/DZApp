@@ -34,7 +34,7 @@ const CashierReducer = (state: {} = initialState, action: {}) => {
       let closeout = action.data;
       let newCloseouts = state.closeouts.slice(0);
       newCloseouts.push(closeout);
-      console.log(JSON.stringify(newCloseouts));
+      //console.log(JSON.stringify(newCloseouts));
 
       return Object.assign({}, state, {
         closeouts: newCloseouts

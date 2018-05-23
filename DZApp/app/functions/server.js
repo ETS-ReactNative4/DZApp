@@ -12,4 +12,10 @@ export const getURL = () => {
 
 export const getToken = () => {
   return Store.getState().SettingsReducer.token;
-}
+};
+
+export const isLoggedIn = () => {
+  return (
+    Store.getState().CashierReducer.cashierId !== null && getToken() !== null
+  );
+};

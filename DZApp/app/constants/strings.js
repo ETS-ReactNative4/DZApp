@@ -142,6 +142,9 @@ export const INVALID_HISTORYCOUNT =
   "Gelieve een geheel getal > 0 en <= 10 in te voeren!";
 export const INVALID_CLOSEOUT_COUNT =
   "Gelieve een getalwaarde >= 0 in te voeren!";
+  export const LOGIN_ERROR = "Fout bij aanmelden";
+  export const INVALID_CREDENTIALS = "Ongeldig(e) wachtwoord of gebruikersnaam";
+  export const TOKEN_EXPIRED = "Gelieve opnieuw aan te melden!";
 
 //Success messages
 export const SYNCED = "Gesynchroniseerd met server";

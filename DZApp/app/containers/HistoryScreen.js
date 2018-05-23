@@ -365,7 +365,7 @@ class HistoryScreen extends Component<Props, State> {
     this._toggleModalVisible();
     let itemId = this.state.itemId;
     let rollback = {
-      localId: uuidv4(),
+      //localId: uuidv4(),
       orderId: this.state.ordersActive ? itemId : null,
       topupId: !this.state.ordersActive ? itemId : null,
       cashierId: this.props.cashierId,
