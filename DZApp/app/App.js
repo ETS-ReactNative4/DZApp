@@ -33,7 +33,7 @@ type State = {};
 export default class App extends Component {
   render() {
     //Persistor.purge();
-    console.disableYellowBox = true;
+    //console.disableYellowBox = true;
     return (
       <Provider store={Store}>
         <PersistGate

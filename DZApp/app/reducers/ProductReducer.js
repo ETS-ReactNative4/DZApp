@@ -36,7 +36,9 @@ const ProductReducer = (state: {} = initialState, action: {}) => {
       //foreach orderline, clone the corresponding product, adjust inStock
       //and insert it back in the newProducts array at the same index
       orderlines.forEach(o => {
-        let product = newProducts.find(p => p._id === o.productId);
+        console.warn("orderline: " + o);
+        let product = newProducts.find(p => p._id == o.productId);
+        console.warn("product: " + product)
         let index = newProducts.indexOf(product);
         let newProduct = Object.assign({}, product);
         newProduct.inStock -= o.quantity;
