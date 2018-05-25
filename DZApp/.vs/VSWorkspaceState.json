@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app",
+    "\\app\\actions",
+    "\\app\\components",
+    "\\app\\constants",
+    "\\app\\containers",
+    "\\app\\reducers",
+    "\\app\\store",
+    "\\ios",
+    "\\ios\\DZApp"
+  ],
+  "SelectedNode": "\\app\\actions\\cashierActions.js",
+  "PreviewInSolutionExplorer": false
+}

@@ -82,9 +82,7 @@ class HistorySettingsScreen extends Component<Props, State> {
           <Body>
             <Title>{strings.HISTORY}</Title>
             <Subtitle>
-              {this.previousRouteName
-                ? strings.CHANGE_AMOUNT
-                : strings.ENTER_TOPUP_AMT}
+              {strings.TRANSACTIONS_AMOUNT}
             </Subtitle>
           </Body>
           <Right>

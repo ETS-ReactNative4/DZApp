@@ -115,6 +115,7 @@ export const ROLLBACK_CONFIRM_MODAL_MESSAGE =
 export const SETTINGS = "Instellingen";
 export const HISTORY_SETTINGS_HEADER = "Aantal transacties in geschiedenis";
 export const COUNT = "Aantal";
+export const TRANSACTIONS_AMOUNT = "Aantal invoeren";
 
 //CloseoutScreen
 export const CLOSEOUT_SCREEN_TITLE = "Kassa afsluiten";
